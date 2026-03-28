@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { ChevronDown } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { ChevronDown, X } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -11,23 +12,35 @@ import { mockEvents } from "@/lib/mock-data";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") ?? "";
   const [category, setCategory] = useState("");
   const [tab, setTab] = useState("All");
   const { data: dbEvents, isLoading } = useEvents();
 
-  // Merge DB events with mock events as fallback
   const allEvents = useMemo(() => {
     const db = dbEvents ?? [];
-    // If DB has events, show them first, then mock events
     return db.length > 0 ? [...db, ...mockEvents] : mockEvents;
   }, [dbEvents]);
 
   const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
     return allEvents.filter((e) => {
       if (category && e.category !== category) return false;
+      if (q) {
+        const matchTitle = e.title.toLowerCase().includes(q);
+        const matchLocation = e.location.toLowerCase().includes(q);
+        const matchTags = e.tags.some((t) => t.toLowerCase().includes(q));
+        const matchOrganizer = e.organizer.toLowerCase().includes(q);
+        if (!matchTitle && !matchLocation && !matchTags && !matchOrganizer) return false;
+      }
       return true;
     });
-  }, [category, allEvents]);
+  }, [category, allEvents, searchQuery]);
+
+  const clearSearch = () => {
+    setSearchParams({});
+  };
 
   return (
     <div className="min-h-screen bg-background">
