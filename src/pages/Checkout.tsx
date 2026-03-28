@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Trash2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Trash2, ArrowLeft, CheckCircle2, Download } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
