@@ -75,13 +75,33 @@ const Index = () => {
 
       {/* Browsing Events Section */}
       <div className="container py-8">
-        <div className="flex items-center gap-2 mb-6">
-          <h2 className="text-2xl font-bold">Browsing events in</h2>
-          <button className="flex items-center gap-1 text-2xl font-bold text-eb-blue">
-            <ChevronDown className="h-5 w-5" />
-            Your City
-          </button>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold">
+              {category ? `${category} events` : "Browsing events in"}
+            </h2>
+            {!category && (
+              <button className="flex items-center gap-1 text-2xl font-bold text-eb-blue">
+                <ChevronDown className="h-5 w-5" />
+                Your City
+              </button>
+            )}
+          </div>
+          {category && (
+            <button
+              onClick={() => setCategory("")}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Clear filter ✕
+            </button>
+          )}
         </div>
+
+        {category && (
+          <p className="text-sm text-muted-foreground mb-4">
+            Showing {filtered.length} event{filtered.length !== 1 ? "s" : ""}
+          </p>
+        )}
 
         <BrowsingTabs active={tab} onChange={setTab} />
 
@@ -95,6 +115,14 @@ const Index = () => {
                 <div className="h-3 bg-muted rounded w-1/2" />
               </div>
             ))
+          ) : filtered.length === 0 ? (
+            <div className="col-span-full text-center py-12 space-y-3">
+              <p className="text-lg font-semibold">No events found</p>
+              <p className="text-sm text-muted-foreground">
+                No {category} events right now.{" "}
+                <button onClick={() => setCategory("")} className="text-primary hover:underline">Browse all events</button>
+              </p>
+            </div>
           ) : (
             filtered.map((event) => (
               <EventbriteCard key={event.id} event={event} />

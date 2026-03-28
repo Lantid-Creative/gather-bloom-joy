@@ -180,7 +180,7 @@ export const mockEvents: Event[] = [
     time: "10:00 AM",
     location: "Sandton Convention Centre, Johannesburg, South Africa",
     image_url: eventFashion,
-    category: "Performing & Visual Arts",
+    category: "Festivals",
     organizer: "African Fashion Council",
     capacity: 3000,
     tickets_sold: 2100,
