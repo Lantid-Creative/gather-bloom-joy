@@ -34,6 +34,18 @@ const MyEvents = () => {
     }
   };
 
+  const handleStatusChange = async (eventId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase.from("events").update({ status: newStatus }).eq("id", eventId);
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["my-events"] });
+      await queryClient.invalidateQueries({ queryKey: ["events"] });
+      toast({ title: `Event ${newStatus}` });
+    } catch (err: any) {
+      toast({ title: "Error updating status", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleDuplicate = async (event: any) => {
     if (!user) return;
     try {
