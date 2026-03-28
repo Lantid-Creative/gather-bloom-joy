@@ -84,9 +84,9 @@ const EventbriteHeader = () => {
               <Link to="/my-tickets" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
                 My Tickets
               </Link>
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <Link to="/profile" className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all">
                 <User className="h-4 w-4 text-primary" />
-              </div>
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1"
