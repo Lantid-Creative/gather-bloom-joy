@@ -50,6 +50,39 @@ const MyTickets = () => {
     setRefundingOrderId(null);
   };
 
+  const handleDownloadTickets = async (orderId: string) => {
+    if (!user) return;
+    const { data: oi } = await supabase.from("order_items").select("*").eq("order_id", orderId);
+    if (!oi?.length) return;
+    const evtIds = [...new Set(oi.map((i) => i.event_id))];
+    const { data: evts } = await supabase.from("events").select("id, date, location").in("id", evtIds);
+    const { data: ord } = await supabase.from("orders").select("customer_name").eq("id", orderId).single();
+
+    const tickets = oi.map((item) => {
+      const evt = evts?.find((e) => e.id === item.event_id);
+      return {
+        orderId, orderItemId: item.id, eventTitle: item.event_title,
+        ticketName: item.ticket_name, quantity: item.quantity,
+        customerName: ord?.customer_name ?? "Attendee",
+        eventDate: evt ? format(new Date(evt.date), "EEE, MMM d, yyyy · h:mm a") : "",
+        eventLocation: evt?.location ?? "",
+      };
+    });
+    await generateTicketPDF(tickets);
+  };
+
+  const handleSetReminder = async (eventId: string, eventTitle: string, eventDate: string) => {
+    if (!user) return;
+    await supabase.from("notifications").insert({
+      user_id: user.id,
+      title: `Reminder: ${eventTitle}`,
+      message: `Don't forget! "${eventTitle}" is on ${format(new Date(eventDate), "EEE, MMM d")}. Get ready!`,
+      type: "reminder",
+      link: `/event/${eventId}`,
+    });
+    toast({ title: "Reminder set! 🔔", description: "You'll see it in your notifications." });
+  };
+
   if (!user) return (
     <div className="min-h-screen bg-background"><EventbriteHeader />
       <div className="container max-w-lg py-20 text-center space-y-4">
