@@ -137,30 +137,22 @@ const MyTickets = () => {
                       <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleDownloadTickets(order.id)}>
                         <Download className="h-3 w-3 mr-1" /> PDF
                       </Button>
-                          <DialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="text-xs h-7"><RotateCcw className="h-3 w-3 mr-1" /> Refund</Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader><DialogTitle>Request Refund</DialogTitle></DialogHeader>
-                            <Textarea placeholder="Why do you need a refund?" value={refundReason} onChange={(e) => setRefundReason(e.target.value)} />
-                            <DialogFooter>
-                              <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
-                              <Button variant="hero" onClick={() => submitRefund(order.id)} disabled={!refundReason.trim()}>Submit Request</Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
-                      )}
                     </div>
                   </div>
                   <div className="divide-y">
                     {items.map((item) => (
-                      <Link key={item.id} to={`/event/${item.event_id}`} className="flex items-center justify-between px-5 py-4 hover:bg-muted/50 transition-colors">
-                        <div className="space-y-1">
+                      <div key={item.id} className="flex items-center justify-between px-5 py-4 hover:bg-muted/50 transition-colors">
+                        <Link to={`/event/${item.event_id}`} className="space-y-1 flex-1">
                           <p className="font-semibold">{item.event_title}</p>
                           <p className="text-sm text-muted-foreground">{item.ticket_name} × {item.quantity}</p>
+                        </Link>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium">${item.ticket_price * item.quantity}</span>
+                          <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleSetReminder(item.event_id, item.event_title, item.created_at)}>
+                            <Bell className="h-3 w-3 mr-1" /> Remind
+                          </Button>
                         </div>
-                        <span className="text-sm font-medium">${item.ticket_price * item.quantity}</span>
-                      </Link>
+                      </div>
                     ))}
                   </div>
                 </div>
