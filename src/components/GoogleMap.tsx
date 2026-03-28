@@ -1,4 +1,11 @@
+/// <reference types="google.maps" />
 import { useEffect, useRef } from "react";
+
+declare global {
+  interface Window {
+    google?: typeof google;
+  }
+}
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCazL5Cqw90gNr2Kn28q3iXIfdwmI4Coss";
 
