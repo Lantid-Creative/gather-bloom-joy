@@ -197,6 +197,11 @@ const MyEvents = () => {
                           <Eye className="h-3.5 w-3.5 mr-1" /> View
                         </Link>
                       </Button>
+                      <Button variant="outline" size="sm" className="rounded-full text-xs" asChild>
+                        <Link to={`/edit-event/${event.id}`}>
+                          <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
+                        </Link>
+                      </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button variant="outline" size="sm" className="rounded-full text-xs text-destructive hover:text-destructive">
