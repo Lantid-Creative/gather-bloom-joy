@@ -31,6 +31,9 @@ export interface EventFormData {
   isOnline: boolean;
   tags: string;
   tickets: TicketDraft[];
+  status: string;
+  recurrenceType: string;
+  recurrenceEndDate: string;
 }
 
 const emptyTicket: TicketDraft = { name: "", price: "0", description: "", available: "100", max_per_order: "10" };
@@ -64,6 +67,9 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [isOnline, setIsOnline] = useState(initial?.isOnline ?? false);
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [tickets, setTickets] = useState<TicketDraft[]>(initial?.tickets ?? [{ ...emptyTicket }]);
+  const [status, setStatus] = useState(initial?.status ?? "published");
+  const [recurrenceType, setRecurrenceType] = useState(initial?.recurrenceType ?? "none");
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState(initial?.recurrenceEndDate ?? "");
 
   const uploadFile = async (file: File) => {
     if (!user) return;
@@ -134,7 +140,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit({ title, description, date, endDate, time, location, imageUrl, category, organizer, capacity, isOnline, tags, tickets });
+      await onSubmit({ title, description, date, endDate, time, location, imageUrl, category, organizer, capacity, isOnline, tags, tickets, status, recurrenceType, recurrenceEndDate });
     } finally {
       setLoading(false);
     }
@@ -180,6 +186,36 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
           <input type="checkbox" id="isOnline" checked={isOnline} onChange={(e) => setIsOnline(e.target.checked)} className="rounded" />
           <Label htmlFor="isOnline">This is an online event</Label>
         </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold">Event Status & Recurrence</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="recurrence">Recurrence</Label>
+            <select id="recurrence" value={recurrenceType} onChange={(e) => setRecurrenceType(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+              <option value="none">No recurrence</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="biweekly">Biweekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+        {recurrenceType !== "none" && (
+          <div className="space-y-2">
+            <Label htmlFor="recurrenceEndDate">Recurrence ends on</Label>
+            <Input id="recurrenceEndDate" type="date" value={recurrenceEndDate} onChange={(e) => setRecurrenceEndDate(e.target.value)} />
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">

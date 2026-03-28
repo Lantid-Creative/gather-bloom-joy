@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Trash2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Trash2, ArrowLeft, CheckCircle2, Download } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import PromoCodeInput from "@/components/PromoCodeInput";
+import { generateTicketPDF } from "@/lib/generate-ticket-pdf";
+import { format } from "date-fns";
 
 const Checkout = () => {
   const { items, removeItem, total, clearCart } = useCartStore();
@@ -21,6 +23,7 @@ const Checkout = () => {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [discount, setDiscount] = useState<{ type: string; value: number } | null>(null);
+  const [purchasedItems, setPurchasedItems] = useState<typeof items>([]);
   const { toast } = useToast();
 
   const subtotal = total();
@@ -61,9 +64,35 @@ const Checkout = () => {
         })));
       if (itemsError) throw itemsError;
 
+      // Fetch created order items for PDF
+      const { data: createdItems } = await supabase
+        .from("order_items")
+        .select("*")
+        .eq("order_id", order.id);
+
+      // Fetch event details for dates/locations
+      const eventIds = [...new Set(items.map((i) => i.eventId))];
+      const { data: eventDetails } = await supabase
+        .from("events")
+        .select("id, date, location")
+        .in("id", eventIds);
+
+      setPurchasedItems(items.map(i => ({ ...i })));
       setOrderId(order.id);
       setConfirmed(true);
       clearCart();
+
+      // Create notification for the user
+      if (user) {
+        await supabase.from("notifications").insert({
+          user_id: user.id,
+          title: "Order confirmed! 🎉",
+          message: `Your order #${order.id.slice(0, 8).toUpperCase()} has been confirmed. ${items.length} ticket(s) purchased.`,
+          type: "order",
+          link: "/my-tickets",
+        });
+      }
+
       toast({ title: "Order confirmed! 🎉" });
     } catch (err: any) {
       console.error("Checkout error:", err);
@@ -71,6 +100,30 @@ const Checkout = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownloadTickets = async () => {
+    if (!orderId) return;
+    // Fetch order items with event info
+    const { data: oi } = await supabase.from("order_items").select("*").eq("order_id", orderId);
+    if (!oi?.length) return;
+    const evtIds = [...new Set(oi.map((i) => i.event_id))];
+    const { data: evts } = await supabase.from("events").select("id, date, location").in("id", evtIds);
+
+    const tickets = oi.map((item) => {
+      const evt = evts?.find((e) => e.id === item.event_id);
+      return {
+        orderId: orderId,
+        orderItemId: item.id,
+        eventTitle: item.event_title,
+        ticketName: item.ticket_name,
+        quantity: item.quantity,
+        customerName: name,
+        eventDate: evt ? format(new Date(evt.date), "EEE, MMM d, yyyy · h:mm a") : "",
+        eventLocation: evt?.location ?? "",
+      };
+    });
+    await generateTicketPDF(tickets);
   };
 
   if (confirmed) {
@@ -88,8 +141,11 @@ const Checkout = () => {
           </p>
           {orderId && <p className="text-xs text-muted-foreground">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="hero" size="lg" className="rounded-full" asChild><Link to="/my-tickets">View My Tickets</Link></Button>
-            <Button variant="outline" size="lg" className="rounded-full" asChild><Link to="/">Browse More Events</Link></Button>
+            <Button variant="hero" size="lg" className="rounded-full" onClick={handleDownloadTickets}>
+              <Download className="h-4 w-4 mr-2" /> Download Tickets (PDF)
+            </Button>
+            <Button variant="outline" size="lg" className="rounded-full" asChild><Link to="/my-tickets">View My Tickets</Link></Button>
+            <Button variant="ghost" size="lg" className="rounded-full" asChild><Link to="/">Browse More Events</Link></Button>
           </div>
         </div>
       </div>

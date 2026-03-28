@@ -34,6 +34,18 @@ const MyEvents = () => {
     }
   };
 
+  const handleStatusChange = async (eventId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase.from("events").update({ status: newStatus }).eq("id", eventId);
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["my-events"] });
+      await queryClient.invalidateQueries({ queryKey: ["events"] });
+      toast({ title: `Event ${newStatus}` });
+    } catch (err: any) {
+      toast({ title: "Error updating status", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleDuplicate = async (event: any) => {
     if (!user) return;
     try {
@@ -148,6 +160,15 @@ const MyEvents = () => {
                       <Button variant="outline" size="sm" className="rounded-full text-xs" asChild><Link to={`/edit-event/${event.id}`}><Pencil className="h-3.5 w-3.5 mr-1" /> Edit</Link></Button>
                       <Button variant="outline" size="sm" className="rounded-full text-xs" asChild><Link to={`/check-in/${event.id}`}><QrCode className="h-3.5 w-3.5 mr-1" /> Check-In</Link></Button>
                       <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => handleDuplicate(event)}><Copy className="h-3.5 w-3.5 mr-1" /> Duplicate</Button>
+                      <select
+                        value={status}
+                        onChange={(e) => handleStatusChange(event.id, e.target.value)}
+                        className="rounded-full border text-xs px-2 py-1 bg-background"
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button variant="outline" size="sm" className="rounded-full text-xs text-destructive hover:text-destructive"><Trash2 className="h-3.5 w-3.5 mr-1" /> Delete</Button>

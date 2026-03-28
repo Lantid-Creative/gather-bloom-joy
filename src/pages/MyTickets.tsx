@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Ticket, Calendar, MapPin, RotateCcw } from "lucide-react";
+import { Ticket, Calendar, MapPin, RotateCcw, Download, Bell } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { generateTicketPDF } from "@/lib/generate-ticket-pdf";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
@@ -47,6 +48,39 @@ const MyTickets = () => {
     }
     setRefundReason("");
     setRefundingOrderId(null);
+  };
+
+  const handleDownloadTickets = async (orderId: string) => {
+    if (!user) return;
+    const { data: oi } = await supabase.from("order_items").select("*").eq("order_id", orderId);
+    if (!oi?.length) return;
+    const evtIds = [...new Set(oi.map((i) => i.event_id))];
+    const { data: evts } = await supabase.from("events").select("id, date, location").in("id", evtIds);
+    const { data: ord } = await supabase.from("orders").select("customer_name").eq("id", orderId).single();
+
+    const tickets = oi.map((item) => {
+      const evt = evts?.find((e) => e.id === item.event_id);
+      return {
+        orderId, orderItemId: item.id, eventTitle: item.event_title,
+        ticketName: item.ticket_name, quantity: item.quantity,
+        customerName: ord?.customer_name ?? "Attendee",
+        eventDate: evt ? format(new Date(evt.date), "EEE, MMM d, yyyy · h:mm a") : "",
+        eventLocation: evt?.location ?? "",
+      };
+    });
+    await generateTicketPDF(tickets);
+  };
+
+  const handleSetReminder = async (eventId: string, eventTitle: string, eventDate: string) => {
+    if (!user) return;
+    await supabase.from("notifications").insert({
+      user_id: user.id,
+      title: `Reminder: ${eventTitle}`,
+      message: `Don't forget! "${eventTitle}" is on ${format(new Date(eventDate), "EEE, MMM d")}. Get ready!`,
+      type: "reminder",
+      link: `/event/${eventId}`,
+    });
+    toast({ title: "Reminder set! 🔔", description: "You'll see it in your notifications." });
   };
 
   if (!user) return (
@@ -100,17 +134,25 @@ const MyTickets = () => {
                           </DialogContent>
                         </Dialog>
                       )}
+                      <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleDownloadTickets(order.id)}>
+                        <Download className="h-3 w-3 mr-1" /> PDF
+                      </Button>
                     </div>
                   </div>
                   <div className="divide-y">
                     {items.map((item) => (
-                      <Link key={item.id} to={`/event/${item.event_id}`} className="flex items-center justify-between px-5 py-4 hover:bg-muted/50 transition-colors">
-                        <div className="space-y-1">
+                      <div key={item.id} className="flex items-center justify-between px-5 py-4 hover:bg-muted/50 transition-colors">
+                        <Link to={`/event/${item.event_id}`} className="space-y-1 flex-1">
                           <p className="font-semibold">{item.event_title}</p>
                           <p className="text-sm text-muted-foreground">{item.ticket_name} × {item.quantity}</p>
+                        </Link>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium">${item.ticket_price * item.quantity}</span>
+                          <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleSetReminder(item.event_id, item.event_title, item.created_at)}>
+                            <Bell className="h-3 w-3 mr-1" /> Remind
+                          </Button>
                         </div>
-                        <span className="text-sm font-medium">${item.ticket_price * item.quantity}</span>
-                      </Link>
+                      </div>
                     ))}
                   </div>
                 </div>

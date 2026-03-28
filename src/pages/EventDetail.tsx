@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { Calendar, MapPin, Users, Bookmark } from "lucide-react";
+import { Calendar, MapPin, Users, Bookmark, Bell } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
@@ -14,10 +14,15 @@ import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
 import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const EventDetail = () => {
   const { id } = useParams();
   const { data: dbEvent, isLoading } = useEvent(id);
+  const { user } = useAuth();
+  const { toast } = useToast();
   const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
 
   // OG meta tags & document title
@@ -162,6 +167,25 @@ const EventDetail = () => {
                   <Bookmark className="h-3.5 w-3.5" /> Save
                 </Button>
                 <ShareButtons title={event.title} />
+                {user && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full flex items-center gap-1.5"
+                    onClick={async () => {
+                      await supabase.from("notifications").insert({
+                        user_id: user.id,
+                        title: `Reminder: ${event.title}`,
+                        message: `Don't forget! "${event.title}" is on ${format(new Date(event.date), "EEE, MMM d")}. Get ready!`,
+                        type: "reminder",
+                        link: `/event/${event.id}`,
+                      });
+                      toast({ title: "Reminder set! 🔔" });
+                    }}
+                  >
+                    <Bell className="h-3.5 w-3.5" /> Remind Me
+                  </Button>
+                )}
               </div>
 
               {soldOut ? (

@@ -60,6 +60,7 @@ const EditEvent = () => {
   }
 
   const eventDate = new Date(event.date);
+  const dbEvent = event as any;
   const initialData: Partial<EventFormData> = {
     title: event.title,
     description: event.description,
@@ -73,6 +74,9 @@ const EditEvent = () => {
     capacity: String(event.capacity),
     isOnline: event.is_online,
     tags: event.tags.join(", "),
+    status: dbEvent.status ?? "published",
+    recurrenceType: dbEvent.recurrence_type ?? "none",
+    recurrenceEndDate: dbEvent.recurrence_end_date ? format(new Date(dbEvent.recurrence_end_date), "yyyy-MM-dd") : "",
     tickets: event.ticket_types.length > 0
       ? event.ticket_types.map((t) => ({
           id: t.id,
@@ -107,6 +111,9 @@ const EditEvent = () => {
         capacity: parseInt(data.capacity) || 100,
         is_online: data.isOnline,
         tags: data.tags.split(",").map((t) => t.trim()).filter(Boolean),
+        status: data.status || "published",
+        recurrence_type: data.recurrenceType || "none",
+        recurrence_end_date: data.recurrenceType !== "none" && data.recurrenceEndDate ? new Date(data.recurrenceEndDate).toISOString() : null,
       })
       .eq("id", event.id);
 
