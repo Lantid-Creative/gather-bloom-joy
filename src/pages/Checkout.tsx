@@ -1,28 +1,82 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Trash2, ArrowLeft, CheckCircle2 } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCartStore } from "@/lib/cart-store";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Checkout = () => {
   const { items, removeItem, total, clearCart } = useCartStore();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [name, setName] = useState(user?.user_metadata?.full_name ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
   const [confirmed, setConfirmed] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleCheckout = (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {
       toast({ title: "Please fill in all fields", variant: "destructive" });
       return;
     }
-    setConfirmed(true);
-    clearCart();
+
+    if (!user) {
+      toast({ title: "Please sign in to complete your purchase", variant: "destructive" });
+      navigate("/auth");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Create the order
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user.id,
+          customer_name: name,
+          customer_email: email,
+          total: total(),
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // Create order items
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(
+          items.map((item) => ({
+            order_id: order.id,
+            event_id: item.eventId,
+            ticket_type_id: item.ticketType.id,
+            event_title: item.eventTitle,
+            ticket_name: item.ticketType.name,
+            ticket_price: item.ticketType.price,
+            quantity: item.quantity,
+          }))
+        );
+
+      if (itemsError) throw itemsError;
+
+      setOrderId(order.id);
+      setConfirmed(true);
+      clearCart();
+      toast({ title: "Order confirmed! 🎉" });
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      toast({ title: "Something went wrong", description: err.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (confirmed) {
@@ -38,9 +92,17 @@ const Checkout = () => {
             Your tickets have been confirmed. A confirmation email has been sent to{" "}
             <span className="font-medium text-foreground">{email}</span>.
           </p>
-          <Button variant="hero" size="lg" className="rounded-full" asChild>
-            <Link to="/">Browse More Events</Link>
-          </Button>
+          {orderId && (
+            <p className="text-xs text-muted-foreground">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+          )}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button variant="hero" size="lg" className="rounded-full" asChild>
+              <Link to="/my-tickets">View My Tickets</Link>
+            </Button>
+            <Button variant="outline" size="lg" className="rounded-full" asChild>
+              <Link to="/">Browse More Events</Link>
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -70,6 +132,13 @@ const Checkout = () => {
         </Button>
 
         <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+
+        {!user && (
+          <div className="mb-6 p-4 rounded-xl border border-primary/30 bg-primary/5 text-sm">
+            <Link to="/auth" className="text-primary font-semibold hover:underline">Sign in</Link>
+            {" "}to save your tickets to your account.
+          </div>
+        )}
 
         <div className="space-y-3 mb-8">
           {items.map((item) => (
@@ -106,8 +175,8 @@ const Checkout = () => {
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" required />
           </div>
-          <Button variant="hero" size="lg" type="submit" className="w-full rounded-full mt-4">
-            Complete Purchase — ${total()}
+          <Button variant="hero" size="lg" type="submit" className="w-full rounded-full mt-4" disabled={loading}>
+            {loading ? "Processing..." : `Complete Purchase — $${total()}`}
           </Button>
         </form>
       </div>
