@@ -115,6 +115,14 @@ const Index = () => {
                 <div className="h-3 bg-muted rounded w-1/2" />
               </div>
             ))
+          ) : filtered.length === 0 ? (
+            <div className="col-span-full text-center py-12 space-y-3">
+              <p className="text-lg font-semibold">No events found</p>
+              <p className="text-sm text-muted-foreground">
+                No {category} events right now.{" "}
+                <button onClick={() => setCategory("")} className="text-primary hover:underline">Browse all events</button>
+              </p>
+            </div>
           ) : (
             filtered.map((event) => (
               <EventbriteCard key={event.id} event={event} />
