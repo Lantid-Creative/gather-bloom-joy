@@ -1,0 +1,238 @@
+import { Link, useNavigate } from "react-router-dom";
+import { Plus, Calendar, MapPin, Users, Pencil, Trash2, Eye } from "lucide-react";
+import { format } from "date-fns";
+import EventbriteHeader from "@/components/EventbriteHeader";
+import EventbriteFooter from "@/components/EventbriteFooter";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useMyEvents } from "@/hooks/useMyEvents";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+const MyEvents = () => {
+  const { user, loading: authLoading } = useAuth();
+  const { data: events, isLoading } = useMyEvents();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <EventbriteHeader />
+        <div className="container py-20 text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-muted rounded w-48 mx-auto" />
+            <div className="h-4 bg-muted rounded w-64 mx-auto" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <EventbriteHeader />
+        <div className="container max-w-lg py-20 text-center space-y-4">
+          <h1 className="text-2xl font-bold">Sign in to manage your events</h1>
+          <p className="text-muted-foreground">
+            You need an account to create and manage events on Afritickets.
+          </p>
+          <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>
+            Sign in
+          </Button>
+        </div>
+        <EventbriteFooter />
+      </div>
+    );
+  }
+
+  const handleDelete = async (eventId: string, eventTitle: string) => {
+    try {
+      const { error } = await supabase.from("events").delete().eq("id", eventId);
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["my-events"] });
+      await queryClient.invalidateQueries({ queryKey: ["events"] });
+      toast({ title: `"${eventTitle}" deleted` });
+    } catch (err: any) {
+      toast({ title: "Error deleting event", description: err.message, variant: "destructive" });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <EventbriteHeader />
+
+      <div className="container py-10">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">My Events</h1>
+            <p className="text-muted-foreground mt-1">
+              Create, manage, and track your events
+            </p>
+          </div>
+          <Button variant="hero" className="rounded-full" asChild>
+            <Link to="/create-event">
+              <Plus className="h-4 w-4 mr-2" /> Create Event
+            </Link>
+          </Button>
+        </div>
+
+        {isLoading ? (
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="animate-pulse flex gap-4 p-4 border rounded-xl">
+                <div className="w-40 h-24 rounded-lg bg-muted shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-5 bg-muted rounded w-1/3" />
+                  <div className="h-4 bg-muted rounded w-1/4" />
+                  <div className="h-4 bg-muted rounded w-1/5" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : !events || events.length === 0 ? (
+          <div className="text-center py-16 space-y-4 border-2 border-dashed rounded-2xl">
+            <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <Calendar className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="text-xl font-semibold">No events yet</h2>
+            <p className="text-muted-foreground max-w-sm mx-auto">
+              You haven't created any events. Start by creating your first event and share it with the world!
+            </p>
+            <Button variant="hero" className="rounded-full" asChild>
+              <Link to="/create-event">
+                <Plus className="h-4 w-4 mr-2" /> Create Your First Event
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {events.map((event) => {
+              const spotsLeft = event.capacity - event.tickets_sold;
+              const isPast = new Date(event.date) < new Date();
+
+              return (
+                <div
+                  key={event.id}
+                  className={`flex flex-col sm:flex-row gap-4 p-4 border rounded-xl transition-colors hover:bg-accent/30 ${
+                    isPast ? "opacity-60" : ""
+                  }`}
+                >
+                  {/* Image */}
+                  <Link to={`/event/${event.id}`} className="shrink-0">
+                    <div className="w-full sm:w-44 h-28 rounded-lg overflow-hidden bg-muted">
+                      <img
+                        src={event.image_url}
+                        alt={event.title}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  </Link>
+
+                  {/* Details */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <Link to={`/event/${event.id}`} className="hover:text-primary transition-colors">
+                          <h3 className="font-semibold text-lg truncate">{event.title}</h3>
+                        </Link>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {format(new Date(event.date), "EEE, MMM d, yyyy")}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3.5 w-3.5" />
+                            <span className="truncate max-w-[200px]">{event.location}</span>
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Users className="h-3.5 w-3.5" />
+                            {event.tickets_sold}/{event.capacity} sold
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Status Badge */}
+                      <span
+                        className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-full ${
+                          isPast
+                            ? "bg-muted text-muted-foreground"
+                            : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                        }`}
+                      >
+                        {isPast ? "Past" : "Active"}
+                      </span>
+                    </div>
+
+                    {/* Ticket summary */}
+                    {event.ticket_types.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {event.ticket_types.map((t) => (
+                          <span key={t.id} className="text-xs bg-accent px-2 py-0.5 rounded-full">
+                            {t.name}: {t.price === 0 ? "Free" : `$${t.price}`} · {t.available} left
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 mt-3">
+                      <Button variant="outline" size="sm" className="rounded-full text-xs" asChild>
+                        <Link to={`/event/${event.id}`}>
+                          <Eye className="h-3.5 w-3.5 mr-1" /> View
+                        </Link>
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm" className="rounded-full text-xs text-destructive hover:text-destructive">
+                            <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete "{event.title}"?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will permanently delete this event, all its tickets, and schedule items. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(event.id, event.title)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <EventbriteFooter />
+    </div>
+  );
+};
+
+export default MyEvents;
