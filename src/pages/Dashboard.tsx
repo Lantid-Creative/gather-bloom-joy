@@ -150,9 +150,20 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+
+        {/* Promo Codes */}
+        <div className="mt-10">
+          <PromoCodeManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
+        </div>
+
+        {/* Tracking Links */}
+        <div className="mt-10">
+          <TrackingLinkManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
+        </div>
       </div>
     </div>
   );
+};
 };
 
 export default Dashboard;
