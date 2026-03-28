@@ -1,7 +1,8 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Search, MapPin, ChevronDown, Menu, X, User, LogOut } from "lucide-react";
+import { Search, MapPin, ChevronDown, Menu, X, User, LogOut, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useCartStore } from "@/lib/cart-store";
 import { Button } from "@/components/ui/button";
 
 const EventbriteHeader = () => {
@@ -10,6 +11,7 @@ const EventbriteHeader = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [searchText, setSearchText] = useState(searchParams.get("q") ?? "");
+  const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const handleSignOut = async () => {
     await signOut();
@@ -72,9 +74,20 @@ const EventbriteHeader = () => {
           <Link to="/create-event" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
             Create Events
           </Link>
-          <button className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1">
-            Help Center <ChevronDown className="h-3.5 w-3.5" />
-          </button>
+          <Link to="/help" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
+            Help Center
+          </Link>
+
+          {/* Cart */}
+          <Link to="/checkout" className="relative p-2 rounded-md hover:bg-accent transition-colors">
+            <ShoppingCart className="h-4 w-4" />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+
           <div className="w-px h-6 bg-border mx-1" />
           {user ? (
             <div className="flex items-center gap-1">
@@ -104,13 +117,20 @@ const EventbriteHeader = () => {
           )}
         </nav>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="lg:hidden ml-auto p-2"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        {/* Cart + Mobile Menu Toggle */}
+        <div className="lg:hidden ml-auto flex items-center gap-2">
+          <Link to="/checkout" className="relative p-2">
+            <ShoppingCart className="h-5 w-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          <button className="p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Search */}
@@ -138,7 +158,7 @@ const EventbriteHeader = () => {
         <div className="lg:hidden border-t bg-background p-4 space-y-1">
           <Link to="/" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Find Events</Link>
           <Link to="/create-event" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Create Events</Link>
-          <button className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Help Center</button>
+          <Link to="/help" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Help Center</Link>
           <div className="border-t my-2" />
           {user ? (
             <>
