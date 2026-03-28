@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import { Search, MapPin, ChevronDown, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
 const EventbriteHeader = () => {
@@ -12,7 +10,7 @@ const EventbriteHeader = () => {
       <div className="container flex h-14 items-center gap-4">
         {/* Logo */}
         <Link to="/" className="shrink-0">
-          <span className="text-xl font-bold text-primary tracking-tight">eventbrite</span>
+          <span className="text-xl font-bold text-primary tracking-tight">afritickets</span>
         </Link>
 
         {/* Search Bar - Desktop */}
@@ -30,7 +28,7 @@ const EventbriteHeader = () => {
               <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
               <input
                 type="text"
-                placeholder="Your Location"
+                placeholder="Your City"
                 className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
