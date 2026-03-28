@@ -386,6 +386,7 @@ export type Database = {
           customer_name: string
           id: string
           status: string
+          stripe_session_id: string | null
           total: number
           user_id: string
         }
@@ -395,6 +396,7 @@ export type Database = {
           customer_name: string
           id?: string
           status?: string
+          stripe_session_id?: string | null
           total?: number
           user_id: string
         }
@@ -404,6 +406,7 @@ export type Database = {
           customer_name?: string
           id?: string
           status?: string
+          stripe_session_id?: string | null
           total?: number
           user_id?: string
         }
