@@ -230,15 +230,24 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
               disabled={uploading}
-              className="w-full h-40 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+              className={`w-full h-40 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 transition-colors ${
+                dragging
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+              }`}
             >
               {uploading ? (
                 <span className="text-sm">Uploading...</span>
               ) : (
                 <>
                   <Upload className="h-8 w-8" />
-                  <span className="text-sm font-medium">Click to upload cover image</span>
+                  <span className="text-sm font-medium">
+                    {dragging ? "Drop image here" : "Drag & drop or click to upload"}
+                  </span>
                   <span className="text-xs">JPG, PNG, WebP · Max 5MB</span>
                 </>
               )}
