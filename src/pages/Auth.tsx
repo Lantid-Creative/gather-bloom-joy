@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Navbar from "@/components/Navbar";
+import EventbriteHeader from "@/components/EventbriteHeader";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,20 +12,19 @@ const Auth = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: integrate with Lovable Cloud auth
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <EventbriteHeader />
       <div className="container flex items-center justify-center py-20">
         <div className="w-full max-w-sm space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-2xl font-bold">{isLogin ? "Welcome back" : "Create account"}</h1>
+            <h1 className="text-2xl font-bold">{isLogin ? "Log in" : "Sign up"}</h1>
             <p className="text-sm text-muted-foreground">
               {isLogin
                 ? "Sign in to manage your tickets and events"
-                : "Join Eventio to discover and book events"}
+                : "Join to discover and book events"}
             </p>
           </div>
 
@@ -37,39 +36,22 @@ const Auth = () => {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-              />
+              <Label htmlFor="email">Email address</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
             </div>
             <Button variant="hero" size="lg" type="submit" className="w-full rounded-full">
-              {isLogin ? "Sign In" : "Create Account"}
+              {isLogin ? "Log in" : "Sign up"}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="font-medium text-primary hover:underline"
-            >
-              {isLogin ? "Sign up" : "Sign in"}
+            <button onClick={() => setIsLogin(!isLogin)} className="font-medium text-eb-blue hover:underline">
+              {isLogin ? "Sign up" : "Log in"}
             </button>
           </p>
         </div>
