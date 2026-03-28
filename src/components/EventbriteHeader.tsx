@@ -81,6 +81,9 @@ const EventbriteHeader = () => {
               <Link to="/my-events" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
                 My Events
               </Link>
+              <Link to="/my-tickets" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
+                My Tickets
+              </Link>
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <User className="h-4 w-4 text-primary" />
               </div>
@@ -137,6 +140,7 @@ const EventbriteHeader = () => {
           {user ? (
             <>
               <Link to="/my-events" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Events</Link>
+              <Link to="/my-tickets" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Tickets</Link>
               <button onClick={() => { handleSignOut(); setMobileOpen(false); }} className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Sign out</button>
             </>
           ) : (

@@ -11,6 +11,7 @@ import Auth from "./pages/Auth.tsx";
 import CreateEvent from "./pages/CreateEvent.tsx";
 import MyEvents from "./pages/MyEvents.tsx";
 import EditEvent from "./pages/EditEvent.tsx";
+import MyTickets from "./pages/MyTickets.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/create-event" element={<CreateEvent />} />
             <Route path="/my-events" element={<MyEvents />} />
             <Route path="/edit-event/:id" element={<EditEvent />} />
+            <Route path="/my-tickets" element={<MyTickets />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
