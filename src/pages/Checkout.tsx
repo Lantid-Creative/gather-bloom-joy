@@ -23,6 +23,7 @@ const Checkout = () => {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [discount, setDiscount] = useState<{ type: string; value: number } | null>(null);
+  const [purchasedItems, setPurchasedItems] = useState<typeof items>([]);
   const { toast } = useToast();
 
   const subtotal = total();
