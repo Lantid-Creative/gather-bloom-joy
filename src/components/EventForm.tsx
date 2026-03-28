@@ -64,13 +64,15 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [tickets, setTickets] = useState<TicketDraft[]>(initial?.tickets ?? [{ ...emptyTicket }]);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-
-    const maxSize = 5 * 1024 * 1024; // 5MB
+  const uploadFile = async (file: File) => {
+    if (!user) return;
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       alert("Image must be under 5MB");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file");
       return;
     }
 
@@ -89,6 +91,28 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     setImageUrl(urlData.publicUrl);
     setPreviewUrl(urlData.publicUrl);
     setUploading(false);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) uploadFile(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
   };
 
   const removeImage = () => {
