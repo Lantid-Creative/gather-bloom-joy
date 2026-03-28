@@ -180,8 +180,58 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
           <Input id="organizer" value={organizer} onChange={(e) => setOrganizer(e.target.value)} placeholder="Your organization name" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="imageUrl">Event Image URL</Label>
-          <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://example.com/image.jpg" />
+          <Label>Event Cover Image</Label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+          {previewUrl ? (
+            <div className="relative rounded-xl overflow-hidden border border-border">
+              <img src={previewUrl} alt="Event cover" className="w-full h-48 object-cover" />
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                onClick={removeImage}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="w-full h-40 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+            >
+              {uploading ? (
+                <span className="text-sm">Uploading...</span>
+              ) : (
+                <>
+                  <Upload className="h-8 w-8" />
+                  <span className="text-sm font-medium">Click to upload cover image</span>
+                  <span className="text-xs">JPG, PNG, WebP · Max 5MB</span>
+                </>
+              )}
+            </button>
+          )}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <ImageIcon className="h-3 w-3" />
+            <span>Or paste a URL:</span>
+            <Input
+              value={imageUrl}
+              onChange={(e) => {
+                setImageUrl(e.target.value);
+                setPreviewUrl(e.target.value || null);
+              }}
+              placeholder="https://example.com/image.jpg"
+              className="h-7 text-xs flex-1"
+            />
+          </div>
         </div>
       </div>
 
