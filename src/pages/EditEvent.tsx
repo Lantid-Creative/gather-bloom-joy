@@ -107,6 +107,9 @@ const EditEvent = () => {
         capacity: parseInt(data.capacity) || 100,
         is_online: data.isOnline,
         tags: data.tags.split(",").map((t) => t.trim()).filter(Boolean),
+        status: data.status || "published",
+        recurrence_type: data.recurrenceType || "none",
+        recurrence_end_date: data.recurrenceType !== "none" && data.recurrenceEndDate ? new Date(data.recurrenceEndDate).toISOString() : null,
       })
       .eq("id", event.id);
 
