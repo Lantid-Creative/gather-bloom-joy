@@ -167,6 +167,25 @@ const EventDetail = () => {
                   <Bookmark className="h-3.5 w-3.5" /> Save
                 </Button>
                 <ShareButtons title={event.title} />
+                {user && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full flex items-center gap-1.5"
+                    onClick={async () => {
+                      await supabase.from("notifications").insert({
+                        user_id: user.id,
+                        title: `Reminder: ${event.title}`,
+                        message: `Don't forget! "${event.title}" is on ${format(new Date(event.date), "EEE, MMM d")}. Get ready!`,
+                        type: "reminder",
+                        link: `/event/${event.id}`,
+                      });
+                      toast({ title: "Reminder set! 🔔" });
+                    }}
+                  >
+                    <Bell className="h-3.5 w-3.5" /> Remind Me
+                  </Button>
+                )}
               </div>
 
               {soldOut ? (
