@@ -115,10 +115,13 @@ const EventbriteHeader = () => {
             <input
               type="text"
               placeholder="Search events"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
           </div>
-          <button className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
+          <button onClick={handleSearch} className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
             <Search className="h-3.5 w-3.5" />
           </button>
         </div>
