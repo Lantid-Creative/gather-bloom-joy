@@ -26,18 +26,18 @@ const EventbriteFooter = () => {
 
       <div className="border-t">
         <div className="container py-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-left">
             {/* Use Eventbrite */}
             <div className="space-y-3">
               <h4 className="text-sm font-bold">Use Eventbrite</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><button className="hover:text-foreground transition-colors">Create Events</button></li>
-                <li><button className="hover:text-foreground transition-colors">Pricing</button></li>
-                <li><button className="hover:text-foreground transition-colors">Event Marketing Platform</button></li>
-                <li><button className="hover:text-foreground transition-colors">Eventbrite Mobile Ticket App</button></li>
-                <li><button className="hover:text-foreground transition-colors">Eventbrite Check-In App</button></li>
-                <li><button className="hover:text-foreground transition-colors">Eventbrite App Marketplace</button></li>
-                <li><button className="hover:text-foreground transition-colors">Event Registration Software</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Create Events</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Pricing</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Event Marketing Platform</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Eventbrite Mobile Ticket App</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Eventbrite Check-In App</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Eventbrite App Marketplace</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Event Registration Software</button></li>
               </ul>
             </div>
 
@@ -45,12 +45,12 @@ const EventbriteFooter = () => {
             <div className="space-y-3">
               <h4 className="text-sm font-bold">Plan Events</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><button className="hover:text-foreground transition-colors">Sell Tickets Online</button></li>
-                <li><button className="hover:text-foreground transition-colors">Event Planning</button></li>
-                <li><button className="hover:text-foreground transition-colors">Sell Concert Tickets Online</button></li>
-                <li><button className="hover:text-foreground transition-colors">Event Payment System</button></li>
-                <li><button className="hover:text-foreground transition-colors">Solutions for Professional Services</button></li>
-                <li><button className="hover:text-foreground transition-colors">Event Management Software</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Sell Tickets Online</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Event Planning</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Sell Concert Tickets Online</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Event Payment System</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Solutions for Professional Services</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Event Management Software</button></li>
               </ul>
             </div>
 
@@ -58,12 +58,12 @@ const EventbriteFooter = () => {
             <div className="space-y-3">
               <h4 className="text-sm font-bold">Find Events</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><button className="hover:text-foreground transition-colors">Events Near Me</button></li>
-                <li><button className="hover:text-foreground transition-colors">Events in San Francisco</button></li>
-                <li><button className="hover:text-foreground transition-colors">Events in Los Angeles</button></li>
-                <li><button className="hover:text-foreground transition-colors">Events in New York</button></li>
-                <li><button className="hover:text-foreground transition-colors">Events in Chicago</button></li>
-                <li><button className="hover:text-foreground transition-colors">Online Events</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Events Near Me</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Events in San Francisco</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Events in Los Angeles</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Events in New York</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Events in Chicago</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Online Events</button></li>
               </ul>
             </div>
 
@@ -71,11 +71,11 @@ const EventbriteFooter = () => {
             <div className="space-y-3">
               <h4 className="text-sm font-bold">Connect With Us</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><button className="hover:text-foreground transition-colors">Contact Support</button></li>
-                <li><button className="hover:text-foreground transition-colors">Twitter</button></li>
-                <li><button className="hover:text-foreground transition-colors">Facebook</button></li>
-                <li><button className="hover:text-foreground transition-colors">LinkedIn</button></li>
-                <li><button className="hover:text-foreground transition-colors">Instagram</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Contact Support</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Twitter</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Facebook</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">LinkedIn</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Instagram</button></li>
               </ul>
             </div>
 
@@ -83,16 +83,16 @@ const EventbriteFooter = () => {
             <div className="space-y-3">
               <h4 className="text-sm font-bold">Company</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><button className="hover:text-foreground transition-colors">About</button></li>
-                <li><button className="hover:text-foreground transition-colors">Blog</button></li>
-                <li><button className="hover:text-foreground transition-colors">Help</button></li>
-                <li><button className="hover:text-foreground transition-colors">Careers</button></li>
-                <li><button className="hover:text-foreground transition-colors">Press</button></li>
-                <li><button className="hover:text-foreground transition-colors">Impact</button></li>
-                <li><button className="hover:text-foreground transition-colors">Investors</button></li>
-                <li><button className="hover:text-foreground transition-colors">Security</button></li>
-                <li><button className="hover:text-foreground transition-colors">Developers</button></li>
-                <li><button className="hover:text-foreground transition-colors">Status</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">About</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Blog</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Help</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Careers</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Press</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Impact</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Investors</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Security</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Developers</button></li>
+                <li><button className="text-left hover:text-foreground transition-colors">Status</button></li>
               </ul>
             </div>
           </div>
