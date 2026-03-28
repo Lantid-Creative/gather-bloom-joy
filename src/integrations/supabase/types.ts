@@ -717,6 +717,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_event_organizer_for_order: {
+        Args: { p_order_id: string }
+        Returns: boolean
+      }
       track_link_click: {
         Args: { p_code: string; p_event_id: string }
         Returns: undefined
