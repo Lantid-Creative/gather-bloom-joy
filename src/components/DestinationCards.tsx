@@ -1,25 +1,25 @@
-import cityNewYork from "@/assets/city-newyork.jpg";
-import cityLosAngeles from "@/assets/city-losangeles.jpg";
-import cityChicago from "@/assets/city-chicago.jpg";
-import cityWashington from "@/assets/city-washington.jpg";
-import cityAtlanta from "@/assets/city-atlanta.jpg";
-import citySanFrancisco from "@/assets/city-sanfrancisco.jpg";
+import cityLagos from "@/assets/city-lagos.jpg";
+import cityNairobi from "@/assets/city-nairobi.jpg";
+import cityAccra from "@/assets/city-accra.jpg";
+import cityJohannesburg from "@/assets/city-johannesburg.jpg";
+import cityCapeTown from "@/assets/city-capetown.jpg";
+import cityDarEsSalaam from "@/assets/city-daressalaam.jpg";
 import cityMiami from "@/assets/city-miami.jpg";
 
 const destinations = [
-  { name: "New York", image: cityNewYork },
-  { name: "Los Angeles", image: cityLosAngeles },
-  { name: "Chicago", image: cityChicago },
-  { name: "Washington", image: cityWashington },
-  { name: "Atlanta", image: cityAtlanta },
-  { name: "San Francisco", image: citySanFrancisco },
-  { name: "Miami", image: cityMiami },
+  { name: "Lagos", image: cityLagos },
+  { name: "Nairobi", image: cityNairobi },
+  { name: "Accra", image: cityAccra },
+  { name: "Johannesburg", image: cityJohannesburg },
+  { name: "Cape Town", image: cityCapeTown },
+  { name: "Dar es Salaam", image: cityDarEsSalaam },
+  { name: "Kigali", image: cityMiami },
 ];
 
 const DestinationCards = () => {
   return (
     <section className="py-10">
-      <h2 className="text-2xl font-bold mb-6">Top destinations in United States</h2>
+      <h2 className="text-2xl font-bold mb-6">Top destinations in Africa</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
         {destinations.map((dest) => (
           <button

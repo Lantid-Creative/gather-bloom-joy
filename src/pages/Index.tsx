@@ -7,7 +7,7 @@ import BrowsingTabs from "@/components/BrowsingTabs";
 import EventbriteCard from "@/components/EventbriteCard";
 import DestinationCards from "@/components/DestinationCards";
 import { mockEvents } from "@/lib/mock-data";
-import heroMusic from "@/assets/hero-music.jpg";
+import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
   const [category, setCategory] = useState("");
@@ -28,21 +28,21 @@ const Index = () => {
       <section className="relative overflow-hidden mx-4 md:mx-8 mt-2 rounded-xl">
         <div className="relative h-[280px] md:h-[360px]">
           <img
-            src={heroMusic}
-            alt="Get into live music"
+            src={heroAfro}
+            alt="Get into Afrobeats"
             className="absolute inset-0 h-full w-full object-cover"
             width={1920}
             height={640}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-foreground/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 to-transparent" />
           <div className="relative z-10 flex flex-col justify-center h-full px-8 md:px-16 max-w-xl">
             <p className="text-sm font-bold text-primary-foreground/80 tracking-wider uppercase mb-2">
-              Get into it
+              Feel the rhythm
             </p>
             <h1 className="text-3xl md:text-5xl font-black text-primary-foreground leading-tight">
-              <span className="bg-primary/80 px-2 py-0.5 inline-block mb-1">FROM POP BALLADS</span>
+              <span className="bg-primary/80 px-2 py-0.5 inline-block mb-1">FROM AFROBEATS</span>
               <br />
-              <span className="bg-primary/80 px-2 py-0.5 inline-block">TO EMO ENCORES</span>
+              <span className="bg-primary/80 px-2 py-0.5 inline-block">TO AMAPIANO</span>
             </h1>
             <div className="mt-6">
               <button className="bg-background text-foreground font-bold text-sm px-6 py-3 rounded-full hover:bg-background/90 transition-colors">
@@ -70,7 +70,7 @@ const Index = () => {
           <h2 className="text-2xl font-bold">Browsing events in</h2>
           <button className="flex items-center gap-1 text-2xl font-bold text-eb-blue">
             <ChevronDown className="h-5 w-5" />
-            Your Location
+            Your City
           </button>
         </div>
 
