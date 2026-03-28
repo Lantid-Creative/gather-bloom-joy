@@ -4,10 +4,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import Checkout from "./pages/Checkout.tsx";
 import Auth from "./pages/Auth.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 import CreateEvent from "./pages/CreateEvent.tsx";
 import MyEvents from "./pages/MyEvents.tsx";
 import EditEvent from "./pages/EditEvent.tsx";
@@ -38,12 +40,13 @@ const App = () => (
             <Route path="/event/:id" element={<EventDetail />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/create-event" element={<CreateEvent />} />
-            <Route path="/my-events" element={<MyEvents />} />
-            <Route path="/edit-event/:id" element={<EditEvent />} />
-            <Route path="/my-tickets" element={<MyTickets />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
+            <Route path="/my-events" element={<ProtectedRoute><MyEvents /></ProtectedRoute>} />
+            <Route path="/edit-event/:id" element={<ProtectedRoute><EditEvent /></ProtectedRoute>} />
+            <Route path="/my-tickets" element={<ProtectedRoute><MyTickets /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/about" element={<About />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/help" element={<HelpCenter />} />

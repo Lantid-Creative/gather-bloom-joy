@@ -1,10 +1,11 @@
 import { useParams, Link } from "react-router-dom";
-import { Calendar, MapPin, Users, Share2, Bookmark, ArrowLeft } from "lucide-react";
+import { Calendar, MapPin, Users, Bookmark, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import TicketSelector from "@/components/TicketSelector";
 import GoogleMap from "@/components/GoogleMap";
+import ShareButtons from "@/components/ShareButtons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
@@ -14,7 +15,6 @@ const EventDetail = () => {
   const { id } = useParams();
   const { data: dbEvent, isLoading } = useEvent(id);
 
-  // Fallback to mock data
   const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
 
   if (isLoading) {
@@ -46,27 +46,20 @@ const EventDetail = () => {
   }
 
   const spotsLeft = event.capacity - event.tickets_sold;
+  const soldOut = spotsLeft <= 0;
 
   return (
     <div className="min-h-screen bg-background">
       <EventbriteHeader />
 
-      {/* Hero Image */}
       <div className="container max-w-5xl py-6">
         <div className="rounded-xl overflow-hidden aspect-[2/1] md:aspect-[5/2]">
-          <img
-            src={event.image_url}
-            alt={event.title}
-            className="h-full w-full object-cover"
-            width={1920}
-            height={960}
-          />
+          <img src={event.image_url} alt={event.title} className="h-full w-full object-cover" width={1920} height={960} />
         </div>
       </div>
 
       <div className="container max-w-5xl pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             <p className="text-sm font-semibold text-primary">
               {format(new Date(event.date), "EEEE, MMMM d, yyyy")}
@@ -81,9 +74,7 @@ const EventDetail = () => {
                 <p className="text-sm font-semibold">By {event.organizer}</p>
                 <p className="text-xs text-muted-foreground">Organizer</p>
               </div>
-              <Button variant="outline" size="sm" className="ml-auto rounded-full text-xs">
-                Follow
-              </Button>
+              <Button variant="outline" size="sm" className="ml-auto rounded-full text-xs">Follow</Button>
             </div>
 
             <div className="space-y-4">
@@ -133,14 +124,10 @@ const EventDetail = () => {
                 <div className="space-y-0">
                   {event.schedule.map((item, i) => (
                     <div key={i} className="flex gap-4 py-3 border-b last:border-0">
-                      <span className="text-sm font-semibold text-primary w-24 shrink-0">
-                        {item.time}
-                      </span>
+                      <span className="text-sm font-semibold text-primary w-24 shrink-0">{item.time}</span>
                       <div>
                         <p className="font-medium text-sm">{item.title}</p>
-                        {item.speaker && (
-                          <p className="text-xs text-muted-foreground">{item.speaker}</p>
-                        )}
+                        {item.speaker && <p className="text-xs text-muted-foreground">{item.speaker}</p>}
                       </div>
                     </div>
                   ))}
@@ -149,28 +136,26 @@ const EventDetail = () => {
             )}
           </div>
 
-          {/* Ticket Sidebar */}
+          {/* Sidebar */}
           <div>
             <div className="sticky top-20 space-y-4">
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="rounded-full flex items-center gap-1.5">
                   <Bookmark className="h-3.5 w-3.5" /> Save
                 </Button>
-                <Button variant="outline" size="sm" className="rounded-full flex items-center gap-1.5">
-                  <Share2 className="h-3.5 w-3.5" /> Share
-                </Button>
+                <ShareButtons title={event.title} />
               </div>
 
-              {event.ticket_types.length > 0 ? (
+              {soldOut ? (
+                <div className="border rounded-xl p-5 text-center space-y-2">
+                  <Badge variant="destructive" className="text-sm px-4 py-1">Sold Out</Badge>
+                  <p className="text-muted-foreground text-sm">All tickets for this event have been sold.</p>
+                </div>
+              ) : event.ticket_types.length > 0 ? (
                 <div className="border rounded-xl p-5 space-y-4">
                   <h3 className="font-bold">Select tickets</h3>
                   {event.ticket_types.map((ticket) => (
-                    <TicketSelector
-                      key={ticket.id}
-                      ticket={ticket}
-                      eventId={event.id}
-                      eventTitle={event.title}
-                    />
+                    <TicketSelector key={ticket.id} ticket={ticket} eventId={event.id} eventTitle={event.title} />
                   ))}
                 </div>
               ) : (
@@ -181,7 +166,9 @@ const EventDetail = () => {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground p-3 rounded-lg bg-surface">
                 <Users className="h-4 w-4" />
-                <span>{spotsLeft} spots remaining out of {event.capacity}</span>
+                <span>
+                  {soldOut ? "This event is sold out" : `${spotsLeft} spots remaining out of ${event.capacity}`}
+                </span>
               </div>
             </div>
           </div>
