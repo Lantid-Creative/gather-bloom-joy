@@ -102,6 +102,30 @@ const Checkout = () => {
     }
   };
 
+  const handleDownloadTickets = async () => {
+    if (!orderId) return;
+    // Fetch order items with event info
+    const { data: oi } = await supabase.from("order_items").select("*").eq("order_id", orderId);
+    if (!oi?.length) return;
+    const evtIds = [...new Set(oi.map((i) => i.event_id))];
+    const { data: evts } = await supabase.from("events").select("id, date, location").in("id", evtIds);
+
+    const tickets = oi.map((item) => {
+      const evt = evts?.find((e) => e.id === item.event_id);
+      return {
+        orderId: orderId,
+        orderItemId: item.id,
+        eventTitle: item.event_title,
+        ticketName: item.ticket_name,
+        quantity: item.quantity,
+        customerName: name,
+        eventDate: evt ? format(new Date(evt.date), "EEE, MMM d, yyyy · h:mm a") : "",
+        eventLocation: evt?.location ?? "",
+      };
+    });
+    await generateTicketPDF(tickets);
+  };
+
   if (confirmed) {
     return (
       <div className="min-h-screen bg-background">
@@ -117,8 +141,11 @@ const Checkout = () => {
           </p>
           {orderId && <p className="text-xs text-muted-foreground">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="hero" size="lg" className="rounded-full" asChild><Link to="/my-tickets">View My Tickets</Link></Button>
-            <Button variant="outline" size="lg" className="rounded-full" asChild><Link to="/">Browse More Events</Link></Button>
+            <Button variant="hero" size="lg" className="rounded-full" onClick={handleDownloadTickets}>
+              <Download className="h-4 w-4 mr-2" /> Download Tickets (PDF)
+            </Button>
+            <Button variant="outline" size="lg" className="rounded-full" asChild><Link to="/my-tickets">View My Tickets</Link></Button>
+            <Button variant="ghost" size="lg" className="rounded-full" asChild><Link to="/">Browse More Events</Link></Button>
           </div>
         </div>
       </div>
