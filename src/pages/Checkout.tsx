@@ -10,6 +10,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import PromoCodeInput from "@/components/PromoCodeInput";
+import { generateTicketPDF } from "@/lib/generate-ticket-pdf";
+import { format } from "date-fns";
 
 const Checkout = () => {
   const { items, removeItem, total, clearCart } = useCartStore();
