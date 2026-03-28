@@ -27,6 +27,7 @@ const App = () => (
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/create-event" element={<CreateEvent />} />
+            <Route path="/my-events" element={<MyEvents />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
