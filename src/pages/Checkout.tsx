@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Trash2, ArrowLeft, CheckCircle2, Download } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Trash2, ArrowLeft, CheckCircle2, Download, CreditCard, Loader2 } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,13 +17,14 @@ const Checkout = () => {
   const { items, removeItem, total, clearCart } = useCartStore();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [name, setName] = useState(user?.user_metadata?.full_name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [confirmed, setConfirmed] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [discount, setDiscount] = useState<{ type: string; value: number } | null>(null);
-  const [purchasedItems, setPurchasedItems] = useState<typeof items>([]);
   const { toast } = useToast();
 
   const subtotal = total();
@@ -33,6 +34,35 @@ const Checkout = () => {
       : Math.min(discount.value, subtotal)
     : 0;
   const finalTotal = Math.max(0, subtotal - discountAmount);
+
+  // Handle Stripe redirect with session_id
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    if (sessionId && !confirmed && !verifying) {
+      setVerifying(true);
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke("verify-payment", {
+            body: { sessionId },
+          });
+          if (error) throw error;
+          if (data?.success) {
+            setOrderId(data.orderId);
+            setConfirmed(true);
+            clearCart();
+            toast({ title: "Payment successful! 🎉" });
+          } else {
+            toast({ title: "Payment verification failed", description: data?.error, variant: "destructive" });
+          }
+        } catch (err: any) {
+          console.error("Verify error:", err);
+          toast({ title: "Payment verification error", description: err.message, variant: "destructive" });
+        } finally {
+          setVerifying(false);
+        }
+      })();
+    }
+  }, [searchParams]);
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,52 +78,65 @@ const Checkout = () => {
 
     setLoading(true);
     try {
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert({ user_id: user.id, customer_name: name, customer_email: email, total: finalTotal })
-        .select()
-        .single();
-      if (orderError) throw orderError;
+      // If total is $0 (free tickets or fully discounted), skip Stripe
+      if (finalTotal === 0) {
+        const { data: order, error: orderError } = await supabase
+          .from("orders")
+          .insert({ user_id: user.id, customer_name: name, customer_email: email, total: 0 })
+          .select()
+          .single();
+        if (orderError) throw orderError;
 
-      const { error: itemsError } = await supabase
-        .from("order_items")
-        .insert(items.map((item) => ({
-          order_id: order.id, event_id: item.eventId, ticket_type_id: item.ticketType.id,
-          event_title: item.eventTitle, ticket_name: item.ticketType.name,
-          ticket_price: item.ticketType.price, quantity: item.quantity,
-        })));
-      if (itemsError) throw itemsError;
+        await supabase.from("order_items").insert(
+          items.map((item) => ({
+            order_id: order.id,
+            event_id: item.eventId,
+            ticket_type_id: item.ticketType.id,
+            event_title: item.eventTitle,
+            ticket_name: item.ticketType.name,
+            ticket_price: item.ticketType.price,
+            quantity: item.quantity,
+          }))
+        );
 
-      // Fetch created order items for PDF
-      const { data: createdItems } = await supabase
-        .from("order_items")
-        .select("*")
-        .eq("order_id", order.id);
-
-      // Fetch event details for dates/locations
-      const eventIds = [...new Set(items.map((i) => i.eventId))];
-      const { data: eventDetails } = await supabase
-        .from("events")
-        .select("id, date, location")
-        .in("id", eventIds);
-
-      setPurchasedItems(items.map(i => ({ ...i })));
-      setOrderId(order.id);
-      setConfirmed(true);
-      clearCart();
-
-      // Create notification for the user
-      if (user) {
         await supabase.from("notifications").insert({
           user_id: user.id,
           title: "Order confirmed! 🎉",
-          message: `Your order #${order.id.slice(0, 8).toUpperCase()} has been confirmed. ${items.length} ticket(s) purchased.`,
+          message: `Your free ticket order #${order.id.slice(0, 8).toUpperCase()} is confirmed.`,
           type: "order",
           link: "/my-tickets",
         });
+
+        setOrderId(order.id);
+        setConfirmed(true);
+        clearCart();
+        toast({ title: "Order confirmed! 🎉" });
+        return;
       }
 
-      toast({ title: "Order confirmed! 🎉" });
+      // Paid checkout → Stripe
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          items: items.map((item) => ({
+            eventId: item.eventId,
+            ticketTypeId: item.ticketType.id,
+            eventTitle: item.eventTitle,
+            ticketName: item.ticketType.name,
+            price: item.ticketType.price,
+            quantity: item.quantity,
+          })),
+          promoDiscount: discount,
+          customerName: name,
+          customerEmail: email,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
     } catch (err: any) {
       console.error("Checkout error:", err);
       toast({ title: "Something went wrong", description: err.message, variant: "destructive" });
@@ -104,11 +147,11 @@ const Checkout = () => {
 
   const handleDownloadTickets = async () => {
     if (!orderId) return;
-    // Fetch order items with event info
     const { data: oi } = await supabase.from("order_items").select("*").eq("order_id", orderId);
     if (!oi?.length) return;
     const evtIds = [...new Set(oi.map((i) => i.event_id))];
     const { data: evts } = await supabase.from("events").select("id, date, location").in("id", evtIds);
+    const { data: ord } = await supabase.from("orders").select("customer_name").eq("id", orderId).single();
 
     const tickets = oi.map((item) => {
       const evt = evts?.find((e) => e.id === item.event_id);
@@ -118,13 +161,27 @@ const Checkout = () => {
         eventTitle: item.event_title,
         ticketName: item.ticket_name,
         quantity: item.quantity,
-        customerName: name,
+        customerName: ord?.customer_name ?? name ?? "Attendee",
         eventDate: evt ? format(new Date(evt.date), "EEE, MMM d, yyyy · h:mm a") : "",
         eventLocation: evt?.location ?? "",
       };
     });
     await generateTicketPDF(tickets);
   };
+
+  // Verifying payment state
+  if (verifying) {
+    return (
+      <div className="min-h-screen bg-background">
+        <EventbriteHeader />
+        <div className="container max-w-lg py-20 text-center space-y-6">
+          <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary" />
+          <h1 className="text-2xl font-bold">Verifying your payment...</h1>
+          <p className="text-muted-foreground">Please wait while we confirm your purchase.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (confirmed) {
     return (
@@ -137,29 +194,35 @@ const Checkout = () => {
           <h1 className="text-3xl font-bold">You're all set!</h1>
           <p className="text-muted-foreground">
             Your tickets have been confirmed. A confirmation will be sent to{" "}
-            <span className="font-medium text-foreground">{email}</span>.
+            <span className="font-medium text-foreground">{email || user?.email}</span>.
           </p>
           {orderId && <p className="text-xs text-muted-foreground">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button variant="hero" size="lg" className="rounded-full" onClick={handleDownloadTickets}>
               <Download className="h-4 w-4 mr-2" /> Download Tickets (PDF)
             </Button>
-            <Button variant="outline" size="lg" className="rounded-full" asChild><Link to="/my-tickets">View My Tickets</Link></Button>
-            <Button variant="ghost" size="lg" className="rounded-full" asChild><Link to="/">Browse More Events</Link></Button>
+            <Button variant="outline" size="lg" className="rounded-full" asChild>
+              <Link to="/my-tickets">View My Tickets</Link>
+            </Button>
+            <Button variant="ghost" size="lg" className="rounded-full" asChild>
+              <Link to="/">Browse More Events</Link>
+            </Button>
           </div>
         </div>
       </div>
     );
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && !searchParams.get("session_id")) {
     return (
       <div className="min-h-screen bg-background">
         <EventbriteHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Your cart is empty</h1>
           <p className="text-muted-foreground">Find an event and add tickets to get started.</p>
-          <Button variant="hero" asChild className="rounded-full"><Link to="/">Browse Events</Link></Button>
+          <Button variant="hero" asChild className="rounded-full">
+            <Link to="/">Browse Events</Link>
+          </Button>
         </div>
       </div>
     );
@@ -172,13 +235,18 @@ const Checkout = () => {
       <EventbriteHeader />
       <div className="container max-w-2xl py-10">
         <Button variant="ghost" size="sm" asChild className="-ml-2 mb-6">
-          <Link to="/"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
+          <Link to="/">
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          </Link>
         </Button>
         <h1 className="text-3xl font-bold mb-8">Checkout</h1>
 
         {!user && (
           <div className="mb-6 p-4 rounded-xl border border-primary/30 bg-primary/5 text-sm">
-            <Link to="/auth" className="text-primary font-semibold hover:underline">Sign in</Link> to save your tickets to your account.
+            <Link to="/auth" className="text-primary font-semibold hover:underline">
+              Sign in
+            </Link>{" "}
+            to save your tickets to your account.
           </div>
         )}
 
@@ -191,10 +259,17 @@ const Checkout = () => {
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="font-bold">${item.ticketType.price * item.quantity}</p>
-                  <p className="text-xs text-muted-foreground">{item.quantity} × ${item.ticketType.price}</p>
+                  <p className="font-bold">${(item.ticketType.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {item.quantity} × ${item.ticketType.price}
+                  </p>
                 </div>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeItem(item.ticketType.id)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  onClick={() => removeItem(item.ticketType.id)}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
@@ -214,7 +289,9 @@ const Checkout = () => {
           </div>
           {discount && (
             <div className="flex justify-between text-sm text-success">
-              <span>Discount ({discount.type === "percentage" ? `${discount.value}%` : `$${discount.value}`})</span>
+              <span>
+                Discount ({discount.type === "percentage" ? `${discount.value}%` : `$${discount.value}`})
+              </span>
               <span>-${discountAmount.toFixed(2)}</span>
             </div>
           )}
@@ -232,11 +309,33 @@ const Checkout = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" required />
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="john@example.com"
+              required
+            />
           </div>
           <Button variant="hero" size="lg" type="submit" className="w-full rounded-full mt-4" disabled={loading}>
-            {loading ? "Processing..." : `Complete Purchase — $${finalTotal.toFixed(2)}`}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting to payment...
+              </>
+            ) : finalTotal === 0 ? (
+              "Complete Free Order"
+            ) : (
+              <>
+                <CreditCard className="h-4 w-4 mr-2" /> Pay ${finalTotal.toFixed(2)} with Stripe
+              </>
+            )}
           </Button>
+          {finalTotal > 0 && (
+            <p className="text-xs text-center text-muted-foreground">
+              You'll be securely redirected to Stripe to complete your payment.
+            </p>
+          )}
         </form>
       </div>
     </div>
