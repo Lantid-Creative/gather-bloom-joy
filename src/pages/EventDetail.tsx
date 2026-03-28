@@ -21,6 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 const EventDetail = () => {
   const { id } = useParams();
   const { data: dbEvent, isLoading } = useEvent(id);
+  const { user } = useAuth();
+  const { toast } = useToast();
   const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
 
   // OG meta tags & document title
