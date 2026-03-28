@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { useState, useRef } from "react";
+import { Plus, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface TicketDraft {
   id?: string;
@@ -42,6 +44,10 @@ interface EventFormProps {
 }
 
 const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormProps) => {
+  const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initial?.imageUrl || null);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
@@ -56,6 +62,39 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [isOnline, setIsOnline] = useState(initial?.isOnline ?? false);
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [tickets, setTickets] = useState<TicketDraft[]>(initial?.tickets ?? [{ ...emptyTicket }]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert("Image must be under 5MB");
+      return;
+    }
+
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/${Date.now()}.${ext}`;
+
+    const { error } = await supabase.storage.from("event-images").upload(path, file);
+    if (error) {
+      console.error("Upload error:", error);
+      setUploading(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage.from("event-images").getPublicUrl(path);
+    setImageUrl(urlData.publicUrl);
+    setPreviewUrl(urlData.publicUrl);
+    setUploading(false);
+  };
+
+  const removeImage = () => {
+    setImageUrl("");
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const addTicket = () => setTickets([...tickets, { ...emptyTicket }]);
   const removeTicket = (i: number) => setTickets(tickets.filter((_, idx) => idx !== i));
@@ -141,8 +180,58 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
           <Input id="organizer" value={organizer} onChange={(e) => setOrganizer(e.target.value)} placeholder="Your organization name" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="imageUrl">Event Image URL</Label>
-          <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://example.com/image.jpg" />
+          <Label>Event Cover Image</Label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+          {previewUrl ? (
+            <div className="relative rounded-xl overflow-hidden border border-border">
+              <img src={previewUrl} alt="Event cover" className="w-full h-48 object-cover" />
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                onClick={removeImage}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="w-full h-40 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+            >
+              {uploading ? (
+                <span className="text-sm">Uploading...</span>
+              ) : (
+                <>
+                  <Upload className="h-8 w-8" />
+                  <span className="text-sm font-medium">Click to upload cover image</span>
+                  <span className="text-xs">JPG, PNG, WebP · Max 5MB</span>
+                </>
+              )}
+            </button>
+          )}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <ImageIcon className="h-3 w-3" />
+            <span>Or paste a URL:</span>
+            <Input
+              value={imageUrl}
+              onChange={(e) => {
+                setImageUrl(e.target.value);
+                setPreviewUrl(e.target.value || null);
+              }}
+              placeholder="https://example.com/image.jpg"
+              className="h-7 text-xs flex-1"
+            />
+          </div>
         </div>
       </div>
 
