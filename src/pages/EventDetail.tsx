@@ -20,10 +20,19 @@ import { useToast } from "@/hooks/use-toast";
 
 const EventDetail = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const { data: dbEvent, isLoading } = useEvent(id);
   const { user } = useAuth();
   const { toast } = useToast();
   const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
+
+  // Track referral link click
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref && id) {
+      supabase.rpc("track_link_click", { p_event_id: id, p_code: ref }).then(() => {});
+    }
+  }, [id, searchParams]);
 
   // OG meta tags & document title
   useEffect(() => {
