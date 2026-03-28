@@ -74,6 +74,94 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          event_id: string
+          event_title: string
+          id: string
+          order_id: string
+          quantity: number
+          ticket_name: string
+          ticket_price: number
+          ticket_type_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          event_title: string
+          id?: string
+          order_id: string
+          quantity: number
+          ticket_name: string
+          ticket_price: number
+          ticket_type_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          event_title?: string
+          id?: string
+          order_id?: string
+          quantity?: number
+          ticket_name?: string
+          ticket_price?: number
+          ticket_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_ticket_type_id_fkey"
+            columns: ["ticket_type_id"]
+            isOneToOne: false
+            referencedRelation: "ticket_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          id: string
+          status: string
+          total: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          id?: string
+          status?: string
+          total?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          status?: string
+          total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
