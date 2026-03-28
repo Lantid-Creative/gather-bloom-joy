@@ -20,11 +20,11 @@ const Auth = () => {
       <div className="container flex items-center justify-center py-20">
         <div className="w-full max-w-sm space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-2xl font-bold">{isLogin ? "Log in" : "Sign up"}</h1>
+            <h1 className="text-2xl font-bold">{isLogin ? "Welcome back" : "Join Afritickets"}</h1>
             <p className="text-sm text-muted-foreground">
               {isLogin
                 ? "Sign in to manage your tickets and events"
-                : "Join to discover and book events"}
+                : "Discover and book the best events across Africa"}
             </p>
           </div>
 
