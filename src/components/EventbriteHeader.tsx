@@ -1,9 +1,18 @@
-import { Link } from "react-router-dom";
-import { Search, MapPin, ChevronDown, Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, MapPin, ChevronDown, Menu, X, User, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const EventbriteHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b">
@@ -43,19 +52,30 @@ const EventbriteHeader = () => {
           <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
             Find Events
           </Link>
-          <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
+          <Link to="/create-event" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
             Create Events
           </Link>
           <button className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1">
             Help Center <ChevronDown className="h-3.5 w-3.5" />
           </button>
-          <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-            Find my tickets
-          </Link>
           <div className="w-px h-6 bg-border mx-1" />
-          <Link to="/auth" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-            Sign in
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <User className="h-4 w-4 text-primary" />
+              </div>
+              <button
+                onClick={handleSignOut}
+                className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1"
+              >
+                <LogOut className="h-3.5 w-3.5" /> Sign out
+              </button>
+            </div>
+          ) : (
+            <Link to="/auth" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
+              Sign in
+            </Link>
+          )}
         </nav>
 
         {/* Mobile Menu Toggle */}
@@ -88,11 +108,14 @@ const EventbriteHeader = () => {
       {mobileOpen && (
         <div className="lg:hidden border-t bg-background p-4 space-y-1">
           <Link to="/" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Find Events</Link>
-          <Link to="/" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Create Events</Link>
+          <Link to="/create-event" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Create Events</Link>
           <button className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Help Center</button>
-          <Link to="/" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Find my tickets</Link>
           <div className="border-t my-2" />
-          <Link to="/auth" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Sign in</Link>
+          {user ? (
+            <button onClick={() => { handleSignOut(); setMobileOpen(false); }} className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Sign out</button>
+          ) : (
+            <Link to="/auth" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Sign in</Link>
+          )}
         </div>
       )}
     </header>
