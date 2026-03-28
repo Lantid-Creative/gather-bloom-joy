@@ -63,6 +63,39 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [tickets, setTickets] = useState<TicketDraft[]>(initial?.tickets ?? [{ ...emptyTicket }]);
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert("Image must be under 5MB");
+      return;
+    }
+
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/${Date.now()}.${ext}`;
+
+    const { error } = await supabase.storage.from("event-images").upload(path, file);
+    if (error) {
+      console.error("Upload error:", error);
+      setUploading(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage.from("event-images").getPublicUrl(path);
+    setImageUrl(urlData.publicUrl);
+    setPreviewUrl(urlData.publicUrl);
+    setUploading(false);
+  };
+
+  const removeImage = () => {
+    setImageUrl("");
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const addTicket = () => setTickets([...tickets, { ...emptyTicket }]);
   const removeTicket = (i: number) => setTickets(tickets.filter((_, idx) => idx !== i));
   const updateTicket = (i: number, field: keyof TicketDraft, value: string) => {
