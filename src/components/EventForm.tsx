@@ -44,6 +44,10 @@ interface EventFormProps {
 }
 
 const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormProps) => {
+  const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initial?.imageUrl || null);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
