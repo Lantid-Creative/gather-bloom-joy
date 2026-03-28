@@ -91,18 +91,22 @@ const Index = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <h2 className="text-2xl font-bold">
-              {category ? `${category} events` : "Browsing events in"}
+              {searchQuery
+                ? `Results for "${searchQuery}"`
+                : category
+                  ? `${category} events`
+                  : "Browsing events in"}
             </h2>
-            {!category && (
+            {!category && !searchQuery && (
               <button className="flex items-center gap-1 text-2xl font-bold text-eb-blue">
                 <ChevronDown className="h-5 w-5" />
                 Your City
               </button>
             )}
           </div>
-          {category && (
+          {(category || searchQuery) && (
             <button
-              onClick={() => setCategory("")}
+              onClick={() => { setCategory(""); clearSearch(); }}
               className="text-sm font-medium text-primary hover:underline"
             >
               Clear filter ✕
@@ -110,7 +114,7 @@ const Index = () => {
           )}
         </div>
 
-        {category && (
+        {(category || searchQuery) && (
           <p className="text-sm text-muted-foreground mb-4">
             Showing {filtered.length} event{filtered.length !== 1 ? "s" : ""}
           </p>
