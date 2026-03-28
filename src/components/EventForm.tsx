@@ -67,6 +67,9 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [isOnline, setIsOnline] = useState(initial?.isOnline ?? false);
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [tickets, setTickets] = useState<TicketDraft[]>(initial?.tickets ?? [{ ...emptyTicket }]);
+  const [status, setStatus] = useState(initial?.status ?? "published");
+  const [recurrenceType, setRecurrenceType] = useState(initial?.recurrenceType ?? "none");
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState(initial?.recurrenceEndDate ?? "");
 
   const uploadFile = async (file: File) => {
     if (!user) return;
