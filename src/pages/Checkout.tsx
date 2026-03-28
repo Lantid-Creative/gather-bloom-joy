@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PromoCodeInput from "@/components/PromoCodeInput";
 
 const Checkout = () => {
   const { items, removeItem, total, clearCart } = useCartStore();
@@ -19,7 +20,16 @@ const Checkout = () => {
   const [confirmed, setConfirmed] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [discount, setDiscount] = useState<{ type: string; value: number } | null>(null);
   const { toast } = useToast();
+
+  const subtotal = total();
+  const discountAmount = discount
+    ? discount.type === "percentage"
+      ? subtotal * (discount.value / 100)
+      : Math.min(discount.value, subtotal)
+    : 0;
+  const finalTotal = Math.max(0, subtotal - discountAmount);
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +37,6 @@ const Checkout = () => {
       toast({ title: "Please fill in all fields", variant: "destructive" });
       return;
     }
-
     if (!user) {
       toast({ title: "Please sign in to complete your purchase", variant: "destructive" });
       navigate("/auth");
@@ -36,35 +45,20 @@ const Checkout = () => {
 
     setLoading(true);
     try {
-      // Create the order
       const { data: order, error: orderError } = await supabase
         .from("orders")
-        .insert({
-          user_id: user.id,
-          customer_name: name,
-          customer_email: email,
-          total: total(),
-        })
+        .insert({ user_id: user.id, customer_name: name, customer_email: email, total: finalTotal })
         .select()
         .single();
-
       if (orderError) throw orderError;
 
-      // Create order items
       const { error: itemsError } = await supabase
         .from("order_items")
-        .insert(
-          items.map((item) => ({
-            order_id: order.id,
-            event_id: item.eventId,
-            ticket_type_id: item.ticketType.id,
-            event_title: item.eventTitle,
-            ticket_name: item.ticketType.name,
-            ticket_price: item.ticketType.price,
-            quantity: item.quantity,
-          }))
-        );
-
+        .insert(items.map((item) => ({
+          order_id: order.id, event_id: item.eventId, ticket_type_id: item.ticketType.id,
+          event_title: item.eventTitle, ticket_name: item.ticketType.name,
+          ticket_price: item.ticketType.price, quantity: item.quantity,
+        })));
       if (itemsError) throw itemsError;
 
       setOrderId(order.id);
@@ -89,19 +83,13 @@ const Checkout = () => {
           </div>
           <h1 className="text-3xl font-bold">You're all set!</h1>
           <p className="text-muted-foreground">
-            Your tickets have been confirmed. A confirmation email has been sent to{" "}
+            Your tickets have been confirmed. A confirmation will be sent to{" "}
             <span className="font-medium text-foreground">{email}</span>.
           </p>
-          {orderId && (
-            <p className="text-xs text-muted-foreground">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
-          )}
+          {orderId && <p className="text-xs text-muted-foreground">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="hero" size="lg" className="rounded-full" asChild>
-              <Link to="/my-tickets">View My Tickets</Link>
-            </Button>
-            <Button variant="outline" size="lg" className="rounded-full" asChild>
-              <Link to="/">Browse More Events</Link>
-            </Button>
+            <Button variant="hero" size="lg" className="rounded-full" asChild><Link to="/my-tickets">View My Tickets</Link></Button>
+            <Button variant="outline" size="lg" className="rounded-full" asChild><Link to="/">Browse More Events</Link></Button>
           </div>
         </div>
       </div>
@@ -115,13 +103,13 @@ const Checkout = () => {
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Your cart is empty</h1>
           <p className="text-muted-foreground">Find an event and add tickets to get started.</p>
-          <Button variant="hero" asChild className="rounded-full">
-            <Link to="/">Browse Events</Link>
-          </Button>
+          <Button variant="hero" asChild className="rounded-full"><Link to="/">Browse Events</Link></Button>
         </div>
       </div>
     );
   }
+
+  const eventIds = [...new Set(items.map((i) => i.eventId))];
 
   return (
     <div className="min-h-screen bg-background">
@@ -130,17 +118,15 @@ const Checkout = () => {
         <Button variant="ghost" size="sm" asChild className="-ml-2 mb-6">
           <Link to="/"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
         </Button>
-
         <h1 className="text-3xl font-bold mb-8">Checkout</h1>
 
         {!user && (
           <div className="mb-6 p-4 rounded-xl border border-primary/30 bg-primary/5 text-sm">
-            <Link to="/auth" className="text-primary font-semibold hover:underline">Sign in</Link>
-            {" "}to save your tickets to your account.
+            <Link to="/auth" className="text-primary font-semibold hover:underline">Sign in</Link> to save your tickets to your account.
           </div>
         )}
 
-        <div className="space-y-3 mb-8">
+        <div className="space-y-3 mb-6">
           {items.map((item) => (
             <div key={item.ticketType.id} className="flex items-center justify-between p-4 rounded-xl border">
               <div className="space-y-1">
@@ -160,9 +146,26 @@ const Checkout = () => {
           ))}
         </div>
 
-        <div className="flex justify-between items-center p-4 rounded-xl bg-surface mb-8">
-          <span className="text-lg font-semibold">Total</span>
-          <span className="text-2xl font-bold text-primary">${total()}</span>
+        {/* Promo Code */}
+        <div className="mb-6">
+          <PromoCodeInput eventIds={eventIds} onDiscount={setDiscount} />
+        </div>
+
+        <div className="p-4 rounded-xl bg-surface mb-8 space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Subtotal</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+          {discount && (
+            <div className="flex justify-between text-sm text-success">
+              <span>Discount ({discount.type === "percentage" ? `${discount.value}%` : `$${discount.value}`})</span>
+              <span>-${discountAmount.toFixed(2)}</span>
+            </div>
+          )}
+          <div className="flex justify-between items-center pt-2 border-t">
+            <span className="text-lg font-semibold">Total</span>
+            <span className="text-2xl font-bold text-primary">${finalTotal.toFixed(2)}</span>
+          </div>
         </div>
 
         <form onSubmit={handleCheckout} className="space-y-4">
@@ -176,7 +179,7 @@ const Checkout = () => {
             <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" required />
           </div>
           <Button variant="hero" size="lg" type="submit" className="w-full rounded-full mt-4" disabled={loading}>
-            {loading ? "Processing..." : `Complete Purchase — $${total()}`}
+            {loading ? "Processing..." : `Complete Purchase — $${finalTotal.toFixed(2)}`}
           </Button>
         </form>
       </div>

@@ -1,21 +1,42 @@
 import { useParams, Link } from "react-router-dom";
-import { Calendar, MapPin, Users, Bookmark, ArrowLeft } from "lucide-react";
+import { Calendar, MapPin, Users, Bookmark } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import TicketSelector from "@/components/TicketSelector";
 import GoogleMap from "@/components/GoogleMap";
 import ShareButtons from "@/components/ShareButtons";
+import WaitlistButton from "@/components/WaitlistButton";
+import FollowButton from "@/components/FollowButton";
+import FavoriteButton from "@/components/FavoriteButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
+import { useEffect } from "react";
 
 const EventDetail = () => {
   const { id } = useParams();
   const { data: dbEvent, isLoading } = useEvent(id);
-
   const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
+
+  // OG meta tags & document title
+  useEffect(() => {
+    if (event) {
+      document.title = `${event.title} | Afritickets`;
+      const setMeta = (property: string, content: string) => {
+        let el = document.querySelector(`meta[property="${property}"]`);
+        if (!el) { el = document.createElement("meta"); el.setAttribute("property", property); document.head.appendChild(el); }
+        el.setAttribute("content", content);
+      };
+      setMeta("og:title", event.title);
+      setMeta("og:description", event.description?.slice(0, 160) ?? "");
+      setMeta("og:image", event.image_url);
+      setMeta("og:url", window.location.href);
+      setMeta("og:type", "website");
+    }
+    return () => { document.title = "Afritickets"; };
+  }, [event]);
 
   if (isLoading) {
     return (
@@ -37,9 +58,7 @@ const EventDetail = () => {
         <EventbriteHeader />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-bold">Event not found</h1>
-          <Button variant="link" asChild className="mt-4">
-            <Link to="/">← Back to events</Link>
-          </Button>
+          <Button variant="link" asChild className="mt-4"><Link to="/">← Back to events</Link></Button>
         </div>
       </div>
     );
@@ -47,35 +66,40 @@ const EventDetail = () => {
 
   const spotsLeft = event.capacity - event.tickets_sold;
   const soldOut = spotsLeft <= 0;
+  // Try to extract user_id from dbEvent for organizer features
+  const organizerId = (dbEvent as any)?.user_id;
 
   return (
     <div className="min-h-screen bg-background">
       <EventbriteHeader />
 
       <div className="container max-w-5xl py-6">
-        <div className="rounded-xl overflow-hidden aspect-[2/1] md:aspect-[5/2]">
+        <div className="relative rounded-xl overflow-hidden aspect-[2/1] md:aspect-[5/2]">
           <img src={event.image_url} alt={event.title} className="h-full w-full object-cover" width={1920} height={960} />
+          <FavoriteButton eventId={event.id} />
         </div>
       </div>
 
       <div className="container max-w-5xl pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2 space-y-8">
-            <p className="text-sm font-semibold text-primary">
-              {format(new Date(event.date), "EEEE, MMMM d, yyyy")}
-            </p>
+            <p className="text-sm font-semibold text-primary">{format(new Date(event.date), "EEEE, MMMM d, yyyy")}</p>
             <h1 className="text-3xl md:text-4xl font-bold leading-tight">{event.title}</h1>
 
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-surface">
+            <Link to={organizerId ? `/organizer/${organizerId}` : "#"} className="flex items-center gap-3 p-4 rounded-lg bg-surface hover:bg-accent/50 transition-colors">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <span className="text-sm font-bold text-primary">{event.organizer[0]}</span>
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-sm font-semibold">By {event.organizer}</p>
                 <p className="text-xs text-muted-foreground">Organizer</p>
               </div>
-              <Button variant="outline" size="sm" className="ml-auto rounded-full text-xs">Follow</Button>
-            </div>
+              {organizerId && (
+                <div onClick={(e) => e.preventDefault()}>
+                  <FollowButton organizerId={organizerId} organizerName={event.organizer} />
+                </div>
+              )}
+            </Link>
 
             <div className="space-y-4">
               <h2 className="text-xl font-bold">When and where</h2>
@@ -84,9 +108,7 @@ const EventDetail = () => {
                   <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-sm">Date and time</p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(new Date(event.date), "EEE, MMM d, yyyy · h:mm a")}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{format(new Date(event.date), "EEE, MMM d, yyyy · h:mm a")}</p>
                   </div>
                 </div>
                 <div className="flex gap-3 p-4 rounded-lg border">
@@ -98,9 +120,7 @@ const EventDetail = () => {
                 </div>
               </div>
               {!event.is_online && (
-                <div className="h-48 rounded-xl overflow-hidden border">
-                  <GoogleMap location={event.location} />
-                </div>
+                <div className="h-48 rounded-xl overflow-hidden border"><GoogleMap location={event.location} /></div>
               )}
             </div>
 
@@ -112,9 +132,7 @@ const EventDetail = () => {
             <div className="space-y-3">
               <h3 className="text-sm font-bold">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {event.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="rounded-full">{tag}</Badge>
-                ))}
+                {event.tags.map((tag) => (<Badge key={tag} variant="secondary" className="rounded-full">{tag}</Badge>))}
               </div>
             </div>
 
@@ -147,10 +165,13 @@ const EventDetail = () => {
               </div>
 
               {soldOut ? (
-                <div className="border rounded-xl p-5 text-center space-y-2">
-                  <Badge variant="destructive" className="text-sm px-4 py-1">Sold Out</Badge>
-                  <p className="text-muted-foreground text-sm">All tickets for this event have been sold.</p>
-                </div>
+                <>
+                  <div className="border rounded-xl p-5 text-center space-y-2">
+                    <Badge variant="destructive" className="text-sm px-4 py-1">Sold Out</Badge>
+                    <p className="text-muted-foreground text-sm">All tickets for this event have been sold.</p>
+                  </div>
+                  <WaitlistButton eventId={event.id} />
+                </>
               ) : event.ticket_types.length > 0 ? (
                 <div className="border rounded-xl p-5 space-y-4">
                   <h3 className="font-bold">Select tickets</h3>
@@ -159,22 +180,17 @@ const EventDetail = () => {
                   ))}
                 </div>
               ) : (
-                <div className="border rounded-xl p-5 text-center text-muted-foreground">
-                  <p>No tickets available yet</p>
-                </div>
+                <div className="border rounded-xl p-5 text-center text-muted-foreground"><p>No tickets available yet</p></div>
               )}
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground p-3 rounded-lg bg-surface">
                 <Users className="h-4 w-4" />
-                <span>
-                  {soldOut ? "This event is sold out" : `${spotsLeft} spots remaining out of ${event.capacity}`}
-                </span>
+                <span>{soldOut ? "This event is sold out" : `${spotsLeft} spots remaining out of ${event.capacity}`}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <EventbriteFooter />
     </div>
   );

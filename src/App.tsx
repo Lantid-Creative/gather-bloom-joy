@@ -24,6 +24,9 @@ import Contact from "./pages/Contact.tsx";
 import Terms from "./pages/Terms.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import Careers from "./pages/Careers.tsx";
+import OrganizerProfile from "./pages/OrganizerProfile.tsx";
+import CheckIn from "./pages/CheckIn.tsx";
+import SavedEvents from "./pages/SavedEvents.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -47,6 +50,9 @@ const App = () => (
             <Route path="/my-tickets" element={<ProtectedRoute><MyTickets /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/saved" element={<ProtectedRoute><SavedEvents /></ProtectedRoute>} />
+            <Route path="/check-in/:eventId" element={<ProtectedRoute><CheckIn /></ProtectedRoute>} />
+            <Route path="/organizer/:id" element={<OrganizerProfile />} />
             <Route path="/about" element={<About />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/help" element={<HelpCenter />} />
