@@ -6,19 +6,28 @@ import CategoryIcons from "@/components/CategoryIcons";
 import BrowsingTabs from "@/components/BrowsingTabs";
 import EventbriteCard from "@/components/EventbriteCard";
 import DestinationCards from "@/components/DestinationCards";
+import { useEvents } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
   const [category, setCategory] = useState("");
   const [tab, setTab] = useState("All");
+  const { data: dbEvents, isLoading } = useEvents();
+
+  // Merge DB events with mock events as fallback
+  const allEvents = useMemo(() => {
+    const db = dbEvents ?? [];
+    // If DB has events, show them first, then mock events
+    return db.length > 0 ? [...db, ...mockEvents] : mockEvents;
+  }, [dbEvents]);
 
   const filtered = useMemo(() => {
-    return mockEvents.filter((e) => {
+    return allEvents.filter((e) => {
       if (category && e.category !== category) return false;
       return true;
     });
-  }, [category]);
+  }, [category, allEvents]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,9 +87,19 @@ const Index = () => {
 
         {/* Event Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-          {filtered.map((event) => (
-            <EventbriteCard key={event.id} event={event} />
-          ))}
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="animate-pulse space-y-3">
+                <div className="aspect-[16/9] rounded-lg bg-muted" />
+                <div className="h-4 bg-muted rounded w-3/4" />
+                <div className="h-3 bg-muted rounded w-1/2" />
+              </div>
+            ))
+          ) : (
+            filtered.map((event) => (
+              <EventbriteCard key={event.id} event={event} />
+            ))
+          )}
         </div>
 
         {/* Load more */}

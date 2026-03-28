@@ -1,16 +1,34 @@
 import { useParams, Link } from "react-router-dom";
-import { Calendar, MapPin, Users, Clock, ArrowLeft, Share2, Bookmark } from "lucide-react";
+import { Calendar, MapPin, Users, Share2, Bookmark, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import TicketSelector from "@/components/TicketSelector";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useEvent } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
 
 const EventDetail = () => {
   const { id } = useParams();
-  const event = mockEvents.find((e) => e.id === id);
+  const { data: dbEvent, isLoading } = useEvent(id);
+
+  // Fallback to mock data
+  const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <EventbriteHeader />
+        <div className="container max-w-5xl py-20 text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="aspect-[5/2] rounded-xl bg-muted" />
+            <div className="h-8 bg-muted rounded w-1/2 mx-auto" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -49,15 +67,11 @@ const EventDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Date */}
             <p className="text-sm font-semibold text-primary">
               {format(new Date(event.date), "EEEE, MMMM d, yyyy")}
             </p>
-
-            {/* Title */}
             <h1 className="text-3xl md:text-4xl font-bold leading-tight">{event.title}</h1>
 
-            {/* Organizer */}
             <div className="flex items-center gap-3 p-4 rounded-lg bg-surface">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <span className="text-sm font-bold text-primary">{event.organizer[0]}</span>
@@ -71,7 +85,6 @@ const EventDetail = () => {
               </Button>
             </div>
 
-            {/* When and Where */}
             <div className="space-y-4">
               <h2 className="text-xl font-bold">When and where</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -94,13 +107,11 @@ const EventDetail = () => {
               </div>
             </div>
 
-            {/* About */}
             <div className="space-y-3">
               <h2 className="text-xl font-bold">About this event</h2>
               <p className="text-muted-foreground leading-relaxed">{event.description}</p>
             </div>
 
-            {/* Tags */}
             <div className="space-y-3">
               <h3 className="text-sm font-bold">Tags</h3>
               <div className="flex flex-wrap gap-2">
@@ -110,8 +121,7 @@ const EventDetail = () => {
               </div>
             </div>
 
-            {/* Schedule */}
-            {event.schedule && (
+            {event.schedule && event.schedule.length > 0 && (
               <div className="space-y-4">
                 <h2 className="text-xl font-bold">Schedule</h2>
                 <div className="space-y-0">
@@ -136,7 +146,6 @@ const EventDetail = () => {
           {/* Ticket Sidebar */}
           <div>
             <div className="sticky top-20 space-y-4">
-              {/* Action buttons */}
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="rounded-full flex items-center gap-1.5">
                   <Bookmark className="h-3.5 w-3.5" /> Save
@@ -146,19 +155,24 @@ const EventDetail = () => {
                 </Button>
               </div>
 
-              <div className="border rounded-xl p-5 space-y-4">
-                <h3 className="font-bold">Select tickets</h3>
-                {event.ticket_types.map((ticket) => (
-                  <TicketSelector
-                    key={ticket.id}
-                    ticket={ticket}
-                    eventId={event.id}
-                    eventTitle={event.title}
-                  />
-                ))}
-              </div>
+              {event.ticket_types.length > 0 ? (
+                <div className="border rounded-xl p-5 space-y-4">
+                  <h3 className="font-bold">Select tickets</h3>
+                  {event.ticket_types.map((ticket) => (
+                    <TicketSelector
+                      key={ticket.id}
+                      ticket={ticket}
+                      eventId={event.id}
+                      eventTitle={event.title}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="border rounded-xl p-5 text-center text-muted-foreground">
+                  <p>No tickets available yet</p>
+                </div>
+              )}
 
-              {/* Capacity */}
               <div className="flex items-center gap-2 text-sm text-muted-foreground p-3 rounded-lg bg-surface">
                 <Users className="h-4 w-4" />
                 <span>{spotsLeft} spots remaining out of {event.capacity}</span>
