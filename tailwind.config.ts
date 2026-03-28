@@ -55,6 +55,10 @@ export default {
           foreground: "hsl(var(--success-foreground))",
         },
         surface: "hsl(var(--surface))",
+        "eb-blue": {
+          DEFAULT: "hsl(var(--eb-blue))",
+          foreground: "hsl(var(--eb-blue-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
