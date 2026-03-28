@@ -1,9 +1,11 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Search, MapPin, ChevronDown, Menu, X, User, LogOut, ShoppingCart } from "lucide-react";
+import { Search, MapPin, Menu, X, User, LogOut, ShoppingCart, Heart } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCartStore } from "@/lib/cart-store";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
+import NotificationBell from "@/components/NotificationBell";
 
 const EventbriteHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -33,7 +35,6 @@ const EventbriteHeader = () => {
   return (
     <header className="sticky top-0 z-50 bg-background border-b">
       <div className="container flex h-14 items-center gap-4">
-        {/* Logo */}
         <Link to="/" className="shrink-0">
           <span className="text-xl font-bold text-primary tracking-tight">afritickets</span>
         </Link>
@@ -43,22 +44,11 @@ const EventbriteHeader = () => {
           <div className="flex items-center flex-1 rounded-full border bg-background overflow-hidden h-10">
             <div className="flex items-center flex-1 px-3 gap-2 border-r">
               <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-              <input
-                type="text"
-                placeholder="Search events"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-              />
+              <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleKeyDown} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
             </div>
             <div className="flex items-center flex-1 px-3 gap-2">
               <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-              <input
-                type="text"
-                placeholder="Your City"
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-              />
+              <input type="text" placeholder="Your City" className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
             </div>
             <button onClick={handleSearch} className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
               <Search className="h-4 w-4" />
@@ -68,63 +58,48 @@ const EventbriteHeader = () => {
 
         {/* Nav Links - Desktop */}
         <nav className="hidden lg:flex items-center gap-1 ml-auto">
-          <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-            Find Events
-          </Link>
-          <Link to="/create-event" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-            Create Events
-          </Link>
-          <Link to="/help" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-            Help Center
-          </Link>
+          <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Find Events</Link>
+          <Link to="/create-event" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Create Events</Link>
+          <Link to="/help" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Help Center</Link>
 
-          {/* Cart */}
+          <ThemeToggle />
+
           <Link to="/checkout" className="relative p-2 rounded-md hover:bg-accent transition-colors">
             <ShoppingCart className="h-4 w-4" />
             {cartCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
-                {cartCount}
-              </span>
+              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">{cartCount}</span>
             )}
           </Link>
+
+          {user && <NotificationBell />}
 
           <div className="w-px h-6 bg-border mx-1" />
           {user ? (
             <div className="flex items-center gap-1">
-              <Link to="/my-events" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-                My Events
-              </Link>
-              <Link to="/my-tickets" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-                My Tickets
-              </Link>
-              <Link to="/dashboard" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-                Dashboard
-              </Link>
+              <Link to="/saved" className="p-2 rounded-md hover:bg-accent transition-colors"><Heart className="h-4 w-4" /></Link>
+              <Link to="/my-events" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Events</Link>
+              <Link to="/my-tickets" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Tickets</Link>
+              <Link to="/dashboard" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Dashboard</Link>
               <Link to="/profile" className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all">
                 <User className="h-4 w-4 text-primary" />
               </Link>
-              <button
-                onClick={handleSignOut}
-                className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1"
-              >
+              <button onClick={handleSignOut} className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1">
                 <LogOut className="h-3.5 w-3.5" /> Sign out
               </button>
             </div>
           ) : (
-            <Link to="/auth" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
-              Sign in
-            </Link>
+            <Link to="/auth" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Sign in</Link>
           )}
         </nav>
 
-        {/* Cart + Mobile Menu Toggle */}
+        {/* Mobile */}
         <div className="lg:hidden ml-auto flex items-center gap-2">
+          <ThemeToggle />
+          {user && <NotificationBell />}
           <Link to="/checkout" className="relative p-2">
             <ShoppingCart className="h-5 w-5" />
             {cartCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
-                {cartCount}
-              </span>
+              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">{cartCount}</span>
             )}
           </Link>
           <button className="p-2" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -138,14 +113,7 @@ const EventbriteHeader = () => {
         <div className="flex items-center rounded-full border bg-background overflow-hidden h-10">
           <div className="flex items-center flex-1 px-3 gap-2">
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-            <input
-              type="text"
-              placeholder="Search events"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-            />
+            <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleKeyDown} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
           </div>
           <button onClick={handleSearch} className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
             <Search className="h-3.5 w-3.5" />
@@ -162,6 +130,7 @@ const EventbriteHeader = () => {
           <div className="border-t my-2" />
           {user ? (
             <>
+              <Link to="/saved" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Saved Events</Link>
               <Link to="/my-events" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Events</Link>
               <Link to="/my-tickets" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Tickets</Link>
               <Link to="/dashboard" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Dashboard</Link>
