@@ -20,7 +20,10 @@ const Index = () => {
 
   const allEvents = useMemo(() => {
     const db = dbEvents ?? [];
-    return db.length > 0 ? [...db, ...mockEvents] : mockEvents;
+    // Merge DB events with mock events, DB takes priority (no duplicates by title)
+    const dbTitles = new Set(db.map((e) => e.title.toLowerCase()));
+    const uniqueMocks = mockEvents.filter((m) => !dbTitles.has(m.title.toLowerCase()));
+    return [...db, ...uniqueMocks];
   }, [dbEvents]);
 
   const filtered = useMemo(() => {
