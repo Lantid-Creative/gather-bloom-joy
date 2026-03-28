@@ -13,6 +13,7 @@ import MyEvents from "./pages/MyEvents.tsx";
 import EditEvent from "./pages/EditEvent.tsx";
 import MyTickets from "./pages/MyTickets.tsx";
 import Profile from "./pages/Profile.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/edit-event/:id" element={<EditEvent />} />
             <Route path="/my-tickets" element={<MyTickets />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
