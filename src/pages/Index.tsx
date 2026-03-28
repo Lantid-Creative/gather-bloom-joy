@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { ChevronDown } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { ChevronDown, X } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -11,23 +12,35 @@ import { mockEvents } from "@/lib/mock-data";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") ?? "";
   const [category, setCategory] = useState("");
   const [tab, setTab] = useState("All");
   const { data: dbEvents, isLoading } = useEvents();
 
-  // Merge DB events with mock events as fallback
   const allEvents = useMemo(() => {
     const db = dbEvents ?? [];
-    // If DB has events, show them first, then mock events
     return db.length > 0 ? [...db, ...mockEvents] : mockEvents;
   }, [dbEvents]);
 
   const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
     return allEvents.filter((e) => {
       if (category && e.category !== category) return false;
+      if (q) {
+        const matchTitle = e.title.toLowerCase().includes(q);
+        const matchLocation = e.location.toLowerCase().includes(q);
+        const matchTags = e.tags.some((t) => t.toLowerCase().includes(q));
+        const matchOrganizer = e.organizer.toLowerCase().includes(q);
+        if (!matchTitle && !matchLocation && !matchTags && !matchOrganizer) return false;
+      }
       return true;
     });
-  }, [category, allEvents]);
+  }, [category, allEvents, searchQuery]);
+
+  const clearSearch = () => {
+    setSearchParams({});
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,18 +91,22 @@ const Index = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <h2 className="text-2xl font-bold">
-              {category ? `${category} events` : "Browsing events in"}
+              {searchQuery
+                ? `Results for "${searchQuery}"`
+                : category
+                  ? `${category} events`
+                  : "Browsing events in"}
             </h2>
-            {!category && (
+            {!category && !searchQuery && (
               <button className="flex items-center gap-1 text-2xl font-bold text-eb-blue">
                 <ChevronDown className="h-5 w-5" />
                 Your City
               </button>
             )}
           </div>
-          {category && (
+          {(category || searchQuery) && (
             <button
-              onClick={() => setCategory("")}
+              onClick={() => { setCategory(""); clearSearch(); }}
               className="text-sm font-medium text-primary hover:underline"
             >
               Clear filter ✕
@@ -97,7 +114,7 @@ const Index = () => {
           )}
         </div>
 
-        {category && (
+        {(category || searchQuery) && (
           <p className="text-sm text-muted-foreground mb-4">
             Showing {filtered.length} event{filtered.length !== 1 ? "s" : ""}
           </p>
@@ -119,8 +136,10 @@ const Index = () => {
             <div className="col-span-full text-center py-12 space-y-3">
               <p className="text-lg font-semibold">No events found</p>
               <p className="text-sm text-muted-foreground">
-                No {category} events right now.{" "}
-                <button onClick={() => setCategory("")} className="text-primary hover:underline">Browse all events</button>
+                {searchQuery
+                  ? `No results for "${searchQuery}".`
+                  : `No ${category} events right now.`}{" "}
+                <button onClick={() => { setCategory(""); clearSearch(); }} className="text-primary hover:underline">Browse all events</button>
               </p>
             </div>
           ) : (

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Search, MapPin, ChevronDown, Menu, X, User, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,10 +8,24 @@ const EventbriteHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [searchText, setSearchText] = useState(searchParams.get("q") ?? "");
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
+  };
+
+  const handleSearch = () => {
+    if (searchText.trim()) {
+      navigate(`/?q=${encodeURIComponent(searchText.trim())}`);
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSearch();
   };
 
   return (
@@ -30,6 +44,9 @@ const EventbriteHeader = () => {
               <input
                 type="text"
                 placeholder="Search events"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
@@ -41,7 +58,7 @@ const EventbriteHeader = () => {
                 className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
-            <button className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
+            <button onClick={handleSearch} className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
               <Search className="h-4 w-4" />
             </button>
           </div>
@@ -98,10 +115,13 @@ const EventbriteHeader = () => {
             <input
               type="text"
               placeholder="Search events"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
           </div>
-          <button className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
+          <button onClick={handleSearch} className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
             <Search className="h-3.5 w-3.5" />
           </button>
         </div>
