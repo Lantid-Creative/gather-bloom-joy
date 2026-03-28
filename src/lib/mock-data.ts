@@ -7,7 +7,7 @@ import eventConcert from "@/assets/event-concert.jpg";
 import eventComedy from "@/assets/event-comedy.jpg";
 import eventFashion from "@/assets/event-fashion.jpg";
 import eventTechMeetup from "@/assets/event-techmeetup.jpg";
-import eventFestival from "@/assets/event-concert.jpg"; // fallback until festival image ready
+import eventFestival from "@/assets/event-festival.jpg";
 import eventDance from "@/assets/event-dance.jpg";
 import eventBusiness from "@/assets/event-business.jpg";
 import eventPoetry from "@/assets/event-poetry.jpg";
