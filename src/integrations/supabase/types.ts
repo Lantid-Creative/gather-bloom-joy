@@ -219,6 +219,9 @@ export type Database = {
           is_online: boolean
           location: string
           organizer: string
+          parent_event_id: string | null
+          recurrence_end_date: string | null
+          recurrence_type: string
           status: string
           tags: string[]
           tickets_sold: number
@@ -240,6 +243,9 @@ export type Database = {
           is_online?: boolean
           location?: string
           organizer?: string
+          parent_event_id?: string | null
+          recurrence_end_date?: string | null
+          recurrence_type?: string
           status?: string
           tags?: string[]
           tickets_sold?: number
@@ -261,6 +267,9 @@ export type Database = {
           is_online?: boolean
           location?: string
           organizer?: string
+          parent_event_id?: string | null
+          recurrence_end_date?: string | null
+          recurrence_type?: string
           status?: string
           tags?: string[]
           tickets_sold?: number
@@ -269,7 +278,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
