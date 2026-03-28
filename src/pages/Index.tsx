@@ -136,8 +136,10 @@ const Index = () => {
             <div className="col-span-full text-center py-12 space-y-3">
               <p className="text-lg font-semibold">No events found</p>
               <p className="text-sm text-muted-foreground">
-                No {category} events right now.{" "}
-                <button onClick={() => setCategory("")} className="text-primary hover:underline">Browse all events</button>
+                {searchQuery
+                  ? `No results for "${searchQuery}".`
+                  : `No ${category} events right now.`}{" "}
+                <button onClick={() => { setCategory(""); clearSearch(); }} className="text-primary hover:underline">Browse all events</button>
               </p>
             </div>
           ) : (
