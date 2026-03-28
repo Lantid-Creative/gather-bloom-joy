@@ -64,9 +64,35 @@ const Checkout = () => {
         })));
       if (itemsError) throw itemsError;
 
+      // Fetch created order items for PDF
+      const { data: createdItems } = await supabase
+        .from("order_items")
+        .select("*")
+        .eq("order_id", order.id);
+
+      // Fetch event details for dates/locations
+      const eventIds = [...new Set(items.map((i) => i.eventId))];
+      const { data: eventDetails } = await supabase
+        .from("events")
+        .select("id, date, location")
+        .in("id", eventIds);
+
+      setPurchasedItems(items.map(i => ({ ...i })));
       setOrderId(order.id);
       setConfirmed(true);
       clearCart();
+
+      // Create notification for the user
+      if (user) {
+        await supabase.from("notifications").insert({
+          user_id: user.id,
+          title: "Order confirmed! 🎉",
+          message: `Your order #${order.id.slice(0, 8).toUpperCase()} has been confirmed. ${items.length} ticket(s) purchased.`,
+          type: "order",
+          link: "/my-tickets",
+        });
+      }
+
       toast({ title: "Order confirmed! 🎉" });
     } catch (err: any) {
       console.error("Checkout error:", err);
