@@ -115,7 +115,11 @@ const EventbriteHeader = () => {
           <button className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Help Center</button>
           <div className="border-t my-2" />
           {user ? (
-            <button onClick={() => { handleSignOut(); setMobileOpen(false); }} className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Sign out</button>
+            <>
+              <Link to="/my-events" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Events</Link>
+              <button onClick={() => { handleSignOut(); setMobileOpen(false); }} className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Sign out</button>
+            </>
+          )
           ) : (
             <Link to="/auth" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Sign in</Link>
           )}
