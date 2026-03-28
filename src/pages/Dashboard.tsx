@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import PromoCodeManager from "@/components/PromoCodeManager";
+import TrackingLinkManager from "@/components/TrackingLinkManager";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
@@ -148,6 +150,16 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+
+        {/* Promo Codes */}
+        <div className="mt-10">
+          <PromoCodeManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
+        </div>
+
+        {/* Tracking Links */}
+        <div className="mt-10">
+          <TrackingLinkManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
+        </div>
       </div>
     </div>
   );
