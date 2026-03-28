@@ -60,7 +60,10 @@ const EventbriteHeader = () => {
           </button>
           <div className="w-px h-6 bg-border mx-1" />
           {user ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <Link to="/my-events" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">
+                My Events
+              </Link>
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <User className="h-4 w-4 text-primary" />
               </div>
