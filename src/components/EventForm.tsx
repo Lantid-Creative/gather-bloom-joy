@@ -47,6 +47,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initial?.imageUrl || null);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initial?.title ?? "");
@@ -63,13 +64,15 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [tickets, setTickets] = useState<TicketDraft[]>(initial?.tickets ?? [{ ...emptyTicket }]);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-
-    const maxSize = 5 * 1024 * 1024; // 5MB
+  const uploadFile = async (file: File) => {
+    if (!user) return;
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       alert("Image must be under 5MB");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file");
       return;
     }
 
@@ -88,6 +91,28 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     setImageUrl(urlData.publicUrl);
     setPreviewUrl(urlData.publicUrl);
     setUploading(false);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) uploadFile(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
   };
 
   const removeImage = () => {
@@ -205,15 +230,24 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
               disabled={uploading}
-              className="w-full h-40 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+              className={`w-full h-40 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 transition-colors ${
+                dragging
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+              }`}
             >
               {uploading ? (
                 <span className="text-sm">Uploading...</span>
               ) : (
                 <>
                   <Upload className="h-8 w-8" />
-                  <span className="text-sm font-medium">Click to upload cover image</span>
+                  <span className="text-sm font-medium">
+                    {dragging ? "Drop image here" : "Drag & drop or click to upload"}
+                  </span>
                   <span className="text-xs">JPG, PNG, WebP · Max 5MB</span>
                 </>
               )}
