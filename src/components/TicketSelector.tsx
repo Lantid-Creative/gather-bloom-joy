@@ -34,9 +34,9 @@ const TicketSelector = ({ ticket, eventId, eventTitle }: TicketSelectorProps) =>
   };
 
   return (
-    <div className={`flex items-center justify-between p-4 rounded-xl border bg-card ${soldOut ? "opacity-60" : ""}`}>
-      <div className="space-y-1 flex-1">
-        <div className="flex items-center gap-3">
+    <div className={`flex flex-wrap items-start justify-between gap-3 p-4 rounded-xl border bg-card ${soldOut ? "opacity-60" : ""}`}>
+      <div className="min-w-0 flex-1 space-y-1">
+        <div className="flex flex-wrap items-center gap-2">
           <h4 className="font-semibold">{ticket.name}</h4>
           <span className="text-lg font-bold text-primary">${ticket.price}</span>
           {soldOut && <Badge variant="destructive" className="text-xs">Sold Out</Badge>}
@@ -45,7 +45,7 @@ const TicketSelector = ({ ticket, eventId, eventTitle }: TicketSelectorProps) =>
         {!soldOut && <p className="text-xs text-muted-foreground">{ticket.available} remaining</p>}
       </div>
       {!soldOut && (
-        <div className="flex items-center gap-2 ml-4">
+        <div className="flex w-full shrink-0 items-center justify-end gap-2 sm:w-auto">
           <Button
             variant="outline"
             size="icon"
@@ -70,7 +70,7 @@ const TicketSelector = ({ ticket, eventId, eventTitle }: TicketSelectorProps) =>
             size="sm"
             onClick={handleAdd}
             disabled={qty === 0}
-            className="ml-2"
+            className="sm:ml-2 w-full sm:w-auto"
           >
             Add
           </Button>
