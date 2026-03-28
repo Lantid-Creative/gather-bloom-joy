@@ -189,6 +189,36 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       </div>
 
       <div className="space-y-4">
+        <h2 className="text-xl font-bold">Event Status & Recurrence</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="recurrence">Recurrence</Label>
+            <select id="recurrence" value={recurrenceType} onChange={(e) => setRecurrenceType(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+              <option value="none">No recurrence</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="biweekly">Biweekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+        {recurrenceType !== "none" && (
+          <div className="space-y-2">
+            <Label htmlFor="recurrenceEndDate">Recurrence ends on</Label>
+            <Input id="recurrenceEndDate" type="date" value={recurrenceEndDate} onChange={(e) => setRecurrenceEndDate(e.target.value)} />
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-4">
         <h2 className="text-xl font-bold">Category & Tags</h2>
         <div className="space-y-2">
           <Label htmlFor="category">Category</Label>
