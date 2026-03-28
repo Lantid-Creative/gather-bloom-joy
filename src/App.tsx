@@ -11,6 +11,7 @@ import Auth from "./pages/Auth.tsx";
 import CreateEvent from "./pages/CreateEvent.tsx";
 import MyEvents from "./pages/MyEvents.tsx";
 import EditEvent from "./pages/EditEvent.tsx";
+import MyTickets from "./pages/MyTickets.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
