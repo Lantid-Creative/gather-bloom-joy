@@ -3,6 +3,14 @@ import eventAfroTech from "@/assets/event-afrotech.jpg";
 import eventAfroFood from "@/assets/event-afrofood.jpg";
 import eventAfroArt from "@/assets/event-afroart.jpg";
 import eventAfroWellness from "@/assets/event-afrowellness.jpg";
+import eventConcert from "@/assets/event-concert.jpg";
+import eventComedy from "@/assets/event-comedy.jpg";
+import eventFashion from "@/assets/event-fashion.jpg";
+import eventTechMeetup from "@/assets/event-techmeetup.jpg";
+import eventFestival from "@/assets/event-concert.jpg"; // fallback until festival image ready
+import eventDance from "@/assets/event-dance.jpg";
+import eventBusiness from "@/assets/event-business.jpg";
+import eventPoetry from "@/assets/event-poetry.jpg";
 
 export const mockEvents: Event[] = [
   {
@@ -107,6 +115,223 @@ export const mockEvents: Event[] = [
       { time: "6:15 AM", title: "Vinyasa Flow Yoga", speaker: "Amina Osei" },
       { time: "7:30 AM", title: "Breathwork & Sound Healing with African Drums" },
       { time: "8:30 AM", title: "Bush Breakfast & Herbal Tea Ceremony" },
+    ],
+  },
+  {
+    id: "5",
+    title: "Burna Boy Live in Concert",
+    description:
+      "The African Giant returns home for an electrifying night of afrobeats, afro-fusion, and dancehall. Expect pyrotechnics, a full live band, and non-stop energy as Burna Boy performs hits spanning his entire catalog at the iconic Eko Atlantic.",
+    date: "2026-05-10",
+    time: "7:00 PM",
+    location: "Eko Atlantic City, Lagos, Nigeria",
+    image_url: eventConcert,
+    category: "Music",
+    organizer: "Spaceship Entertainment",
+    capacity: 15000,
+    tickets_sold: 12800,
+    is_online: false,
+    tags: ["Afrobeats", "Concert", "Live Music", "Lagos", "Burna Boy"],
+    ticket_types: [
+      { id: "t10", name: "Regular", price: 30, description: "Standing area with stage view", available: 2200, max_per_order: 6 },
+      { id: "t11", name: "VIP", price: 150, description: "Elevated VIP deck, complimentary drinks, and meet & greet chance", available: 180, max_per_order: 4 },
+      { id: "t12", name: "VVIP Table", price: 500, description: "Private table for 4, bottle service, backstage access", available: 20, max_per_order: 1 },
+    ],
+    schedule: [
+      { time: "7:00 PM", title: "Gates Open" },
+      { time: "7:30 PM", title: "DJ Spinall Warm-Up Set" },
+      { time: "9:00 PM", title: "Burna Boy Takes the Stage" },
+      { time: "11:30 PM", title: "Encore & Fireworks Finale" },
+    ],
+  },
+  {
+    id: "6",
+    title: "Nairobi Comedy Night: Laugh Safari",
+    description:
+      "East Africa's funniest comedians under one roof! Featuring headliner Eric Omondi and a lineup of Kenya's sharpest stand-up acts. A night of belly laughs, roast battles, and crowd work at Nairobi's premier comedy venue.",
+    date: "2026-04-25",
+    time: "8:00 PM",
+    location: "Alliance Française, Nairobi, Kenya",
+    image_url: eventComedy,
+    category: "Nightlife",
+    organizer: "Laugh Industry Kenya",
+    capacity: 350,
+    tickets_sold: 290,
+    is_online: false,
+    tags: ["Comedy", "Stand-Up", "Nairobi", "Entertainment", "Night Out"],
+    ticket_types: [
+      { id: "t13", name: "General", price: 15, description: "Standard seating", available: 60, max_per_order: 6 },
+      { id: "t14", name: "Front Row VIP", price: 45, description: "Front 3 rows, complimentary drink, and photo op with comedians", available: 15, max_per_order: 4 },
+    ],
+    schedule: [
+      { time: "8:00 PM", title: "Doors Open & Drinks" },
+      { time: "8:30 PM", title: "Opening Acts (3 comedians)" },
+      { time: "9:30 PM", title: "Roast Battle Segment" },
+      { time: "10:00 PM", title: "Headliner: Eric Omondi" },
+    ],
+  },
+  {
+    id: "7",
+    title: "Joburg Fashion Week 2026",
+    description:
+      "South Africa's premier fashion event showcasing 40+ African designers over 3 days. From bold ankara prints to contemporary streetwear, experience the cutting edge of African fashion on the runway and in immersive pop-up shops.",
+    date: "2026-06-05",
+    end_date: "2026-06-07",
+    time: "10:00 AM",
+    location: "Sandton Convention Centre, Johannesburg, South Africa",
+    image_url: eventFashion,
+    category: "Performing & Visual Arts",
+    organizer: "African Fashion Council",
+    capacity: 3000,
+    tickets_sold: 2100,
+    is_online: false,
+    tags: ["Fashion", "Runway", "Design", "Johannesburg", "African Fashion"],
+    ticket_types: [
+      { id: "t15", name: "Day Pass", price: 35, description: "Access to runway shows and exhibition area for one day", available: 900, max_per_order: 4 },
+      { id: "t16", name: "Full Festival Pass", price: 90, description: "All 3 days, backstage tours, and designer meet & greets", available: 200, max_per_order: 2 },
+      { id: "t17", name: "Industry & Media", price: 0, description: "For accredited press and industry professionals", available: 50, max_per_order: 1 },
+    ],
+    schedule: [
+      { time: "10:00 AM", title: "Exhibition Opens & Designer Pop-Ups" },
+      { time: "12:00 PM", title: "Emerging Designers Runway" },
+      { time: "2:00 PM", title: "Panel: Sustainability in African Fashion" },
+      { time: "4:00 PM", title: "Headliner Runway Show" },
+      { time: "7:00 PM", title: "After-Party with DJ Zinhle" },
+    ],
+  },
+  {
+    id: "8",
+    title: "Kigali Developers Meetup & Hackathon",
+    description:
+      "A 48-hour hackathon bringing together 200 developers from across East Africa to build solutions for local challenges. Mentored by engineers from Andela, Flutterwave, and MTN. Compete for $10,000 in prizes and investor introductions.",
+    date: "2026-05-17",
+    end_date: "2026-05-18",
+    time: "9:00 AM",
+    location: "kLab, Kigali, Rwanda",
+    image_url: eventTechMeetup,
+    category: "Business",
+    organizer: "kLab Rwanda",
+    capacity: 200,
+    tickets_sold: 165,
+    is_online: false,
+    tags: ["Hackathon", "Developers", "Tech", "Kigali", "Coding"],
+    ticket_types: [
+      { id: "t18", name: "Hacker Pass", price: 0, description: "Free entry — meals, swag, and Wi-Fi included", available: 35, max_per_order: 1 },
+      { id: "t19", name: "Mentor/Observer", price: 10, description: "Attend as a mentor or observer with full access", available: 20, max_per_order: 2 },
+    ],
+    schedule: [
+      { time: "9:00 AM", title: "Registration & Team Formation" },
+      { time: "10:00 AM", title: "Challenge Reveal & Hacking Begins" },
+      { time: "1:00 PM", title: "Mentor Office Hours" },
+      { time: "6:00 PM", title: "Day 1 Check-In & Dinner" },
+      { time: "10:00 AM", title: "Day 2: Final Sprint", description: "Day 2" },
+      { time: "3:00 PM", title: "Demos & Judging" },
+      { time: "5:00 PM", title: "Awards Ceremony" },
+    ],
+  },
+  {
+    id: "9",
+    title: "Cape Town Amapiano Festival",
+    description:
+      "The biggest amapiano gathering on the continent! Featuring Kabza De Small, DJ Maphorisa, Uncle Waffles, and 20+ artists across 3 stages. Dance under the Table Mountain sunset with 8,000 amapiano lovers from across Africa.",
+    date: "2026-05-24",
+    time: "2:00 PM",
+    location: "Green Point Stadium, Cape Town, South Africa",
+    image_url: eventFestival,
+    category: "Music",
+    organizer: "Piano People SA",
+    capacity: 8000,
+    tickets_sold: 6200,
+    is_online: false,
+    tags: ["Amapiano", "Festival", "Cape Town", "Music", "Dance"],
+    ticket_types: [
+      { id: "t20", name: "Early Bird", price: 25, description: "Limited early bird pricing — general admission", available: 300, max_per_order: 6 },
+      { id: "t21", name: "General Admission", price: 45, description: "Access to all 3 stages", available: 1500, max_per_order: 6 },
+      { id: "t22", name: "VIP Experience", price: 120, description: "VIP area, premium bar, artist lounge access", available: 100, max_per_order: 4 },
+    ],
+    schedule: [
+      { time: "2:00 PM", title: "Gates Open — Stage 3 Warm-Up" },
+      { time: "4:00 PM", title: "Uncle Waffles — Main Stage" },
+      { time: "6:00 PM", title: "Sunset Set: Focalistic" },
+      { time: "8:00 PM", title: "Kabza De Small & DJ Maphorisa" },
+      { time: "10:00 PM", title: "Silent Disco After-Party" },
+    ],
+  },
+  {
+    id: "10",
+    title: "Dar es Salaam Dance Masterclass",
+    description:
+      "Learn traditional and contemporary East African dance styles in this high-energy masterclass. From bongo flava moves to traditional ngoma rhythms, professional dancers guide you through 3 hours of movement, music, and cultural storytelling.",
+    date: "2026-04-30",
+    time: "10:00 AM",
+    location: "Nafasi Art Space, Dar es Salaam, Tanzania",
+    image_url: eventDance,
+    category: "Hobbies",
+    organizer: "Nafasi Art Space",
+    capacity: 60,
+    tickets_sold: 42,
+    is_online: false,
+    tags: ["Dance", "Workshop", "Culture", "Dar es Salaam", "African Dance"],
+    ticket_types: [
+      { id: "t23", name: "Single Class", price: 15, description: "One 90-minute dance session", available: 18, max_per_order: 4 },
+      { id: "t24", name: "Full Day Pass", price: 35, description: "Both morning and afternoon sessions plus lunch", available: 10, max_per_order: 2 },
+    ],
+  },
+  {
+    id: "11",
+    title: "Pan-African Entrepreneurs Summit",
+    description:
+      "300+ founders, investors, and policymakers converge in Addis Ababa to shape Africa's business future. Keynotes from Aliko Dangote and Bethlehem Tilahun Alemu, pitch competitions, and cross-border partnership sessions.",
+    date: "2026-06-12",
+    end_date: "2026-06-13",
+    time: "8:30 AM",
+    location: "African Union Conference Centre, Addis Ababa, Ethiopia",
+    image_url: eventBusiness,
+    category: "Business",
+    organizer: "AfriGrowth Initiative",
+    capacity: 500,
+    tickets_sold: 380,
+    is_online: false,
+    tags: ["Business", "Entrepreneurs", "Summit", "Addis Ababa", "Investment"],
+    ticket_types: [
+      { id: "t25", name: "Standard", price: 100, description: "All keynotes, panels, and networking lunch", available: 120, max_per_order: 3 },
+      { id: "t26", name: "Investor Pass", price: 300, description: "Deal room access, private dinners, and startup portfolio review", available: 30, max_per_order: 1 },
+      { id: "t27", name: "Virtual Stream", price: 20, description: "Livestream access to all main stage sessions", available: 500, max_per_order: 1 },
+    ],
+    schedule: [
+      { time: "8:30 AM", title: "Registration & Coffee" },
+      { time: "9:30 AM", title: "Opening Keynote: Building Pan-African Brands" },
+      { time: "11:00 AM", title: "Panel: Funding the Next African Unicorn" },
+      { time: "1:00 PM", title: "Networking Lunch" },
+      { time: "2:30 PM", title: "Pitch Competition: 10 Startups, 5 Minutes Each" },
+      { time: "5:00 PM", title: "Closing Fireside Chat" },
+    ],
+  },
+  {
+    id: "12",
+    title: "Kampala Poetry & Spoken Word Night",
+    description:
+      "An intimate evening of powerful spoken word performances under the stars. Featuring Uganda's top poets exploring themes of love, identity, Pan-Africanism, and social justice. Open mic slots available — bring your voice.",
+    date: "2026-05-08",
+    time: "7:00 PM",
+    location: "The Square, Kampala, Uganda",
+    image_url: eventPoetry,
+    category: "Performing & Visual Arts",
+    organizer: "Kampala Poetry Collective",
+    capacity: 120,
+    tickets_sold: 85,
+    is_online: false,
+    tags: ["Poetry", "Spoken Word", "Culture", "Kampala", "Open Mic"],
+    ticket_types: [
+      { id: "t28", name: "General Entry", price: 10, description: "Garden seating with one complimentary drink", available: 35, max_per_order: 6 },
+      { id: "t29", name: "Performer Slot", price: 0, description: "5-minute open mic slot — register in advance", available: 8, max_per_order: 1 },
+    ],
+    schedule: [
+      { time: "7:00 PM", title: "Doors Open & Live Acoustic Set" },
+      { time: "7:30 PM", title: "Featured Poets (5 performers)" },
+      { time: "8:30 PM", title: "Open Mic Round" },
+      { time: "9:15 PM", title: "Headliner Performance" },
+      { time: "9:45 PM", title: "Jam Session & Drinks" },
     ],
   },
 ];
