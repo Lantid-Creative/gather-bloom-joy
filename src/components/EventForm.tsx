@@ -31,6 +31,9 @@ export interface EventFormData {
   isOnline: boolean;
   tags: string;
   tickets: TicketDraft[];
+  status: string;
+  recurrenceType: string;
+  recurrenceEndDate: string;
 }
 
 const emptyTicket: TicketDraft = { name: "", price: "0", description: "", available: "100", max_per_order: "10" };
