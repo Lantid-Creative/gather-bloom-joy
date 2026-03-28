@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import TicketSelector from "@/components/TicketSelector";
+import GoogleMap from "@/components/GoogleMap";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
@@ -105,6 +106,11 @@ const EventDetail = () => {
                   </div>
                 </div>
               </div>
+              {!event.is_online && (
+                <div className="h-48 rounded-xl overflow-hidden border">
+                  <GoogleMap location={event.location} />
+                </div>
+              )}
             </div>
 
             <div className="space-y-3">

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import LocationAutocomplete from "@/components/LocationAutocomplete";
 
 export interface TicketDraft {
   id?: string;
@@ -173,7 +174,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
         </div>
         <div className="space-y-2">
           <Label htmlFor="location">Location *</Label>
-          <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Eko Convention Centre, Lagos, Nigeria" required />
+          <LocationAutocomplete id="location" value={location} onChange={setLocation} placeholder="e.g. Eko Convention Centre, Lagos, Nigeria" required />
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="isOnline" checked={isOnline} onChange={(e) => setIsOnline(e.target.checked)} className="rounded" />
