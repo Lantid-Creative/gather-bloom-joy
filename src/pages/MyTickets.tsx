@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Ticket, Calendar, MapPin, RotateCcw } from "lucide-react";
+import { Ticket, Calendar, MapPin, RotateCcw, Download, Bell } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { generateTicketPDF } from "@/lib/generate-ticket-pdf";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
