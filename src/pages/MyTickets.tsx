@@ -134,6 +134,22 @@ const MyTickets = () => {
                           </DialogContent>
                         </Dialog>
                       )}
+                      <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleDownloadTickets(order.id)}>
+                        <Download className="h-3 w-3 mr-1" /> PDF
+                      </Button>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="text-xs h-7"><RotateCcw className="h-3 w-3 mr-1" /> Refund</Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader><DialogTitle>Request Refund</DialogTitle></DialogHeader>
+                            <Textarea placeholder="Why do you need a refund?" value={refundReason} onChange={(e) => setRefundReason(e.target.value)} />
+                            <DialogFooter>
+                              <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+                              <Button variant="hero" onClick={() => submitRefund(order.id)} disabled={!refundReason.trim()}>Submit Request</Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      )}
                     </div>
                   </div>
                   <div className="divide-y">
