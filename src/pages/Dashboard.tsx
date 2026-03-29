@@ -306,6 +306,17 @@ const Dashboard = () => {
                       </>
                     )}
 
+                    {/* Event Report Panel */}
+                    <EventReportPanel
+                      eventId={event.id}
+                      eventTitle={event.title}
+                      eventDate={event.date}
+                      capacity={event.capacity}
+                      ticketsSold={event.tickets_sold}
+                      orderItems={(orderItems?.filter((i) => i.event_id === event.id) ?? []) as any}
+                      orders={eventOrders as any}
+                    />
+
                     {/* Timed Entry Slots */}
                     <div className="border-t pt-4 mt-4">
                       <TimeSlotManager eventId={event.id} />
