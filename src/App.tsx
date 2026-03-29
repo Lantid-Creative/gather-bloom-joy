@@ -27,6 +27,8 @@ import Careers from "./pages/Careers.tsx";
 import OrganizerProfile from "./pages/OrganizerProfile.tsx";
 import CheckIn from "./pages/CheckIn.tsx";
 import SavedEvents from "./pages/SavedEvents.tsx";
+import Partners from "./pages/Partners.tsx";
+import PartnerDashboard from "./pages/PartnerDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
