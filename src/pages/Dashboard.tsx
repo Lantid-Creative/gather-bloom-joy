@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail } from "lucide-react";
+import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2 } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PromoCodeManager from "@/components/PromoCodeManager";
@@ -26,6 +27,8 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
+  const [syncingEvent, setSyncingEvent] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const { data: events } = useQuery({
     queryKey: ["dashboard-events", user?.id], enabled: !!user,
@@ -74,6 +77,25 @@ const Dashboard = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href = url; a.download = "afritickets-sales.csv"; a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleMailchimpSync = async (eventId: string, eventTitle: string) => {
+    setSyncingEvent(eventId);
+    try {
+      const { data, error } = await supabase.functions.invoke("sync-mailchimp", {
+        body: { eventId, eventTitle },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({
+        title: "Synced to Mailchimp! 📧",
+        description: `${data.added} added, ${data.updated} updated to "${data.listName}"`,
+      });
+    } catch (err: any) {
+      toast({ title: "Mailchimp sync failed", description: err.message, variant: "destructive" });
+    } finally {
+      setSyncingEvent(null);
+    }
   };
 
   return (
@@ -135,19 +157,33 @@ const Dashboard = () => {
                   <div className="border-t px-5 py-4">
                     {eventOrders.length === 0 ? <p className="text-sm text-muted-foreground">No orders yet.</p> : (
                       <>
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                           <h3 className="text-sm font-semibold">Attendees ({eventOrders.length})</h3>
-                          <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => {
-                            const emails = [...new Set(eventOrders.map(o => o.customer_email))];
-                            const rows = [["Name", "Email"], ...eventOrders.map(o => [o.customer_name, o.customer_email])];
-                            const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
-                            const blob = new Blob([csv], { type: "text/csv" });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a"); a.href = url; a.download = `attendees-${event.title.slice(0,30).replace(/\s+/g,"-").toLowerCase()}.csv`; a.click();
-                            URL.revokeObjectURL(url);
-                          }}>
-                            <Mail className="h-3 w-3 mr-1" /> Export Emails
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => {
+                              const rows = [["Name", "Email"], ...eventOrders.map(o => [o.customer_name, o.customer_email])];
+                              const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+                              const blob = new Blob([csv], { type: "text/csv" });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement("a"); a.href = url; a.download = `attendees-${event.title.slice(0,30).replace(/\s+/g,"-").toLowerCase()}.csv`; a.click();
+                              URL.revokeObjectURL(url);
+                            }}>
+                              <Mail className="h-3 w-3 mr-1" /> Export Emails
+                            </Button>
+                            <Button
+                              variant="hero"
+                              size="sm"
+                              className="rounded-full text-xs"
+                              disabled={syncingEvent === event.id}
+                              onClick={() => handleMailchimpSync(event.id, event.title)}
+                            >
+                              {syncingEvent === event.id ? (
+                                <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Syncing...</>
+                              ) : (
+                                <><Mail className="h-3 w-3 mr-1" /> Sync to Mailchimp</>
+                              )}
+                            </Button>
+                          </div>
                         </div>
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm">
