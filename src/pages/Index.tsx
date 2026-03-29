@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Sparkles } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -11,6 +11,7 @@ import { useEvents } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
 import FeaturesShowcase from "@/components/FeaturesShowcase";
 import SEOHead from "@/components/SEOHead";
+import { supabase } from "@/integrations/supabase/client";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
@@ -21,6 +22,9 @@ const Index = () => {
   const [cityOpen, setCityOpen] = useState(false);
   const [tab, setTab] = useState("All");
   const { data: dbEvents, isLoading } = useEvents();
+  const [aiSearchResults, setAiSearchResults] = useState<string[] | null>(null);
+  const [aiSearching, setAiSearching] = useState(false);
+  const [aiInterpretation, setAiInterpretation] = useState("");
 
   const allEvents = useMemo(() => {
     const db = dbEvents ?? [];
@@ -43,7 +47,53 @@ const Index = () => {
     return Array.from(citySet).sort();
   }, [allEvents]);
 
+  // Detect if search is "smart" (natural language, 3+ words)
+  const isSmartSearch = searchQuery.trim().split(/\s+/).length >= 3;
+
+  // AI search effect
+  useEffect(() => {
+    if (!isSmartSearch || !searchQuery.trim() || allEvents.length === 0) {
+      setAiSearchResults(null);
+      setAiInterpretation("");
+      return;
+    }
+
+    let cancelled = false;
+    const runAiSearch = async () => {
+      setAiSearching(true);
+      try {
+        const { data, error } = await supabase.functions.invoke("ai-event-tools", {
+          body: {
+            action: "smart_search",
+            query: searchQuery,
+            events: allEvents.slice(0, 50), // limit to avoid token overflow
+          },
+        });
+        if (cancelled) return;
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        setAiSearchResults(data.event_ids || []);
+        setAiInterpretation(data.interpretation || "");
+      } catch (e) {
+        console.error("AI search failed, falling back to basic:", e);
+        setAiSearchResults(null);
+      } finally {
+        if (!cancelled) setAiSearching(false);
+      }
+    };
+
+    const timeout = setTimeout(runAiSearch, 300); // debounce
+    return () => { cancelled = true; clearTimeout(timeout); };
+  }, [searchQuery, isSmartSearch, allEvents]);
+
   const filtered = useMemo(() => {
+    // If AI search returned results, use those
+    if (aiSearchResults !== null && isSmartSearch) {
+      return aiSearchResults
+        .map((id) => allEvents.find((e) => e.id === id))
+        .filter(Boolean) as typeof allEvents;
+    }
+
     const q = searchQuery.toLowerCase().trim();
     return allEvents.filter((e) => {
       if (category && e.category !== category) return false;
@@ -57,10 +107,12 @@ const Index = () => {
       }
       return true;
     });
-  }, [category, city, allEvents, searchQuery]);
+  }, [category, city, allEvents, searchQuery, aiSearchResults, isSmartSearch]);
 
   const clearSearch = () => {
     setSearchParams({});
+    setAiSearchResults(null);
+    setAiInterpretation("");
   };
 
   return (
@@ -164,9 +216,24 @@ const Index = () => {
         </div>
 
         {(category || searchQuery) && (
-          <p className="text-sm text-muted-foreground mb-4">
-            Showing {filtered.length} event{filtered.length !== 1 ? "s" : ""}
-          </p>
+          <div className="mb-4 space-y-1">
+            <p className="text-sm text-muted-foreground">
+              {aiSearching ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 animate-pulse text-primary" />
+                  AI is searching for you...
+                </span>
+              ) : (
+                <>Showing {filtered.length} event{filtered.length !== 1 ? "s" : ""}</>
+              )}
+            </p>
+            {aiInterpretation && isSmartSearch && (
+              <p className="text-xs text-primary/80 flex items-center gap-1">
+                <Sparkles className="h-3 w-3" />
+                {aiInterpretation}
+              </p>
+            )}
+          </div>
         )}
 
         <BrowsingTabs active={tab} onChange={setTab} />

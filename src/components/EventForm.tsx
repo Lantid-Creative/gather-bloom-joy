@@ -1,11 +1,12 @@
 import { useState, useRef } from "react";
-import { Plus, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Plus, Trash2, Upload, X, Image as ImageIcon, Sparkles, Wand2, Tags } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import LocationAutocomplete from "@/components/LocationAutocomplete";
 
 export interface TicketDraft {
@@ -51,7 +52,10 @@ interface EventFormProps {
 
 const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormProps) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [generatingDesc, setGeneratingDesc] = useState(false);
+  const [suggestingCats, setSuggestingCats] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initial?.imageUrl || null);
@@ -132,6 +136,49 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const generateDescription = async () => {
+    if (!title.trim()) {
+      toast({ title: "Enter a title first", variant: "destructive" });
+      return;
+    }
+    setGeneratingDesc(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-event-tools", {
+        body: { action: "generate_description", title, category, location, date, isOnline },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setDescription(data.content);
+      toast({ title: "✨ Description generated!" });
+    } catch (e: any) {
+      toast({ title: e.message || "Failed to generate description", variant: "destructive" });
+    } finally {
+      setGeneratingDesc(false);
+    }
+  };
+
+  const suggestCategoryTags = async () => {
+    if (!title.trim()) {
+      toast({ title: "Enter a title first", variant: "destructive" });
+      return;
+    }
+    setSuggestingCats(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-event-tools", {
+        body: { action: "suggest_categories", title, description },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data.category) setCategory(data.category);
+      if (data.tags?.length) setTags(data.tags.join(", "));
+      toast({ title: `🏷️ Suggested: ${data.category} (${data.tags?.length || 0} tags)` });
+    } catch (e: any) {
+      toast({ title: e.message || "Failed to suggest categories", variant: "destructive" });
+    } finally {
+      setSuggestingCats(false);
+    }
+  };
+
   const addTicket = () => setTickets([...tickets, { ...emptyTicket }]);
   const removeTicket = (i: number) => setTickets(tickets.filter((_, idx) => idx !== i));
   const updateTicket = (i: number, field: keyof TicketDraft, value: string) => {
@@ -159,7 +206,20 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
           <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. AfroTech Summit Lagos" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="description">Description</Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={generateDescription}
+              disabled={generatingDesc}
+              className="text-xs gap-1.5 rounded-full border-primary/30 text-primary hover:bg-primary/10"
+            >
+              <Wand2 className="h-3.5 w-3.5" />
+              {generatingDesc ? "Generating..." : "AI Generate"}
+            </Button>
+          </div>
           <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Tell people what your event is about..." rows={4} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -263,7 +323,20 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-bold">Category & Tags</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold">Category & Tags</h2>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={suggestCategoryTags}
+            disabled={suggestingCats}
+            className="text-xs gap-1.5 rounded-full border-primary/30 text-primary hover:bg-primary/10"
+          >
+            <Tags className="h-3.5 w-3.5" />
+            {suggestingCats ? "Suggesting..." : "AI Suggest"}
+          </Button>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="category">Category</Label>
           <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
