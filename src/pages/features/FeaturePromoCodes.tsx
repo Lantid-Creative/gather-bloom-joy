@@ -1,5 +1,6 @@
 import { Tag, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-promocodes.jpg";
 
 const benefits = [
   "Create percentage-based or fixed-amount discount codes",
