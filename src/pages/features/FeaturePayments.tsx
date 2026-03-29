@@ -1,5 +1,6 @@
 import { CreditCard, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-payments.jpg";
 
 const benefits = [
   "Stripe-powered payment processing with support for cards and mobile money",
