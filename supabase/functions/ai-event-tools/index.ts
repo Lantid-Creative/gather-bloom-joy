@@ -204,6 +204,101 @@ Write copy optimized for ${platform}. Include relevant hashtags.`;
         break;
       }
 
+      case "event_chatbot": {
+        const { question, eventTitle, eventDescription, eventDate, eventLocation, eventTime, isOnline, meetingPlatform, organizer, ticketTypes } = params;
+        systemPrompt = `You are a friendly, helpful AI assistant for Afritickets. You answer attendee questions about a specific event. Be concise (2-3 sentences max). If you don't know something, say so honestly. Never make up information not provided in the event details. Use a warm, conversational tone.`;
+        userPrompt = `Event Details:
+Title: ${eventTitle}
+Description: ${eventDescription || "Not provided"}
+Date: ${eventDate}
+Time: ${eventTime || "Not specified"}
+Location: ${eventLocation}
+Format: ${isOnline ? `Online (${meetingPlatform || "Virtual"})` : "In-person"}
+Organizer: ${organizer}
+Tickets: ${ticketTypes || "Contact organizer for details"}
+
+Attendee question: "${question}"`;
+        break;
+      }
+
+      case "recommend_events": {
+        const { userHistory, availableEvents } = params;
+        systemPrompt = `You are a recommendation engine for Afritickets. Based on a user's browsing/purchase history, rank available events by relevance. Consider category preferences, location patterns, and price sensitivity. Return the top 6 most relevant event IDs.`;
+        userPrompt = `User history (events viewed/purchased):
+${JSON.stringify(userHistory)}
+
+Available events:
+${JSON.stringify(availableEvents.map((e: any) => ({ id: e.id, title: e.title, category: e.category, location: e.location, date: e.date, tags: e.tags })))}
+
+Return the 6 most relevant event IDs for this user.`;
+        tools = [
+          {
+            type: "function",
+            function: {
+              name: "return_recommendations",
+              description: "Return recommended event IDs",
+              parameters: {
+                type: "object",
+                properties: {
+                  event_ids: { type: "array", items: { type: "string" }, description: "Recommended event IDs ranked by relevance" },
+                  reasoning: { type: "string", description: "Brief explanation of why these were chosen" },
+                },
+                required: ["event_ids", "reasoning"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ];
+        tool_choice = { type: "function", function: { name: "return_recommendations" } };
+        break;
+      }
+
+      case "match_influencers": {
+        const { eventTitle, eventCategory, eventLocation, eventTags, influencers } = params;
+        systemPrompt = `You are an influencer marketing expert for Afritickets. Match events with the most relevant influencers based on category alignment, audience overlap, location relevance, and follower count. Return the top 5 best-matched influencer IDs with match scores and reasons.`;
+        userPrompt = `Event to promote:
+Title: ${eventTitle}
+Category: ${eventCategory}
+Location: ${eventLocation}
+Tags: ${eventTags?.join(", ") || "None"}
+
+Available influencers:
+${JSON.stringify(influencers.map((i: any) => ({ id: i.id, name: i.display_name, categories: i.categories, region: i.region, city: i.city, country: i.country, instagram: i.instagram_followers, tiktok: i.tiktok_followers, twitter: i.twitter_followers, youtube: i.youtube_subscribers })))}
+
+Return the top 5 best matches.`;
+        tools = [
+          {
+            type: "function",
+            function: {
+              name: "return_matches",
+              description: "Return matched influencer IDs with scores",
+              parameters: {
+                type: "object",
+                properties: {
+                  matches: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        influencer_id: { type: "string" },
+                        match_score: { type: "number", description: "0-100 match score" },
+                        reason: { type: "string", description: "Why this influencer is a good match" },
+                      },
+                      required: ["influencer_id", "match_score", "reason"],
+                      additionalProperties: false,
+                    },
+                  },
+                },
+                required: ["matches"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ];
+        tool_choice = { type: "function", function: { name: "return_matches" } };
+        break;
+      }
+
       default:
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
           status: 400,

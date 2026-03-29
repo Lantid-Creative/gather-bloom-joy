@@ -11,6 +11,7 @@ import FollowButton from "@/components/FollowButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import SponsorshipRequestForm from "@/components/SponsorshipRequestForm";
 import SEOHead from "@/components/SEOHead";
+import EventChatbot from "@/components/EventChatbot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
@@ -278,6 +279,21 @@ const EventDetail = () => {
         </div>
       </div>
       <EventbriteFooter />
+      {event && (
+        <EventChatbot
+          event={{
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            time: event.time,
+            location: event.location,
+            is_online: event.is_online,
+            meeting_platform: (event as any).meeting_platform,
+            organizer: event.organizer,
+            ticket_types: event.ticket_types?.map((t) => ({ name: t.name, price: t.price, available: t.available })),
+          }}
+        />
+      )}
     </div>
   );
 };

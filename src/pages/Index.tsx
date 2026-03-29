@@ -12,6 +12,7 @@ import { mockEvents } from "@/lib/mock-data";
 import FeaturesShowcase from "@/components/FeaturesShowcase";
 import SEOHead from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
+import SmartRecommendations from "@/components/SmartRecommendations";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
@@ -272,6 +273,9 @@ const Index = () => {
           </button>
         </div>
       </div>
+
+      {/* Smart Recommendations */}
+      <SmartRecommendations allEvents={allEvents} />
 
       {/* Divider */}
       <div className="border-t" />
