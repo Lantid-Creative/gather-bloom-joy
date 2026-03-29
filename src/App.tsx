@@ -29,6 +29,11 @@ import CheckIn from "./pages/CheckIn.tsx";
 import SavedEvents from "./pages/SavedEvents.tsx";
 import Partners from "./pages/Partners.tsx";
 import PartnerDashboard from "./pages/PartnerDashboard.tsx";
+import Influencers from "./pages/Influencers.tsx";
+import InfluencerProfile from "./pages/InfluencerProfile.tsx";
+import InfluencerDashboard from "./pages/InfluencerDashboard.tsx";
+import HireInfluencer from "./pages/HireInfluencer.tsx";
+import MyHires from "./pages/MyHires.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
