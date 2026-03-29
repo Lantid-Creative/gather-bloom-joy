@@ -510,9 +510,15 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
   // ─── Preset touch handlers ───
   const handlePresetTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
-    const touch = e.touches[0];
     const canvas = presetCanvasRef.current;
     if (!canvas) return;
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      presetPinchRef.current = { dist: Math.hypot(dx, dy), size: presetPhotoSize };
+      return;
+    }
+    const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
     const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
     const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
@@ -525,6 +531,15 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
 
   const handlePresetTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
+    if (e.touches.length === 2 && presetPinchRef.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const newDist = Math.hypot(dx, dy);
+      const ratio = newDist / presetPinchRef.current.dist;
+      const newSize = Math.max(80, Math.min(300, Math.round(presetPinchRef.current.size * ratio)));
+      setPresetPhotoSize(newSize);
+      return;
+    }
     if (!presetDragging) return;
     const touch = e.touches[0];
     const canvas = presetCanvasRef.current;
@@ -537,6 +552,11 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
       x: Math.max(0, Math.min(mx - presetDragOffset.x, PRESET_W - prev.w)),
       y: Math.max(0, Math.min(my - presetDragOffset.y, PRESET_H - prev.h)),
     }));
+  };
+
+  const handlePresetTouchEnd = () => {
+    setPresetDragging(false);
+    presetPinchRef.current = null;
   };
 
   // ─── Save preset as template ───
