@@ -222,6 +222,8 @@ export type Database = {
           parent_event_id: string | null
           recurrence_end_date: string | null
           recurrence_type: string
+          seeking_sponsors: boolean
+          sponsor_description: string
           status: string
           tags: string[]
           tickets_sold: number
@@ -246,6 +248,8 @@ export type Database = {
           parent_event_id?: string | null
           recurrence_end_date?: string | null
           recurrence_type?: string
+          seeking_sponsors?: boolean
+          sponsor_description?: string
           status?: string
           tags?: string[]
           tickets_sold?: number
@@ -270,6 +274,8 @@ export type Database = {
           parent_event_id?: string | null
           recurrence_end_date?: string | null
           recurrence_type?: string
+          seeking_sponsors?: boolean
+          sponsor_description?: string
           status?: string
           tags?: string[]
           tickets_sold?: number
@@ -433,6 +439,42 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_profiles: {
+        Row: {
+          company_logo_url: string | null
+          company_name: string
+          created_at: string
+          description: string | null
+          id: string
+          industry: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          company_logo_url?: string | null
+          company_name: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          company_logo_url?: string | null
+          company_name?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -576,6 +618,113 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "schedule_items_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sponsorship_requests: {
+        Row: {
+          created_at: string
+          custom_offer_amount: number | null
+          custom_offer_benefits: string | null
+          event_id: string
+          id: string
+          message: string | null
+          partner_id: string
+          payment_status: string
+          status: string
+          stripe_session_id: string | null
+          tier_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          custom_offer_amount?: number | null
+          custom_offer_benefits?: string | null
+          event_id: string
+          id?: string
+          message?: string | null
+          partner_id: string
+          payment_status?: string
+          status?: string
+          stripe_session_id?: string | null
+          tier_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          custom_offer_amount?: number | null
+          custom_offer_benefits?: string | null
+          event_id?: string
+          id?: string
+          message?: string | null
+          partner_id?: string
+          payment_status?: string
+          status?: string
+          stripe_session_id?: string | null
+          tier_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsorship_requests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsorship_requests_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorship_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sponsorship_tiers: {
+        Row: {
+          benefits: string[]
+          created_at: string
+          currency: string
+          event_id: string
+          id: string
+          max_sponsors: number | null
+          name: string
+          price: number
+          sort_order: number
+          sponsors_count: number
+        }
+        Insert: {
+          benefits?: string[]
+          created_at?: string
+          currency?: string
+          event_id: string
+          id?: string
+          max_sponsors?: number | null
+          name: string
+          price?: number
+          sort_order?: number
+          sponsors_count?: number
+        }
+        Update: {
+          benefits?: string[]
+          created_at?: string
+          currency?: string
+          event_id?: string
+          id?: string
+          max_sponsors?: number | null
+          name?: string
+          price?: number
+          sort_order?: number
+          sponsors_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsorship_tiers_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
