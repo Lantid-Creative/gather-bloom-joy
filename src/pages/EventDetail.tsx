@@ -102,8 +102,8 @@ const EventDetail = () => {
 
   const spotsLeft = event.capacity - event.tickets_sold;
   const soldOut = spotsLeft <= 0;
-  const organizerId = (dbEvent as unknown as Record<string, unknown>)?.user_id as string | undefined;
-  const extraImages: string[] = (dbEvent as unknown as Record<string, unknown>)?.extra_images as string[] ?? [];
+  const organizerId = event.user_id;
+  const extraImages: string[] = event.extra_images ?? [];
   const allImages = [event.image_url, ...extraImages].filter(Boolean);
   
   // Urgency calculations
