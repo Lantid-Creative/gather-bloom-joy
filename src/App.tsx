@@ -70,6 +70,11 @@ const App = () => (
             <Route path="/careers" element={<Careers />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
+            <Route path="/influencers" element={<Influencers />} />
+            <Route path="/influencer/:id" element={<InfluencerProfile />} />
+            <Route path="/influencer-dashboard" element={<ProtectedRoute><InfluencerDashboard /></ProtectedRoute>} />
+            <Route path="/hire/:influencerId" element={<ProtectedRoute><HireInfluencer /></ProtectedRoute>} />
+            <Route path="/my-hires" element={<ProtectedRoute><MyHires /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
