@@ -136,6 +136,49 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const generateDescription = async () => {
+    if (!title.trim()) {
+      toast({ title: "Enter a title first", variant: "destructive" });
+      return;
+    }
+    setGeneratingDesc(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-event-tools", {
+        body: { action: "generate_description", title, category, location, date, isOnline },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setDescription(data.content);
+      toast({ title: "✨ Description generated!" });
+    } catch (e: any) {
+      toast({ title: e.message || "Failed to generate description", variant: "destructive" });
+    } finally {
+      setGeneratingDesc(false);
+    }
+  };
+
+  const suggestCategoryTags = async () => {
+    if (!title.trim()) {
+      toast({ title: "Enter a title first", variant: "destructive" });
+      return;
+    }
+    setSuggestingCats(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-event-tools", {
+        body: { action: "suggest_categories", title, description },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data.category) setCategory(data.category);
+      if (data.tags?.length) setTags(data.tags.join(", "));
+      toast({ title: `🏷️ Suggested: ${data.category} (${data.tags?.length || 0} tags)` });
+    } catch (e: any) {
+      toast({ title: e.message || "Failed to suggest categories", variant: "destructive" });
+    } finally {
+      setSuggestingCats(false);
+    }
+  };
+
   const addTicket = () => setTickets([...tickets, { ...emptyTicket }]);
   const removeTicket = (i: number) => setTickets(tickets.filter((_, idx) => idx !== i));
   const updateTicket = (i: number, field: keyof TicketDraft, value: string) => {
