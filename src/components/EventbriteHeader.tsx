@@ -36,7 +36,7 @@ const EventbriteHeader = () => {
     <header className="sticky top-0 z-50 bg-background border-b">
       <div className="container flex h-14 items-center gap-4">
         <Link to="/" className="shrink-0">
-          <span className="text-xl font-bold text-primary tracking-tight">afritickets</span>
+          <span className="text-xl font-bold text-primary tracking-tight">qantid</span>
         </Link>
 
         {/* Search Bar - Desktop */}

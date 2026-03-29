@@ -78,7 +78,7 @@ const MarketingTools = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <SEOHead title="Marketing Tools — Afritickets" description="Premium marketing tools to drive ticket sales." />
+        <SEOHead title="Marketing Tools — Qantid" description="Premium marketing tools to drive ticket sales." />
         <EventbriteHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to access Marketing Tools</h1>
@@ -92,7 +92,7 @@ const MarketingTools = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Marketing Tools — Afritickets" description="Premium marketing tools to drive ticket sales. Email campaigns, ads, promo codes, referrals, AI copy and more." />
+      <SEOHead title="Marketing Tools — Qantid" description="Premium marketing tools to drive ticket sales. Email campaigns, ads, promo codes, referrals, AI copy and more." />
       <EventbriteHeader />
 
       <div className="container max-w-6xl py-8">
@@ -156,7 +156,7 @@ const DashboardTab = ({ events, totalRevenue, totalTickets, totalImpressions, to
     <div className="grid md:grid-cols-3 gap-4">
       <QuickAction icon={Mail} title="Send Campaign" desc="Email your attendees" link="email" color="bg-blue-500/10 text-blue-600" />
       <QuickAction icon={Share2} title="Share on Social" desc="Post to TikTok, IG & more" link="social" color="bg-violet-500/10 text-violet-600" />
-      <QuickAction icon={Megaphone} title="Promote Event" desc="Run ads on Afritickets" link="ads" color="bg-primary/10 text-primary" />
+      <QuickAction icon={Megaphone} title="Promote Event" desc="Run ads on Qantid" link="ads" color="bg-primary/10 text-primary" />
     </div>
 
     {events.length === 0 && (
@@ -197,7 +197,7 @@ const EmailTab = ({ events }: { events: DbTable<"events">[] }) => {
         </div>
         <div className="h-px md:h-12 md:w-px w-full bg-border" />
         <div className="flex-1">
-          <p className="text-sm">Send emails to more people when you <span className="font-bold">subscribe to Afritickets Pro.</span></p>
+          <p className="text-sm">Send emails to more people when you <span className="font-bold">subscribe to Qantid Pro.</span></p>
         </div>
         <Button variant="outline" className="rounded-full whitespace-nowrap" asChild>
           <Link to="/pricing">Subscribe now</Link>
@@ -320,7 +320,7 @@ const SocialTab = ({ events }: { events: DbTable<"events">[] }) => {
           {subTab === "facebook" && (
             <div className="rounded-2xl bg-muted/30 p-8 md:p-10 space-y-6">
               <h2 className="text-2xl md:text-3xl font-bold">Facebook Events</h2>
-              <p className="text-muted-foreground">Connect your Facebook page to automatically create and sync Facebook events when you publish on Afritickets.</p>
+              <p className="text-muted-foreground">Connect your Facebook page to automatically create and sync Facebook events when you publish on Qantid.</p>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
@@ -348,7 +348,7 @@ const SocialTab = ({ events }: { events: DbTable<"events">[] }) => {
 const AdsTab = ({ events, totalImpressions, totalClicks }: { events: DbTable<"events">[]; totalImpressions: number; totalClicks: number }) => (
   <div className="space-y-8">
     <div>
-      <h2 className="text-2xl font-bold mb-2">Afritickets Ads</h2>
+      <h2 className="text-2xl font-bold mb-2">Qantid Ads</h2>
       <p className="text-muted-foreground">Promote your events with prominent placement across homepage, search, category pages, and related events. Get up to 9x more visibility.</p>
     </div>
 
@@ -372,11 +372,11 @@ const AdsTab = ({ events, totalImpressions, totalClicks }: { events: DbTable<"ev
     )}
 
     <div className="rounded-2xl border bg-primary/5 p-8">
-      <h3 className="font-bold text-xl mb-4">How Afritickets Ads work</h3>
+      <h3 className="font-bold text-xl mb-4">How Qantid Ads work</h3>
       <div className="grid md:grid-cols-3 gap-6">
         {[
           { step: "1", title: "Create", desc: "Set your budget, choose placements, and launch your ad." },
-          { step: "2", title: "Promote", desc: "Your event appears prominently across Afritickets — homepage, search, categories." },
+          { step: "2", title: "Promote", desc: "Your event appears prominently across Qantid — homepage, search, categories." },
           { step: "3", title: "Sell", desc: "Pay per click. Track impressions, clicks, and conversions in real-time." },
         ].map((s) => (
           <div key={s.step} className="space-y-2">
@@ -416,7 +416,7 @@ const GrowthTab = () => (
         </li>
         <li className="flex items-start gap-3">
           <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-          <span className="text-muted-foreground">Schedule Instagram posts directly from Afritickets</span>
+          <span className="text-muted-foreground">Schedule Instagram posts directly from Qantid</span>
         </li>
         <li className="flex items-start gap-3">
           <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />

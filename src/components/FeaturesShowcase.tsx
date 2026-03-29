@@ -84,7 +84,7 @@ const FeaturesShowcase = () => (
           The Complete Event Platform
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          From ticket sales to influencer marketing — Afritickets gives organizers,
+          From ticket sales to influencer marketing — Qantid gives organizers,
           attendees, and creators all the tools they need in one place.
         </p>
       </div>

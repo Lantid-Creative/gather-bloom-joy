@@ -87,7 +87,7 @@ const Lineups = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Lineups | Afritickets" description="Discover upcoming event lineups, artists, and performers across Africa." />
+      <SEOHead title="Lineups | Qantid" description="Discover upcoming event lineups, artists, and performers across Africa." />
       <EventbriteHeader />
 
       <div className="container max-w-5xl py-8 space-y-6">

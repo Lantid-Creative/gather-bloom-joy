@@ -31,7 +31,7 @@ const posts = [
   },
   {
     title: "Building Community Through Events: A Lagos Organizer's Story",
-    excerpt: "Meet Chioma Nwankwo, who went from hosting 20-person meetups to 5,000-attendee festivals using Afritickets.",
+    excerpt: "Meet Chioma Nwankwo, who went from hosting 20-person meetups to 5,000-attendee festivals using Qantid.",
     category: "Success Stories",
     date: "Feb 28, 2026",
     readTime: "7 min read",
@@ -60,7 +60,7 @@ const Blog = () => (
     <EventbriteHeader />
     <div className="container max-w-5xl py-16 space-y-12">
       <div className="text-center space-y-4 max-w-2xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold">Afritickets Blog</h1>
+        <h1 className="text-4xl md:text-5xl font-bold">Qantid Blog</h1>
         <p className="text-lg text-muted-foreground">
           Tips, trends, and stories from Africa's event community.
         </p>

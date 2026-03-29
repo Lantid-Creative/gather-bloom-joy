@@ -20,7 +20,7 @@ const CreateEvent = () => {
         <EventbriteHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to create events</h1>
-          <p className="text-muted-foreground">You need an account to create and manage events on Afritickets.</p>
+          <p className="text-muted-foreground">You need an account to create and manage events on Qantid.</p>
           <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>
             Sign in
           </Button>

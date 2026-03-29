@@ -78,7 +78,7 @@ Available categories: Music, Business, Food & Drink, Performing & Visual Arts, N
 
       case "smart_search": {
         const { query, events } = params;
-        systemPrompt = `You are a smart event search engine for Afritickets, Africa's leading event platform. Given a natural language query and a list of events, return the IDs of matching events ranked by relevance. Understand intent: "this weekend" means the next Saturday/Sunday, "near me" means prioritize the user's context, "cheap" means low-priced tickets, etc. Today's date is ${new Date().toISOString().split("T")[0]}.`;
+        systemPrompt = `You are a smart event search engine for Qantid, Africa's leading event platform. Given a natural language query and a list of events, return the IDs of matching events ranked by relevance. Understand intent: "this weekend" means the next Saturday/Sunday, "near me" means prioritize the user's context, "cheap" means low-priced tickets, etc. Today's date is ${new Date().toISOString().split("T")[0]}.`;
         userPrompt = `User query: "${query}"
 
 Events (JSON):
@@ -116,7 +116,7 @@ Return matching event IDs ranked by relevance.`;
 
       case "sales_insights": {
         const { events: eventData, totalRevenue, totalTickets, totalOrders } = params;
-        systemPrompt = `You are a data analyst for Afritickets, Africa's #1 event platform. Provide concise, actionable sales insights in a friendly tone. Use bullet points. Reference specific events by name. Include trend observations and actionable recommendations. Keep it under 200 words.`;
+        systemPrompt = `You are a data analyst for Qantid, Africa's #1 event platform. Provide concise, actionable sales insights in a friendly tone. Use bullet points. Reference specific events by name. Include trend observations and actionable recommendations. Keep it under 200 words.`;
         userPrompt = `Analyze this organizer's sales data:
 
 Total Revenue: $${totalRevenue}
@@ -132,7 +132,7 @@ Provide natural language insights about their performance, trends, and recommend
 
       case "sales_forecast": {
         const { events: eventData, totalRevenue, totalTickets } = params;
-        systemPrompt = `You are a predictive analytics expert for Afritickets. Based on historical sales data, provide forecasts and projections. Be specific with numbers but note they are estimates. Include confidence levels.`;
+        systemPrompt = `You are a predictive analytics expert for Qantid. Based on historical sales data, provide forecasts and projections. Be specific with numbers but note they are estimates. Include confidence levels.`;
         userPrompt = `Based on this organizer's data, forecast their next 30 days:
 
 Total Revenue so far: $${totalRevenue}
@@ -206,7 +206,7 @@ Write copy optimized for ${platform}. Include relevant hashtags.`;
 
       case "event_chatbot": {
         const { question, eventTitle, eventDescription, eventDate, eventLocation, eventTime, isOnline, meetingPlatform, organizer, ticketTypes } = params;
-        systemPrompt = `You are a friendly, helpful AI assistant for Afritickets. You answer attendee questions about a specific event. Be concise (2-3 sentences max). If you don't know something, say so honestly. Never make up information not provided in the event details. Use a warm, conversational tone.`;
+        systemPrompt = `You are a friendly, helpful AI assistant for Qantid. You answer attendee questions about a specific event. Be concise (2-3 sentences max). If you don't know something, say so honestly. Never make up information not provided in the event details. Use a warm, conversational tone.`;
         userPrompt = `Event Details:
 Title: ${eventTitle}
 Description: ${eventDescription || "Not provided"}
@@ -223,7 +223,7 @@ Attendee question: "${question}"`;
 
       case "recommend_events": {
         const { userHistory, availableEvents } = params;
-        systemPrompt = `You are a recommendation engine for Afritickets. Based on a user's browsing/purchase history, rank available events by relevance. Consider category preferences, location patterns, and price sensitivity. Return the top 6 most relevant event IDs.`;
+        systemPrompt = `You are a recommendation engine for Qantid. Based on a user's browsing/purchase history, rank available events by relevance. Consider category preferences, location patterns, and price sensitivity. Return the top 6 most relevant event IDs.`;
         userPrompt = `User history (events viewed/purchased):
 ${JSON.stringify(userHistory)}
 
@@ -255,7 +255,7 @@ Return the 6 most relevant event IDs for this user.`;
 
       case "match_influencers": {
         const { eventTitle, eventCategory, eventLocation, eventTags, influencers } = params;
-        systemPrompt = `You are an influencer marketing expert for Afritickets. Match events with the most relevant influencers based on category alignment, audience overlap, location relevance, and follower count. Return the top 5 best-matched influencer IDs with match scores and reasons.`;
+        systemPrompt = `You are an influencer marketing expert for Qantid. Match events with the most relevant influencers based on category alignment, audience overlap, location relevance, and follower count. Return the top 5 best-matched influencer IDs with match scores and reasons.`;
         userPrompt = `Event to promote:
 Title: ${eventTitle}
 Category: ${eventCategory}
@@ -301,7 +301,7 @@ Return the top 5 best matches.`;
 
       case "smart_pricing": {
         const { eventTitle, eventCategory, eventLocation, currentTickets, capacity, ticketsSold, isOnline } = params;
-        systemPrompt = `You are a pricing strategist for Afritickets, Africa's leading event platform. Analyze event details and current ticket tiers, then suggest optimal pricing strategies. Consider the African market, event category, location, demand signals, and competitive pricing. Provide actionable, specific pricing recommendations.`;
+        systemPrompt = `You are a pricing strategist for Qantid, Africa's leading event platform. Analyze event details and current ticket tiers, then suggest optimal pricing strategies. Consider the African market, event category, location, demand signals, and competitive pricing. Provide actionable, specific pricing recommendations.`;
         userPrompt = `Analyze pricing for this event:
 Title: ${eventTitle}
 Category: ${eventCategory}
@@ -365,7 +365,7 @@ Suggest optimal pricing adjustments, new tier ideas, and dynamic pricing strateg
 
       case "generate_sponsorship_proposal": {
         const { eventTitle, eventCategory, eventDescription, eventLocation, eventDate, capacity, ticketsSold, sponsorshipTiers, seekingSponsors } = params;
-        systemPrompt = `You are a sponsorship sales expert for Afritickets. Generate compelling, professional sponsorship proposals that convince brands to sponsor African events. Include ROI projections, audience demographics estimates, and brand visibility benefits. Write in a persuasive, data-driven tone.`;
+        systemPrompt = `You are a sponsorship sales expert for Qantid. Generate compelling, professional sponsorship proposals that convince brands to sponsor African events. Include ROI projections, audience demographics estimates, and brand visibility benefits. Write in a persuasive, data-driven tone.`;
         userPrompt = `Generate a sponsorship proposal for:
 Title: ${eventTitle}
 Category: ${eventCategory}

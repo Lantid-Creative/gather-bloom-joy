@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 const contactCards = [
-  { icon: Mail, title: "Email Us", detail: "support@afritickets.com", sub: "We reply within 24 hours" },
+  { icon: Mail, title: "Email Us", detail: "support@qantid.com", sub: "We reply within 24 hours" },
   { icon: MessageSquare, title: "Live Chat", detail: "Available 9am - 6pm WAT", sub: "Mon - Fri" },
   { icon: MapPin, title: "Visit Us", detail: "14 Adeola Hopewell St", sub: "Victoria Island, Lagos" },
   { icon: Phone, title: "Call Us", detail: "+234 800 TICKETS", sub: "Toll-free in Nigeria" },

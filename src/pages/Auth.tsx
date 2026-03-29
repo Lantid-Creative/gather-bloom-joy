@@ -40,7 +40,7 @@ const Auth = () => {
       } else {
         const { error } = await signUp(email, password, fullName);
         if (error) throw error;
-        toast({ title: "Account created! Welcome to Afritickets 🎉" });
+        toast({ title: "Account created! Welcome to Qantid 🎉" });
         navigate("/");
       }
     } catch (err: unknown) {
@@ -110,7 +110,7 @@ const Auth = () => {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-white/5 border border-white/10" />
 
             <div className="relative z-10 space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">Afritickets</h2>
+              <h2 className="text-3xl font-bold tracking-tight">Qantid</h2>
               <p className="text-white/70 text-sm">Africa's premier event platform</p>
             </div>
 
@@ -245,7 +245,7 @@ const Auth = () => {
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="bg-card px-4 text-muted-foreground">
-                  {mode === "forgot" ? "or" : mode === "login" ? "New to Afritickets?" : "Already have an account?"}
+                  {mode === "forgot" ? "or" : mode === "login" ? "New to Qantid?" : "Already have an account?"}
                 </span>
               </div>
             </div>

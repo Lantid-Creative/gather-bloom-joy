@@ -33,7 +33,7 @@ const About = () => (
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold">Connecting Africa Through Events</h1>
         <p className="text-lg text-muted-foreground">
-          Afritickets is Africa's leading event discovery and ticketing platform, empowering organizers
+          Qantid is Africa's leading event discovery and ticketing platform, empowering organizers
           and connecting communities across the continent.
         </p>
       </div>
@@ -59,7 +59,7 @@ const About = () => (
             and create memorable experiences.
           </p>
           <p className="text-muted-foreground leading-relaxed">
-            Founded in 2024, Afritickets has grown from a small idea into the continent's most
+            Founded in 2024, Qantid has grown from a small idea into the continent's most
             trusted ticketing platform, serving organizers of all sizes from independent creators
             to major entertainment brands.
           </p>

@@ -81,7 +81,7 @@ const CheckIn = () => {
       const { orderItemId } = parsed;
 
       if (!orderItemId) {
-        toast({ title: "Invalid QR code", description: "This doesn't look like an Afritickets ticket.", variant: "destructive" });
+        toast({ title: "Invalid QR code", description: "This doesn't look like an Qantid ticket.", variant: "destructive" });
         return;
       }
 

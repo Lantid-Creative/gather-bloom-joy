@@ -97,7 +97,7 @@ const AdsManager = ({ eventId, eventTitle }: AdsManagerProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Megaphone className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-semibold">Afritickets Ads</h3>
+          <h3 className="text-sm font-semibold">Qantid Ads</h3>
         </div>
         <Button size="sm" variant="outline" onClick={() => setShowCreate(!showCreate)}>
           <Plus className="h-3 w-3 mr-1" /> New Campaign

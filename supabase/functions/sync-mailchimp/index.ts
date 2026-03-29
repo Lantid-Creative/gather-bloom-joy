@@ -95,7 +95,7 @@ serve(async (req) => {
     const authB64 = btoa(`anystring:${MAILCHIMP_API_KEY}`);
 
     // Create an audience for this event (or find existing one)
-    const listName = `Afritickets: ${eventTitle || eventId}`.slice(0, 100);
+    const listName = `Qantid: ${eventTitle || eventId}`.slice(0, 100);
 
     // Check existing lists
     const listsRes = await fetch(`${baseUrl}/lists?count=100`, {
@@ -119,10 +119,10 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           name: listName,
-          permission_reminder: "You signed up for this event on Afritickets.",
+          permission_reminder: "You signed up for this event on Qantid.",
           email_type_option: false,
           contact: {
-            company: "Afritickets",
+            company: "Qantid",
             address1: "",
             city: "",
             state: "",
@@ -130,8 +130,8 @@ serve(async (req) => {
             country: "US",
           },
           campaign_defaults: {
-            from_name: "Afritickets",
-            from_email: "noreply@afritickets.com",
+            from_name: "Qantid",
+            from_email: "noreply@qantid.com",
             subject: "",
             language: "en",
           },

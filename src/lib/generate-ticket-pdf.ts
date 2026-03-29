@@ -30,7 +30,7 @@ export async function generateTicketPDF(tickets: TicketInfo[]): Promise<void> {
     doc.roundedRect(20, 30, 170, 200, 4, 4, "S");
 
     // Header bar
-    doc.setFillColor(232, 93, 47); // Afritickets primary orange
+    doc.setFillColor(232, 93, 47); // Qantid primary orange
     doc.roundedRect(20, 30, 170, 30, 4, 4, "F");
     doc.rect(20, 46, 170, 14, "F"); // fill bottom corners
 
@@ -91,12 +91,12 @@ export async function generateTicketPDF(tickets: TicketInfo[]): Promise<void> {
     doc.setFontSize(9);
     doc.setTextColor(150, 150, 150);
     doc.text("Present this ticket at the event entrance", 30, 185);
-    doc.text("Powered by Afritickets", 30, 192);
+    doc.text("Powered by Qantid", 30, 192);
 
     // Ticket ID
     doc.setFontSize(8);
     doc.text(`ID: ${t.orderItemId.slice(0, 12).toUpperCase()}`, 30, 220);
   }
 
-  doc.save(`afritickets-${tickets[0]?.orderId?.slice(0, 8) ?? "ticket"}.pdf`);
+  doc.save(`qantid-${tickets[0]?.orderId?.slice(0, 8) ?? "ticket"}.pdf`);
 }

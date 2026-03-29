@@ -35,7 +35,7 @@ const Careers = () => (
 
       {/* Why join */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Why Afritickets?</h2>
+        <h2 className="text-2xl font-bold text-center">Why Qantid?</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {perks.map((p) => (
             <div key={p.title} className="p-5 rounded-xl border text-center space-y-3">

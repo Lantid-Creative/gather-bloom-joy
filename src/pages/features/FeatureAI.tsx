@@ -181,7 +181,7 @@ const FeatureAI = () => (
       <Zap className="h-8 w-8 text-primary mx-auto mb-3" />
       <h2 className="text-xl font-bold mb-2">All AI Features. Zero Extra Cost.</h2>
       <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-        Every AI feature is included free with your Afritickets account. No API keys, no upgrades, no limits.
+        Every AI feature is included free with your Qantid account. No API keys, no upgrades, no limits.
       </p>
       <div className="flex justify-center gap-3">
         <Button className="rounded-full" asChild>

@@ -21,7 +21,7 @@ const Privacy = () => (
       <p>We implement industry-standard security measures including encryption of data in transit and at rest, regular security audits, access controls and authentication, and secure payment processing through certified providers. No method of transmission is 100% secure; we cannot guarantee absolute security.</p>
 
       <h2>5. Your Rights</h2>
-      <p>Depending on your location, you may have the right to access your personal data, correct inaccurate data, delete your data, port your data to another service, opt out of marketing communications, and withdraw consent at any time. To exercise these rights, contact us at privacy@afritickets.com.</p>
+      <p>Depending on your location, you may have the right to access your personal data, correct inaccurate data, delete your data, port your data to another service, opt out of marketing communications, and withdraw consent at any time. To exercise these rights, contact us at privacy@qantid.com.</p>
 
       <h2>6. Cookies</h2>
       <p>We use essential cookies for platform functionality, analytics cookies to understand usage patterns, and preference cookies to remember your settings. You can manage cookie preferences through your browser settings.</p>
@@ -36,7 +36,7 @@ const Privacy = () => (
       <p>Our services are not directed to children under 13. We do not knowingly collect personal information from children. If we become aware that a child has provided us with personal data, we will delete it promptly.</p>
 
       <h2>10. Contact Us</h2>
-      <p>For privacy-related questions, contact our Data Protection Officer at privacy@afritickets.com or write to: Afritickets Ltd, 14 Adeola Hopewell Street, Victoria Island, Lagos, Nigeria.</p>
+      <p>For privacy-related questions, contact our Data Protection Officer at privacy@qantid.com or write to: Qantid Ltd, 14 Adeola Hopewell Street, Victoria Island, Lagos, Nigeria.</p>
     </div>
     <EventbriteFooter />
   </div>
