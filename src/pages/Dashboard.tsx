@@ -137,6 +137,18 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* AI Sales Insights & Forecasting */}
+        {eventStats.length > 0 && (
+          <div className="mb-10">
+            <AiSalesInsights
+              events={eventStats.map((s) => ({ title: s.event.title, revenue: s.revenue, tickets: s.tickets, date: s.event.date }))}
+              totalRevenue={totalRevenue}
+              totalTickets={totalTickets}
+              totalOrders={totalOrders}
+            />
+          </div>
+        )}
+
         <h2 className="text-xl font-bold mb-4">Event Breakdown</h2>
         {eventStats.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground"><p>No events yet.</p><Button variant="hero" size="sm" className="rounded-full mt-4" asChild><Link to="/create-event">Create Your First Event</Link></Button></div>
