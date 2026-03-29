@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import type { Tables } from "@/integrations/supabase/types";
 import { Plus, Calendar, MapPin, Users, Pencil, Trash2, Eye, Copy, QrCode } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
@@ -29,8 +30,8 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["my-events"] });
       await queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: `"${eventTitle}" deleted` });
-    } catch (err: any) {
-      toast({ title: "Error deleting event", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Error deleting event", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 
@@ -41,12 +42,12 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["my-events"] });
       await queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: `Event ${newStatus}` });
-    } catch (err: any) {
-      toast({ title: "Error updating status", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Error updating status", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 
-  const handleDuplicate = async (event: any) => {
+  const handleDuplicate = async (event: Tables<"events"> & { ticket_types?: Array<{ name: string; price: number; description: string; available: number; max_per_order: number }> }) => {
     if (!user) return;
     try {
       const { data: newEvent, error } = await supabase
@@ -74,7 +75,7 @@ const MyEvents = () => {
       // Copy tickets
       if (event.ticket_types?.length) {
         await supabase.from("ticket_types").insert(
-          event.ticket_types.map((t: any) => ({
+          event.ticket_types.map((t: { name: string; price: number; description: string; available: number; max_per_order: number; }) => ({
             event_id: newEvent.id, name: t.name, price: t.price,
             description: t.description, available: t.available, max_per_order: t.max_per_order,
           }))
@@ -83,8 +84,8 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["my-events"] });
       toast({ title: "Event duplicated! Edit it below." });
       navigate(`/edit-event/${newEvent.id}`);
-    } catch (err: any) {
-      toast({ title: "Error duplicating", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Error duplicating", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 
@@ -131,7 +132,7 @@ const MyEvents = () => {
           <div className="space-y-4">
             {events.map((event) => {
               const isPast = new Date(event.date) < new Date();
-              const status = (event as any).status ?? "published";
+              const status = (event as unknown as Record<string, unknown>).status as string ?? "published";
               return (
                 <div key={event.id} className={`flex flex-col sm:flex-row gap-4 p-4 border rounded-xl transition-colors hover:bg-accent/30 ${isPast ? "opacity-60" : ""}`}>
                   <Link to={`/event/${event.id}`} className="shrink-0">

@@ -107,7 +107,7 @@ const MyTickets = () => {
           <div className="space-y-6">
             {orders.map((order) => {
               const items = orderItems?.filter((i) => i.order_id === order.id) ?? [];
-              const hasRefund = refundRequests?.some((r: any) => r.order_id === order.id);
+              const hasRefund = refundRequests?.some((r: { order_id: string }) => r.order_id === order.id);
               return (
                 <div key={order.id} className="border rounded-xl overflow-hidden">
                   <div className="flex items-center justify-between px-5 py-3 bg-surface text-sm">

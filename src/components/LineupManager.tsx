@@ -49,16 +49,16 @@ const LineupManager = ({ eventId }: { eventId: string }) => {
     queryKey: ["lineup-artists", eventId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("event_lineup_artists" as any)
+        .from("event_lineup_artists")
         .select("*")
         .eq("event_id", eventId)
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return (data as any[]) as LineupArtist[];
+      return (data ?? []) as LineupArtist[];
     },
   });
 
-  const updateField = (key: string, value: any) => setForm((p) => ({ ...p, [key]: value }));
+  const updateField = (key: string, value: string | number | boolean) => setForm((p) => ({ ...p, [key]: value }));
 
   const handleSave = async () => {
     if (!form.name.trim()) {
@@ -67,31 +67,31 @@ const LineupManager = ({ eventId }: { eventId: string }) => {
     }
     setSaving(true);
     try {
-      const { error } = await supabase.from("event_lineup_artists" as any).insert({
+      const { error } = await supabase.from("event_lineup_artists").insert({
         event_id: eventId,
         ...form,
         sort_order: artists?.length ?? 0,
-      } as any);
+      });
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["lineup-artists", eventId] });
       setForm(emptyArtist);
       setAdding(false);
       toast({ title: "Artist added to lineup!" });
-    } catch (err: any) {
-      toast({ title: "Failed", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    await supabase.from("event_lineup_artists" as any).delete().eq("id", id);
+    await supabase.from("event_lineup_artists").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["lineup-artists", eventId] });
     toast({ title: "Artist removed" });
   };
 
   const toggleHeadliner = async (id: string, val: boolean) => {
-    await supabase.from("event_lineup_artists" as any).update({ headliner: val } as any).eq("id", id);
+    await supabase.from("event_lineup_artists").update({ headliner: val }).eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["lineup-artists", eventId] });
   };
 

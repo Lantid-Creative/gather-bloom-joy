@@ -44,7 +44,7 @@ const AdminOrders = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((o: any) => (
+                {orders.map((o: Tables<"orders">) => (
                   <TableRow key={o.id}>
                     <TableCell className="font-mono text-xs">{o.id.slice(0, 8)}…</TableCell>
                     <TableCell>{o.customer_name}</TableCell>

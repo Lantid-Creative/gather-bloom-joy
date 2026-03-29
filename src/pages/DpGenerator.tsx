@@ -44,13 +44,13 @@ const DpGenerator = () => {
     queryKey: ["dp-templates-public", eventId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("dp_templates" as any)
+        .from("dp_templates")
         .select("*")
         .eq("event_id", eventId!)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data as any[]) as DpTemplate[];
+      return (data ?? []) as DpTemplate[];
     },
     enabled: !!eventId,
   });
@@ -182,8 +182,8 @@ const DpGenerator = () => {
       const { data: urlData } = supabase.storage.from("dp-templates").getPublicUrl(path);
       await supabase.from("profiles").update({ avatar_url: urlData.publicUrl }).eq("id", user.id);
       toast({ title: "Profile picture updated!" });
-    } catch (err: any) {
-      toast({ title: "Failed to update", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Failed to update", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 

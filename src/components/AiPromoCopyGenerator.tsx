@@ -29,7 +29,7 @@ const AiPromoCopyGenerator = ({ events }: Props) => {
   const [platform, setPlatform] = useState("twitter");
   const [tone, setTone] = useState("exciting");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{ copy?: string; hashtags?: string[]; call_to_action?: string; platform_tips?: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
@@ -55,8 +55,8 @@ const AiPromoCopyGenerator = ({ events }: Props) => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);
-    } catch (e: any) {
-      toast({ title: e.message || "Failed to generate copy", variant: "destructive" });
+    } catch (e: unknown) {
+      toast({ title: (e instanceof Error ? e.message : "Unknown error") || "Failed to generate copy", variant: "destructive" });
     } finally {
       setLoading(false);
     }

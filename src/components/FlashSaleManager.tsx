@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Tables } from "@/integrations/supabase/types";
 import { Zap, Plus, Trash2, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,8 +67,8 @@ const FlashSaleManager = ({ eventId, ticketTypes }: Props) => {
       setShowForm(false);
       setForm({ name: "", discount_type: "percentage", discount_value: 10, starts_at: "", ends_at: "", max_uses: "", applies_to_ticket_ids: [] });
       queryClient.invalidateQueries({ queryKey: ["flash-sales", eventId] });
-    } catch (err: any) {
-      toast({ title: "Failed to create sale", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Failed to create sale", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -84,7 +85,7 @@ const FlashSaleManager = ({ eventId, ticketTypes }: Props) => {
     toast({ title: "Flash sale deleted" });
   };
 
-  const getSaleStatus = (sale: any) => {
+  const getSaleStatus = (sale: Tables<"flash_sales">) => {
     const now = new Date();
     const start = new Date(sale.starts_at);
     const end = new Date(sale.ends_at);

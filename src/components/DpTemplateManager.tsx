@@ -321,12 +321,12 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
     queryKey: ["dp-templates", eventId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("dp_templates" as any)
+        .from("dp_templates")
         .select("*")
         .eq("event_id", eventId)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data as any[]) as DpTemplate[];
+      return (data ?? []) as DpTemplate[];
     },
   });
 
@@ -391,8 +391,8 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
       };
       img.src = urlData.publicUrl;
       toast({ title: "Flyer uploaded!" });
-    } catch (err: any) {
-      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Upload failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setUploading(false);
     }
@@ -580,7 +580,7 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
       if (uploadErr) throw uploadErr;
       const { data: urlData } = supabase.storage.from("dp-templates").getPublicUrl(path);
 
-      const { error } = await supabase.from("dp_templates" as any).insert({
+      const { error } = await supabase.from("dp_templates").insert({
         event_id: eventId,
         user_id: user!.id,
         name: presetName.trim(),
@@ -591,15 +591,15 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
         photo_height: Math.round(presetPhotoRect.h),
         photo_shape: presetPhotoShape,
         is_preset: true,
-      } as any);
+      });
       if (error) throw error;
 
       queryClient.invalidateQueries({ queryKey: ["dp-templates", eventId] });
       setPresetName("");
       setSelectedPreset(null);
       toast({ title: "Template saved!" });
-    } catch (err: any) {
-      toast({ title: "Save failed", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Save failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -613,7 +613,7 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
     }
     setSaving(true);
     try {
-      const { error } = await supabase.from("dp_templates" as any).insert({
+      const { error } = await supabase.from("dp_templates").insert({
         event_id: eventId,
         user_id: user!.id,
         name: name.trim(),
@@ -623,21 +623,21 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
         photo_width: Math.round(photoRect.w),
         photo_height: Math.round(photoRect.h),
         photo_shape: photoShape,
-      } as any);
+      });
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["dp-templates", eventId] });
       setUploadedUrl("");
       setName("");
       toast({ title: "DP template saved!" });
-    } catch (err: any) {
-      toast({ title: "Save failed", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Save failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    await supabase.from("dp_templates" as any).delete().eq("id", id);
+    await supabase.from("dp_templates").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["dp-templates", eventId] });
     toast({ title: "Template deleted" });
   };

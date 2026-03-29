@@ -32,8 +32,8 @@ const ResetPassword = () => {
       if (error) throw error;
       setConfirmed(true);
       toast({ title: "Password updated!" });
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Error", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setLoading(false);
     }

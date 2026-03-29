@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import type { Tables } from "@/integrations/supabase/types";
 
 const NotificationBell = () => {
   const { user } = useAuth();
@@ -31,11 +32,11 @@ const NotificationBell = () => {
     refetchInterval: 30000,
   });
 
-  const unreadCount = notifications?.filter((n: any) => !n.read).length ?? 0;
+  const unreadCount = notifications?.filter((n: Tables<"notifications">) => !n.read).length ?? 0;
 
   const markAllRead = async () => {
     if (!user || !notifications?.length) return;
-    const unreadIds = notifications.filter((n: any) => !n.read).map((n: any) => n.id);
+    const unreadIds = notifications.filter((n: Tables<"notifications">) => !n.read).map((n: Tables<"notifications">) => n.id);
     if (unreadIds.length > 0) {
       await supabase.from("notifications").update({ read: true }).in("id", unreadIds);
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
@@ -60,7 +61,7 @@ const NotificationBell = () => {
         {!notifications || notifications.length === 0 ? (
           <div className="p-4 text-center text-sm text-muted-foreground">No notifications</div>
         ) : (
-          notifications.map((n: any) => (
+          notifications.map((n: Tables<"notifications">) => (
             <DropdownMenuItem key={n.id} asChild className="cursor-pointer">
               <div className="flex flex-col gap-1 px-3 py-2">
                 <span className="text-sm font-medium">{n.title}</span>

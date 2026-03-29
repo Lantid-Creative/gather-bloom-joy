@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Tables } from "@/integrations/supabase/types";
 import { Share2, Plus, Trash2, Loader2, Clock, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,8 +72,8 @@ const SocialPostScheduler = ({ eventId, eventTitle }: Props) => {
       setShowForm(false);
       setForm({ platform: "twitter", content: "", scheduled_at: "" });
       queryClient.invalidateQueries({ queryKey: ["scheduled-posts", eventId] });
-    } catch (err: any) {
-      toast({ title: "Failed to schedule", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Failed to schedule", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -91,7 +92,7 @@ const SocialPostScheduler = ({ eventId, eventTitle }: Props) => {
     toast({ title: "Copied to clipboard!" });
   };
 
-  const getStatusBadge = (post: any) => {
+  const getStatusBadge = (post: Tables<"scheduled_posts">) => {
     if (post.status === "posted") return <Badge className="bg-green-500/10 text-green-600 text-[10px]">Posted</Badge>;
     if (post.status === "failed") return <Badge className="bg-red-500/10 text-red-600 text-[10px]">Failed</Badge>;
     const scheduled = new Date(post.scheduled_at);

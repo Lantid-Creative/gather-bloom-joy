@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Tables } from "@/integrations/supabase/types";
 import { Users, Link as LinkIcon, Copy, Check, Loader2, TrendingUp, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,14 +60,14 @@ const ReferralProgramManager = ({ eventId, eventTitle }: Props) => {
       if (error) throw error;
       toast({ title: "Referral program created! 🎉" });
       queryClient.invalidateQueries({ queryKey: ["referral-program", eventId] });
-    } catch (err: any) {
-      toast({ title: "Failed to create program", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Failed to create program", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
   };
 
-  const updateProgram = async (updates: any) => {
+  const updateProgram = async (updates: Partial<Tables<"referral_programs">>) => {
     if (!program) return;
     await supabase.from("referral_programs").update(updates).eq("id", program.id);
     queryClient.invalidateQueries({ queryKey: ["referral-program", eventId] });

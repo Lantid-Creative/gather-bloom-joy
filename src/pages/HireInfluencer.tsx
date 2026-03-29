@@ -41,10 +41,10 @@ const HireInfluencer = () => {
     },
   });
 
-  const services = (influencer as any)?.influencer_services?.filter((s: any) => s.is_active) ?? [];
+  const services = ((influencer as unknown as Record<string, unknown>)?.influencer_services as Array<{ id: string; is_active: boolean; price: number; title: string; description: string; delivery_days: number; category: string }> ?? []).filter((s) => s.is_active) ?? [];
 
   // When a service is selected, auto-fill
-  const selectedService = services.find((s: any) => s.id === selectedServiceId);
+  const selectedService = services.find((s) => s.id === selectedServiceId);
   const effectiveAmount = selectedService ? Number(selectedService.price) : parseFloat(amount) || 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,8 +75,8 @@ const HireInfluencer = () => {
 
       toast({ title: "Hire request sent! 🎉", description: "The influencer will review your request. You'll pay once they accept." });
       navigate("/influencers");
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Error", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -129,7 +129,7 @@ const HireInfluencer = () => {
             <div className="space-y-3">
               <Label>Select a Service</Label>
               <div className="space-y-2">
-                {services.map((s: any) => (
+                {services.map((s) => (
                   <label
                     key={s.id}
                     className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-colors ${

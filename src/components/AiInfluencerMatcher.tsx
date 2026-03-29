@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Tables } from "@/integrations/supabase/types";
 import { Sparkles, Users, Star, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,8 +62,8 @@ const AiInfluencerMatcher = ({ eventId, eventTitle, eventCategory, eventLocation
       if (data.matches?.length > 0) {
         toast({ title: `🎯 Found ${data.matches.length} influencer matches!` });
       }
-    } catch (e: any) {
-      toast({ title: e.message || "Failed to match influencers", variant: "destructive" });
+    } catch (e: unknown) {
+      toast({ title: (e instanceof Error ? e.message : "Unknown error") || "Failed to match influencers", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -70,7 +71,7 @@ const AiInfluencerMatcher = ({ eventId, eventTitle, eventCategory, eventLocation
 
   const getInfluencer = (id: string) => influencers?.find((i) => i.id === id);
 
-  const totalFollowers = (inf: any) =>
+  const totalFollowers = (inf: Tables<"influencer_profiles">) =>
     (inf.instagram_followers || 0) + (inf.tiktok_followers || 0) + (inf.twitter_followers || 0) + (inf.youtube_subscribers || 0);
 
   return (

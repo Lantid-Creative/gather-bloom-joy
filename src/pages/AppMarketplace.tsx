@@ -23,7 +23,7 @@ interface AppItem {
   id: string;
   name: string;
   description: string;
-  icon: any;
+  icon: React.ElementType;
   iconBg: string;
   categories: CategoryKey[];
   staffPick?: boolean;
