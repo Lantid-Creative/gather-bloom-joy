@@ -238,6 +238,11 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* AI Promo Copy Generator */}
+        <div className="mt-10">
+          <AiPromoCopyGenerator events={events?.map((e) => ({ id: e.id, title: e.title, description: e.description, date: e.date, location: e.location })) ?? []} />
+        </div>
+
         {/* Promo Codes */}
         <div className="mt-10">
           <PromoCodeManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
