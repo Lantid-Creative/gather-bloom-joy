@@ -144,6 +144,7 @@ const Dashboard = () => {
                   <div className="space-y-1 min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <p className="font-semibold truncate">{event.title}</p>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary text-xs font-medium px-2 py-0.5"><Users className="h-3 w-3" />{tickets}</span>
                       <Link to={`/check-in/${event.id}`} onClick={(e) => e.stopPropagation()} className="text-xs text-primary hover:underline flex items-center gap-1"><QrCode className="h-3 w-3" /> Check-in</Link>
                     </div>
                     <p className="text-xs text-muted-foreground">{format(new Date(event.date), "MMM d, yyyy")} · {event.location}</p>
