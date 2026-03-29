@@ -34,6 +34,14 @@ import InfluencerProfile from "./pages/InfluencerProfile.tsx";
 import InfluencerDashboard from "./pages/InfluencerDashboard.tsx";
 import HireInfluencer from "./pages/HireInfluencer.tsx";
 import MyHires from "./pages/MyHires.tsx";
+import FeatureTicketing from "./pages/features/FeatureTicketing.tsx";
+import FeatureCheckIn from "./pages/features/FeatureCheckIn.tsx";
+import FeatureDashboard from "./pages/features/FeatureDashboard.tsx";
+import FeatureInfluencers from "./pages/features/FeatureInfluencers.tsx";
+import FeatureSponsorship from "./pages/features/FeatureSponsorship.tsx";
+import FeaturePromoCodes from "./pages/features/FeaturePromoCodes.tsx";
+import FeaturePayments from "./pages/features/FeaturePayments.tsx";
+import FeatureAfrica from "./pages/features/FeatureAfrica.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -75,6 +83,14 @@ const App = () => (
             <Route path="/influencer-dashboard" element={<ProtectedRoute><InfluencerDashboard /></ProtectedRoute>} />
             <Route path="/hire/:influencerId" element={<ProtectedRoute><HireInfluencer /></ProtectedRoute>} />
             <Route path="/my-hires" element={<ProtectedRoute><MyHires /></ProtectedRoute>} />
+            <Route path="/features/ticketing" element={<FeatureTicketing />} />
+            <Route path="/features/check-in" element={<FeatureCheckIn />} />
+            <Route path="/features/dashboard" element={<FeatureDashboard />} />
+            <Route path="/features/influencers" element={<FeatureInfluencers />} />
+            <Route path="/features/sponsorship" element={<FeatureSponsorship />} />
+            <Route path="/features/promo-codes" element={<FeaturePromoCodes />} />
+            <Route path="/features/payments" element={<FeaturePayments />} />
+            <Route path="/features/africa" element={<FeatureAfrica />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
