@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy } from "lucide-react";
+import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy, Activity, CalendarDays, Percent } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { format, subDays, eachDayOfInterval, startOfDay, parseISO, differenceInDays } from "date-fns";
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PromoCodeManager from "@/components/PromoCodeManager";
 import TrackingLinkManager from "@/components/TrackingLinkManager";
 import SponsorshipTierManager from "@/components/SponsorshipTierManager";
@@ -24,6 +24,7 @@ import EmailCampaignManager from "@/components/EmailCampaignManager";
 import DpTemplateManager from "@/components/DpTemplateManager";
 import TimeSlotManager from "@/components/TimeSlotManager";
 import LineupManager from "@/components/LineupManager";
+import EventReportPanel from "@/components/EventReportPanel";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
@@ -128,12 +129,48 @@ const Dashboard = () => {
         </div>
         <p className="text-muted-foreground mb-8">Track sales, revenue, and attendees across all your events.</p>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} />
           <StatCard icon={Ticket} label="Tickets Sold" value={totalTickets.toString()} />
           <StatCard icon={TrendingUp} label="Total Orders" value={totalOrders.toString()} />
           <StatCard icon={Users} label="Unique Attendees" value={uniqueAttendees.toString()} />
         </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          <StatCard icon={Activity} label="Avg Order Value" value={totalOrders > 0 ? `$${(totalRevenue / totalOrders).toFixed(2)}` : "$0"} />
+          <StatCard icon={CalendarDays} label="Active Events" value={String(events?.filter(e => new Date(e.date) >= new Date()).length ?? 0)} sub={`${events?.filter(e => new Date(e.date) < new Date()).length ?? 0} past`} />
+          <StatCard icon={Percent} label="Avg Fill Rate" value={`${events && events.length > 0 ? Math.round(events.reduce((s, e) => s + (e.capacity > 0 ? (e.tickets_sold / e.capacity) * 100 : 0), 0) / events.length) : 0}%`} />
+          <StatCard icon={TrendingUp} label="Revenue/Event" value={events && events.length > 0 ? `$${Math.round(totalRevenue / events.length)}` : "$0"} />
+        </div>
+
+        {/* Sales Trend + Revenue by Event */}
+        {orderItems && orderItems.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-xl font-bold mb-4">Sales Trend (Last 30 Days)</h2>
+            <div className="rounded-xl border bg-card p-4 h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={(() => {
+                  const endDate = startOfDay(new Date());
+                  const days = eachDayOfInterval({ start: subDays(endDate, 29), end: endDate });
+                  let cumRev = 0;
+                  return days.map((day) => {
+                    const dayStr = format(day, "yyyy-MM-dd");
+                    const dayItems = orderItems.filter((i) => format(parseISO(i.created_at), "yyyy-MM-dd") === dayStr);
+                    const dayRev = dayItems.reduce((s, i) => s + i.ticket_price * i.quantity, 0);
+                    cumRev += dayRev;
+                    return { date: format(day, "MMM d"), revenue: dayRev, cumulative: cumRev };
+                  });
+                })()}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis dataKey="date" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "0.75rem", fontSize: "0.75rem" }} formatter={(value: number, name: string) => [`$${value}`, name === "cumulative" ? "Cumulative" : "Daily Revenue"]} />
+                  <Line type="monotone" dataKey="cumulative" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="revenue" stroke="hsl(var(--chart-2, 173 58% 39%))" strokeWidth={1.5} dot={false} strokeDasharray="4 2" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
 
         {chartData.length > 0 && (
           <div className="mb-10">
@@ -268,6 +305,17 @@ const Dashboard = () => {
                         </div>
                       </>
                     )}
+
+                    {/* Event Report Panel */}
+                    <EventReportPanel
+                      eventId={event.id}
+                      eventTitle={event.title}
+                      eventDate={event.date}
+                      capacity={event.capacity}
+                      ticketsSold={event.tickets_sold}
+                      orderItems={(orderItems?.filter((i) => i.event_id === event.id) ?? []) as any}
+                      orders={eventOrders as any}
+                    />
 
                     {/* Timed Entry Slots */}
                     <div className="border-t pt-4 mt-4">
