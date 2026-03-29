@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Link } from "react-router-dom";
 import { Search, MapPin, Star, Users, Instagram, Youtube, Twitter, Filter } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
