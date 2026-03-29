@@ -40,6 +40,21 @@ const EventbriteFooter = () => {
               </ul>
             </div>
 
+            {/* Features */}
+            <div className="space-y-3">
+              <h4 className="text-sm font-bold">Features</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="/features/ticketing" className="hover:text-foreground transition-colors">Smart Ticketing</Link></li>
+                <li><Link to="/features/check-in" className="hover:text-foreground transition-colors">QR Check-In</Link></li>
+                <li><Link to="/features/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
+                <li><Link to="/features/influencers" className="hover:text-foreground transition-colors">Influencers</Link></li>
+                <li><Link to="/features/sponsorship" className="hover:text-foreground transition-colors">Sponsorship</Link></li>
+                <li><Link to="/features/promo-codes" className="hover:text-foreground transition-colors">Promo Codes</Link></li>
+                <li><Link to="/features/payments" className="hover:text-foreground transition-colors">Payments</Link></li>
+                <li><Link to="/features/africa" className="hover:text-foreground transition-colors">Africa-First</Link></li>
+              </ul>
+            </div>
+
             {/* Plan Events */}
             <div className="space-y-3">
               <h4 className="text-sm font-bold">Plan Events</h4>
