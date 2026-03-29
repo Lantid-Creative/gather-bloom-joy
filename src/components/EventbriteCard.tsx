@@ -10,6 +10,7 @@ interface EventbriteCardProps {
 const EventbriteCard = ({ event }: EventbriteCardProps) => {
   const lowestPrice = event.ticket_types.length > 0 ? Math.min(...event.ticket_types.map((t) => t.price)) : 0;
   const soldOut = event.capacity - event.tickets_sold <= 0;
+  const capacityPercent = event.capacity > 0 ? Math.min((event.tickets_sold / event.capacity) * 100, 100) : 0;
 
   return (
     <Link to={`/event/${event.id}`} className="group block">
@@ -28,6 +29,20 @@ const EventbriteCard = ({ event }: EventbriteCardProps) => {
           <p className="text-sm font-medium pt-0.5">
             {lowestPrice === 0 ? "Free" : `From $${lowestPrice.toFixed(2)}`}
           </p>
+          <div className="pt-1">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
+              <span>{event.tickets_sold} sold</span>
+              <span>{event.capacity - event.tickets_sold > 0 ? `${event.capacity - event.tickets_sold} left` : "Sold out"}</span>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  capacityPercent >= 90 ? "bg-destructive" : capacityPercent >= 60 ? "bg-amber-500" : "bg-primary"
+                }`}
+                style={{ width: `${capacityPercent}%` }}
+              />
+            </div>
+          </div>
           <p className="text-xs text-muted-foreground">{event.organizer}</p>
         </div>
       </div>
