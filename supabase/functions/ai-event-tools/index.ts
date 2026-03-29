@@ -299,6 +299,123 @@ Return the top 5 best matches.`;
         break;
       }
 
+      case "smart_pricing": {
+        const { eventTitle, eventCategory, eventLocation, currentTickets, capacity, ticketsSold, isOnline } = params;
+        systemPrompt = `You are a pricing strategist for Afritickets, Africa's leading event platform. Analyze event details and current ticket tiers, then suggest optimal pricing strategies. Consider the African market, event category, location, demand signals, and competitive pricing. Provide actionable, specific pricing recommendations.`;
+        userPrompt = `Analyze pricing for this event:
+Title: ${eventTitle}
+Category: ${eventCategory}
+Location: ${eventLocation}
+Format: ${isOnline ? "Online" : "In-person"}
+Capacity: ${capacity}
+Tickets Sold: ${ticketsSold}
+
+Current ticket tiers:
+${JSON.stringify(currentTickets)}
+
+Suggest optimal pricing adjustments, new tier ideas, and dynamic pricing strategies.`;
+        tools = [
+          {
+            type: "function",
+            function: {
+              name: "return_pricing_suggestions",
+              description: "Return pricing suggestions",
+              parameters: {
+                type: "object",
+                properties: {
+                  overall_assessment: { type: "string", description: "Brief assessment of current pricing (2-3 sentences)" },
+                  suggestions: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        tier_name: { type: "string" },
+                        current_price: { type: "number" },
+                        suggested_price: { type: "number" },
+                        reason: { type: "string" },
+                      },
+                      required: ["tier_name", "suggested_price", "reason"],
+                      additionalProperties: false,
+                    },
+                  },
+                  new_tier_ideas: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        price: { type: "number" },
+                        description: { type: "string" },
+                      },
+                      required: ["name", "price", "description"],
+                      additionalProperties: false,
+                    },
+                  },
+                  dynamic_pricing_tip: { type: "string", description: "A tip about dynamic/urgency pricing" },
+                },
+                required: ["overall_assessment", "suggestions", "new_tier_ideas", "dynamic_pricing_tip"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ];
+        tool_choice = { type: "function", function: { name: "return_pricing_suggestions" } };
+        break;
+      }
+
+      case "generate_sponsorship_proposal": {
+        const { eventTitle, eventCategory, eventDescription, eventLocation, eventDate, capacity, ticketsSold, sponsorshipTiers, seekingSponsors } = params;
+        systemPrompt = `You are a sponsorship sales expert for Afritickets. Generate compelling, professional sponsorship proposals that convince brands to sponsor African events. Include ROI projections, audience demographics estimates, and brand visibility benefits. Write in a persuasive, data-driven tone.`;
+        userPrompt = `Generate a sponsorship proposal for:
+Title: ${eventTitle}
+Category: ${eventCategory}
+Description: ${eventDescription || "Not provided"}
+Location: ${eventLocation}
+Date: ${eventDate}
+Capacity: ${capacity}
+Tickets Sold: ${ticketsSold}
+Existing Sponsorship Tiers: ${sponsorshipTiers ? JSON.stringify(sponsorshipTiers) : "None yet"}
+Currently Seeking Sponsors: ${seekingSponsors ? "Yes" : "No"}
+
+Create a compelling proposal document with sections for executive summary, audience profile, sponsorship benefits, and suggested packages.`;
+        tools = [
+          {
+            type: "function",
+            function: {
+              name: "return_proposal",
+              description: "Return sponsorship proposal",
+              parameters: {
+                type: "object",
+                properties: {
+                  executive_summary: { type: "string", description: "2-3 sentence hook for potential sponsors" },
+                  audience_profile: { type: "string", description: "Estimated demographics and audience insights" },
+                  visibility_benefits: { type: "array", items: { type: "string" }, description: "List of brand visibility benefits" },
+                  suggested_packages: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        price: { type: "number" },
+                        benefits: { type: "array", items: { type: "string" } },
+                      },
+                      required: ["name", "price", "benefits"],
+                      additionalProperties: false,
+                    },
+                  },
+                  roi_projection: { type: "string", description: "Estimated ROI and exposure metrics" },
+                  outreach_email: { type: "string", description: "Ready-to-send email pitch to potential sponsors" },
+                },
+                required: ["executive_summary", "audience_profile", "visibility_benefits", "suggested_packages", "roi_projection", "outreach_email"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ];
+        tool_choice = { type: "function", function: { name: "return_proposal" } };
+        break;
+      }
+
       default:
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
           status: 400,

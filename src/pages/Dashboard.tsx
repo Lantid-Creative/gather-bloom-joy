@@ -15,6 +15,8 @@ import SponsorshipTierManager from "@/components/SponsorshipTierManager";
 import AiSalesInsights from "@/components/AiSalesInsights";
 import AiPromoCopyGenerator from "@/components/AiPromoCopyGenerator";
 import AiInfluencerMatcher from "@/components/AiInfluencerMatcher";
+import AiSmartPricing from "@/components/AiSmartPricing";
+import AiSponsorshipProposal from "@/components/AiSponsorshipProposal";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
@@ -43,6 +45,11 @@ const Dashboard = () => {
   const { data: orderItems } = useQuery({
     queryKey: ["dashboard-order-items", user?.id], enabled: !!user && !!events && events.length > 0,
     queryFn: async () => { const { data, error } = await supabase.from("order_items").select("*").in("event_id", events!.map((e) => e.id)); if (error) throw error; return data as OrderItem[]; },
+  });
+
+  const { data: ticketTypes } = useQuery({
+    queryKey: ["dashboard-ticket-types", user?.id], enabled: !!user && !!events && events.length > 0,
+    queryFn: async () => { const { data, error } = await supabase.from("ticket_types").select("*").in("event_id", events!.map((e) => e.id)); if (error) throw error; return data; },
   });
 
   const { data: orders } = useQuery({
@@ -231,6 +238,33 @@ const Dashboard = () => {
                         </Button>
                       </div>
                       {event.seeking_sponsors && <SponsorshipTierManager eventId={event.id} />}
+                      {event.seeking_sponsors && (
+                        <div className="mt-3">
+                          <AiSponsorshipProposal
+                            eventTitle={event.title}
+                            eventCategory={event.category}
+                            eventDescription={event.description}
+                            eventLocation={event.location}
+                            eventDate={event.date}
+                            capacity={event.capacity}
+                            ticketsSold={event.tickets_sold}
+                            seekingSponsors={event.seeking_sponsors}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* AI Smart Pricing */}
+                    <div className="border-t pt-4 mt-4">
+                      <AiSmartPricing
+                        eventTitle={event.title}
+                        eventCategory={event.category}
+                        eventLocation={event.location}
+                        capacity={event.capacity}
+                        ticketsSold={event.tickets_sold}
+                        isOnline={event.is_online}
+                        currentTickets={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ name: t.name, price: t.price, available: t.available }))}
+                      />
                     </div>
 
                     {/* AI Influencer Matching */}
