@@ -36,7 +36,7 @@ const NotificationBell = () => {
 
   const markAllRead = async () => {
     if (!user || !notifications?.length) return;
-    const unreadIds = notifications.filter((n: Tables<"notifications">) => !n.read).map((n: any) => n.id);
+    const unreadIds = notifications.filter((n: Tables<"notifications">) => !n.read).map((n: Tables<"notifications">) => n.id);
     if (unreadIds.length > 0) {
       await supabase.from("notifications").update({ read: true }).in("id", unreadIds);
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
