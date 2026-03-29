@@ -12,6 +12,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import PromoCodeManager from "@/components/PromoCodeManager";
 import TrackingLinkManager from "@/components/TrackingLinkManager";
 import SponsorshipTierManager from "@/components/SponsorshipTierManager";
+import AiSalesInsights from "@/components/AiSalesInsights";
+import AiPromoCopyGenerator from "@/components/AiPromoCopyGenerator";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
@@ -135,6 +137,18 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* AI Sales Insights & Forecasting */}
+        {eventStats.length > 0 && (
+          <div className="mb-10">
+            <AiSalesInsights
+              events={eventStats.map((s) => ({ title: s.event.title, revenue: s.revenue, tickets: s.tickets, date: s.event.date }))}
+              totalRevenue={totalRevenue}
+              totalTickets={totalTickets}
+              totalOrders={totalOrders}
+            />
+          </div>
+        )}
+
         <h2 className="text-xl font-bold mb-4">Event Breakdown</h2>
         {eventStats.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground"><p>No events yet.</p><Button variant="hero" size="sm" className="rounded-full mt-4" asChild><Link to="/create-event">Create Your First Event</Link></Button></div>
@@ -223,6 +237,11 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+
+        {/* AI Promo Copy Generator */}
+        <div className="mt-10">
+          <AiPromoCopyGenerator events={events?.map((e) => ({ id: e.id, title: e.title, description: e.description, date: e.date, location: e.location })) ?? []} />
+        </div>
 
         {/* Promo Codes */}
         <div className="mt-10">

@@ -114,6 +114,96 @@ Return matching event IDs ranked by relevance.`;
         break;
       }
 
+      case "sales_insights": {
+        const { events: eventData, totalRevenue, totalTickets, totalOrders } = params;
+        systemPrompt = `You are a data analyst for Afritickets, Africa's #1 event platform. Provide concise, actionable sales insights in a friendly tone. Use bullet points. Reference specific events by name. Include trend observations and actionable recommendations. Keep it under 200 words.`;
+        userPrompt = `Analyze this organizer's sales data:
+
+Total Revenue: $${totalRevenue}
+Total Tickets Sold: ${totalTickets}
+Total Orders: ${totalOrders}
+
+Events breakdown:
+${JSON.stringify(eventData)}
+
+Provide natural language insights about their performance, trends, and recommendations.`;
+        break;
+      }
+
+      case "sales_forecast": {
+        const { events: eventData, totalRevenue, totalTickets } = params;
+        systemPrompt = `You are a predictive analytics expert for Afritickets. Based on historical sales data, provide forecasts and projections. Be specific with numbers but note they are estimates. Include confidence levels.`;
+        userPrompt = `Based on this organizer's data, forecast their next 30 days:
+
+Total Revenue so far: $${totalRevenue}
+Total Tickets so far: ${totalTickets}
+
+Events:
+${JSON.stringify(eventData)}
+
+Provide revenue forecast, ticket sales projections, and growth recommendations.`;
+        tools = [
+          {
+            type: "function",
+            function: {
+              name: "return_forecast",
+              description: "Return sales forecast data",
+              parameters: {
+                type: "object",
+                properties: {
+                  projected_revenue: { type: "number", description: "Projected revenue next 30 days" },
+                  projected_tickets: { type: "number", description: "Projected tickets next 30 days" },
+                  growth_rate: { type: "string", description: "Estimated growth rate like '+15%'" },
+                  confidence: { type: "string", enum: ["low", "medium", "high"] },
+                  summary: { type: "string", description: "2-3 sentence forecast summary" },
+                  recommendations: { type: "array", items: { type: "string" }, description: "3 actionable recommendations" },
+                },
+                required: ["projected_revenue", "projected_tickets", "growth_rate", "confidence", "summary", "recommendations"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ];
+        tool_choice = { type: "function", function: { name: "return_forecast" } };
+        break;
+      }
+
+      case "generate_promo_copy": {
+        const { eventTitle, eventDescription, eventDate, eventLocation, platform, tone } = params;
+        systemPrompt = `You are a viral social media copywriter specializing in African events and culture. Write platform-specific promotional content that drives engagement and ticket sales. Use relevant emojis, hashtags, and calls to action. Be authentic to African culture.`;
+        userPrompt = `Write promotional copy for this event:
+Title: ${eventTitle}
+Description: ${eventDescription || "Not provided"}
+Date: ${eventDate || "TBD"}
+Location: ${eventLocation || "TBD"}
+Platform: ${platform}
+Tone: ${tone || "exciting"}
+
+Write copy optimized for ${platform}. Include relevant hashtags.`;
+        tools = [
+          {
+            type: "function",
+            function: {
+              name: "return_promo_copy",
+              description: "Return promotional copy",
+              parameters: {
+                type: "object",
+                properties: {
+                  copy: { type: "string", description: "The promotional copy text" },
+                  hashtags: { type: "array", items: { type: "string" }, description: "Relevant hashtags" },
+                  call_to_action: { type: "string", description: "Suggested CTA" },
+                  platform_tips: { type: "string", description: "Tips for posting on this platform" },
+                },
+                required: ["copy", "hashtags", "call_to_action", "platform_tips"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ];
+        tool_choice = { type: "function", function: { name: "return_promo_copy" } };
+        break;
+      }
+
       default:
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
           status: 400,
