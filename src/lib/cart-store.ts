@@ -14,11 +14,12 @@ export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
   addItem: (item) =>
     set((state) => {
-      const existing = state.items.find((i) => i.ticketType.id === item.ticketType.id);
+      const key = `${item.ticketType.id}-${item.timeSlotId || "no-slot"}`;
+      const existing = state.items.find((i) => `${i.ticketType.id}-${i.timeSlotId || "no-slot"}` === key);
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.ticketType.id === item.ticketType.id
+            `${i.ticketType.id}-${i.timeSlotId || "no-slot"}` === key
               ? { ...i, quantity: Math.min(i.quantity + item.quantity, item.ticketType.max_per_order) }
               : i
           ),

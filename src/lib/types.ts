@@ -38,6 +38,8 @@ export interface CartItem {
   quantity: number;
   eventId: string;
   eventTitle: string;
+  timeSlotId?: string;
+  timeSlotLabel?: string;
 }
 
 export interface Order {
