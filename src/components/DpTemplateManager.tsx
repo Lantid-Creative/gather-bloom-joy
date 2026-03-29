@@ -842,9 +842,9 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
 
             {uploadedUrl && (
               <>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Move className="h-3 w-3" /> Drag the orange zone to position photo
-                  <span className="hidden max-[768px]:inline-flex items-center gap-0.5 ml-1"><ZoomIn className="h-3 w-3" /> Pinch to resize</span>
+                <p className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
+                  <span className="inline-flex items-center gap-0.5"><Move className="h-3 w-3" /> Drag to position photo</span>
+                  <span className="inline-flex items-center gap-0.5 md:hidden"><ZoomIn className="h-3 w-3" /> Pinch to resize</span>
                 </p>
                 <canvas
                   ref={canvasRef}
