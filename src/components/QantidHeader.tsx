@@ -22,11 +22,11 @@ const QantidHeader = () => {
   };
 
   const handleSearch = () => {
-    if (searchText.trim()) {
-      navigate(`/?q=${encodeURIComponent(searchText.trim())}`);
-    } else {
-      navigate("/");
-    }
+    const params = new URLSearchParams();
+    if (searchText.trim()) params.set("q", searchText.trim());
+    if (cityText.trim()) params.set("city", cityText.trim());
+    const qs = params.toString();
+    navigate(qs ? `/?${qs}` : "/");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
