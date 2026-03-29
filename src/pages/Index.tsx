@@ -52,6 +52,11 @@ const Index = () => {
     return Array.from(citySet).sort();
   }, [allEvents]);
 
+  // Sync city from URL param
+  useEffect(() => {
+    setCity(cityQuery);
+  }, [cityQuery]);
+
   // Detect if search is "smart" (natural language, 3+ words)
   const isSmartSearch = searchQuery.trim().split(/\s+/).length >= 3;
 
