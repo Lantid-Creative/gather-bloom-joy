@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy, Activity, CalendarDays, Percent } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
