@@ -1,5 +1,6 @@
 import { Globe, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-africa.jpg";
 
 const benefits = [
   "Discover events in Lagos, Nairobi, Accra, Dakar, Johannesburg, Addis Ababa, and more",
