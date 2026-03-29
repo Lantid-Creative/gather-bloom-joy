@@ -27,7 +27,7 @@ const EventbriteFooter = () => {
 
       <div className="border-t">
         <div className="container py-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-left">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-8 text-left">
             {/* Use Afritickets */}
             <div className="space-y-3">
               <h4 className="text-sm font-bold">Use Afritickets</h4>
