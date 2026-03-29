@@ -15,6 +15,8 @@ const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") ?? "";
   const [category, setCategory] = useState("");
+  const [city, setCity] = useState("");
+  const [cityOpen, setCityOpen] = useState(false);
   const [tab, setTab] = useState("All");
   const { data: dbEvents, isLoading } = useEvents();
 
