@@ -1,5 +1,6 @@
 import { Ticket, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-ticketing.jpg";
 
 const benefits = [
   "Create unlimited ticket types per event — VIP, General, Early Bird, Student, and more",
