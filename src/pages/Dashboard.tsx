@@ -21,6 +21,7 @@ import FlashSaleManager from "@/components/FlashSaleManager";
 import ReferralProgramManager from "@/components/ReferralProgramManager";
 import SocialPostScheduler from "@/components/SocialPostScheduler";
 import EmailCampaignManager from "@/components/EmailCampaignManager";
+import DpTemplateManager from "@/components/DpTemplateManager";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
