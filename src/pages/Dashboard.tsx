@@ -26,6 +26,8 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
+  const [syncingEvent, setSyncingEvent] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const { data: events } = useQuery({
     queryKey: ["dashboard-events", user?.id], enabled: !!user,
