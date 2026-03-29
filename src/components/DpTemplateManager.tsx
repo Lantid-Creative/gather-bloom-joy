@@ -424,6 +424,39 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
     setPhotoRect((prev) => ({ ...prev, x: (mx - dragOffset.x) / scale, y: (my - dragOffset.y) / scale }));
   };
 
+  // ─── Upload canvas touch handlers ───
+  const handleCanvasTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scale = Math.min(500 / (imgNaturalSize.w || 500), 400 / (imgNaturalSize.h || 400), 1);
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    const rx = photoRect.x * scale;
+    const ry = photoRect.y * scale;
+    const rw = photoRect.w * scale;
+    const rh = photoRect.h * scale;
+    if (mx >= rx && mx <= rx + rw && my >= ry && my <= ry + rh) {
+      setDragging(true);
+      setDragOffset({ x: mx - rx, y: my - ry });
+    }
+  };
+
+  const handleCanvasTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!dragging) return;
+    const touch = e.touches[0];
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    const scale = Math.min(500 / (imgNaturalSize.w || 500), 400 / (imgNaturalSize.h || 400), 1);
+    setPhotoRect((prev) => ({ ...prev, x: (mx - dragOffset.x) / scale, y: (my - dragOffset.y) / scale }));
+  };
+
   // ─── Preset drag handlers ───
   const handlePresetMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = presetCanvasRef.current;
@@ -445,6 +478,38 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
     const rect = canvas.getBoundingClientRect();
     const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
     const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+    setPresetPhotoRect((prev) => ({
+      ...prev,
+      x: Math.max(0, Math.min(mx - presetDragOffset.x, PRESET_W - prev.w)),
+      y: Math.max(0, Math.min(my - presetDragOffset.y, PRESET_H - prev.h)),
+    }));
+  };
+
+  // ─── Preset touch handlers ───
+  const handlePresetTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const canvas = presetCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    const pr = presetPhotoRect;
+    if (mx >= pr.x && mx <= pr.x + pr.w && my >= pr.y && my <= pr.y + pr.h) {
+      setPresetDragging(true);
+      setPresetDragOffset({ x: mx - pr.x, y: my - pr.y });
+    }
+  };
+
+  const handlePresetTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!presetDragging) return;
+    const touch = e.touches[0];
+    const canvas = presetCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
     setPresetPhotoRect((prev) => ({
       ...prev,
       x: Math.max(0, Math.min(mx - presetDragOffset.x, PRESET_W - prev.w)),
@@ -700,12 +765,15 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
                   </p>
                   <canvas
                     ref={presetCanvasRef}
-                    className="border rounded-lg cursor-move max-w-full"
+                    className="border rounded-lg cursor-move max-w-full touch-none"
                     style={{ maxHeight: 400 }}
                     onMouseDown={handlePresetMouseDown}
                     onMouseMove={handlePresetMouseMove}
                     onMouseUp={() => setPresetDragging(false)}
                     onMouseLeave={() => setPresetDragging(false)}
+                    onTouchStart={handlePresetTouchStart}
+                    onTouchMove={handlePresetTouchMove}
+                    onTouchEnd={() => setPresetDragging(false)}
                   />
                 </div>
 
@@ -736,11 +804,14 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
                 </p>
                 <canvas
                   ref={canvasRef}
-                  className="border rounded-lg cursor-move max-w-full"
+                  className="border rounded-lg cursor-move max-w-full touch-none"
                   onMouseDown={handleCanvasMouseDown}
                   onMouseMove={handleCanvasMouseMove}
                   onMouseUp={() => setDragging(false)}
                   onMouseLeave={() => setDragging(false)}
+                  onTouchStart={handleCanvasTouchStart}
+                  onTouchMove={handleCanvasTouchMove}
+                  onTouchEnd={() => setDragging(false)}
                 />
                 <div className="flex flex-wrap gap-2">
                   <div className="space-y-1">
