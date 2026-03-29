@@ -175,8 +175,8 @@ const Index = () => {
 
       {/* Browsing Events Section */}
       <div className="container py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-2xl font-bold">
               {searchQuery
                 ? `Results for "${searchQuery}"`
@@ -184,36 +184,34 @@ const Index = () => {
                   ? `${category} events`
                   : "Browsing events in"}
             </h2>
-            {!category && !searchQuery && (
-              <div className="relative">
-                <button
-                  onClick={() => setCityOpen(!cityOpen)}
-                  className="flex items-center gap-1 text-2xl font-bold text-eb-blue"
-                >
-                  <ChevronDown className={`h-5 w-5 transition-transform ${cityOpen ? "rotate-180" : ""}`} />
-                  {city || "All Cities"}
-                </button>
-                {cityOpen && (
-                  <div className="absolute top-full left-0 mt-2 bg-card border rounded-xl shadow-lg z-50 py-2 min-w-[200px] max-h-[300px] overflow-y-auto">
+            <div className="relative">
+              <button
+                onClick={() => setCityOpen(!cityOpen)}
+                className="flex items-center gap-1 text-2xl font-bold text-primary"
+              >
+                {city || "All Cities"}
+                <ChevronDown className={`h-5 w-5 transition-transform ${cityOpen ? "rotate-180" : ""}`} />
+              </button>
+              {cityOpen && (
+                <div className="absolute top-full left-0 mt-2 bg-card border rounded-xl shadow-lg z-50 py-2 min-w-[200px] max-h-[300px] overflow-y-auto">
+                  <button
+                    onClick={() => { setCity(""); setCityOpen(false); }}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${!city ? "font-bold text-primary" : ""}`}
+                  >
+                    All Cities
+                  </button>
+                  {cities.map((c) => (
                     <button
-                      onClick={() => { setCity(""); setCityOpen(false); }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${!city ? "font-bold text-primary" : ""}`}
+                      key={c}
+                      onClick={() => { setCity(c); setCityOpen(false); }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${city === c ? "font-bold text-primary" : ""}`}
                     >
-                      All Cities
+                      {c}
                     </button>
-                    {cities.map((c) => (
-                      <button
-                        key={c}
-                        onClick={() => { setCity(c); setCityOpen(false); }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${city === c ? "font-bold text-primary" : ""}`}
-                      >
-                        {c}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           {(category || searchQuery || city) && (
             <button
