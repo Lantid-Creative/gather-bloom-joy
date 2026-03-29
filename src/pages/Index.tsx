@@ -117,10 +117,34 @@ const Index = () => {
                   : "Browsing events in"}
             </h2>
             {!category && !searchQuery && (
-              <button className="flex items-center gap-1 text-2xl font-bold text-eb-blue">
-                <ChevronDown className="h-5 w-5" />
-                Your City
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setCityOpen(!cityOpen)}
+                  className="flex items-center gap-1 text-2xl font-bold text-eb-blue"
+                >
+                  <ChevronDown className={`h-5 w-5 transition-transform ${cityOpen ? "rotate-180" : ""}`} />
+                  {city || "All Cities"}
+                </button>
+                {cityOpen && (
+                  <div className="absolute top-full left-0 mt-2 bg-card border rounded-xl shadow-lg z-50 py-2 min-w-[200px] max-h-[300px] overflow-y-auto">
+                    <button
+                      onClick={() => { setCity(""); setCityOpen(false); }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${!city ? "font-bold text-primary" : ""}`}
+                    >
+                      All Cities
+                    </button>
+                    {cities.map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => { setCity(c); setCityOpen(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${city === c ? "font-bold text-primary" : ""}`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </div>
           {(category || searchQuery) && (
