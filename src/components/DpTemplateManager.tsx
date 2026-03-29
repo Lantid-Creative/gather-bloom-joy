@@ -287,6 +287,8 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
   const queryClient = useQueryClient();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const presetCanvasRef = useRef<HTMLCanvasElement>(null);
+  const pinchRef = useRef<{ dist: number; size: number } | null>(null);
+  const presetPinchRef = useRef<{ dist: number; size: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Existing upload state
