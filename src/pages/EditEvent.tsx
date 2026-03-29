@@ -69,6 +69,7 @@ const EditEvent = () => {
     time: event.time || format(eventDate, "HH:mm"),
     location: event.location,
     imageUrl: event.image_url,
+    extraImages: dbEvent.extra_images ?? [],
     category: event.category,
     organizer: event.organizer,
     capacity: String(event.capacity),
