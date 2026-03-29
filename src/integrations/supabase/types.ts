@@ -261,6 +261,53 @@ export type Database = {
           },
         ]
       }
+      event_time_slots: {
+        Row: {
+          booked: number
+          capacity: number
+          created_at: string
+          end_time: string
+          event_id: string
+          id: string
+          is_active: boolean
+          label: string
+          sort_order: number
+          start_time: string
+        }
+        Insert: {
+          booked?: number
+          capacity?: number
+          created_at?: string
+          end_time: string
+          event_id: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+          start_time: string
+        }
+        Update: {
+          booked?: number
+          capacity?: number
+          created_at?: string
+          end_time?: string
+          event_id?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_time_slots_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           capacity: number
@@ -713,6 +760,8 @@ export type Database = {
           ticket_name: string
           ticket_price: number
           ticket_type_id: string
+          time_slot_id: string | null
+          time_slot_label: string | null
         }
         Insert: {
           created_at?: string
@@ -724,6 +773,8 @@ export type Database = {
           ticket_name: string
           ticket_price: number
           ticket_type_id: string
+          time_slot_id?: string | null
+          time_slot_label?: string | null
         }
         Update: {
           created_at?: string
@@ -735,6 +786,8 @@ export type Database = {
           ticket_name?: string
           ticket_price?: number
           ticket_type_id?: string
+          time_slot_id?: string | null
+          time_slot_label?: string | null
         }
         Relationships: [
           {
@@ -756,6 +809,13 @@ export type Database = {
             columns: ["ticket_type_id"]
             isOneToOne: false
             referencedRelation: "ticket_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_time_slot_id_fkey"
+            columns: ["time_slot_id"]
+            isOneToOne: false
+            referencedRelation: "event_time_slots"
             referencedColumns: ["id"]
           },
         ]
