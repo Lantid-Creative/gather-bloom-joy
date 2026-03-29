@@ -13,6 +13,7 @@ const QantidHeader = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [searchText, setSearchText] = useState(searchParams.get("q") ?? "");
+  const [cityText, setCityText] = useState(searchParams.get("city") ?? "");
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const handleSignOut = async () => {
@@ -21,16 +22,13 @@ const QantidHeader = () => {
   };
 
   const handleSearch = () => {
-    if (searchText.trim()) {
-      navigate(`/?q=${encodeURIComponent(searchText.trim())}`);
-    } else {
-      navigate("/");
-    }
+    const params = new URLSearchParams();
+    if (searchText.trim()) params.set("q", searchText.trim());
+    if (cityText.trim()) params.set("city", cityText.trim());
+    const qs = params.toString();
+    navigate(qs ? `/?${qs}` : "/");
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSearch();
-  };
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b">
@@ -40,21 +38,21 @@ const QantidHeader = () => {
         </Link>
 
         {/* Search Bar - Desktop */}
-        <div className="hidden md:flex items-center flex-1 max-w-2xl">
+        <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="hidden md:flex items-center flex-1 max-w-2xl">
           <div className="flex items-center flex-1 rounded-full border bg-background overflow-hidden h-10">
             <div className="flex items-center flex-1 px-3 gap-2 border-r">
               <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-              <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleKeyDown} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+              <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
             </div>
             <div className="flex items-center flex-1 px-3 gap-2">
               <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-              <input type="text" placeholder="Your City" className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+              <input type="text" placeholder="Your City" value={cityText} onChange={(e) => setCityText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
             </div>
-            <button onClick={handleSearch} className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
+            <button type="submit" className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
               <Search className="h-4 w-4" />
             </button>
           </div>
-        </div>
+        </form>
 
         {/* Nav Links - Desktop */}
         <nav className="hidden lg:flex items-center gap-1 ml-auto">
@@ -112,17 +110,17 @@ const QantidHeader = () => {
       </div>
 
       {/* Mobile Search */}
-      <div className="md:hidden px-4 pb-3">
+      <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="md:hidden px-4 pb-3">
         <div className="flex items-center rounded-full border bg-background overflow-hidden h-10">
           <div className="flex items-center flex-1 px-3 gap-2">
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-            <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleKeyDown} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+            <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
           </div>
-          <button onClick={handleSearch} className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
+          <button type="submit" className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
             <Search className="h-3.5 w-3.5" />
           </button>
         </div>
-      </div>
+      </form>
 
       {/* Mobile Menu */}
       {mobileOpen && (
