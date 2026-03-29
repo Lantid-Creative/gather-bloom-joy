@@ -220,6 +220,17 @@ const EventDetail = () => {
                 <Users className="h-4 w-4" />
                 <span>{soldOut ? "This event is sold out" : `${spotsLeft} spots remaining out of ${event.capacity}`}</span>
               </div>
+
+              {/* Sponsorship section */}
+              {(event as any).seeking_sponsors && (
+                <SponsorshipRequestForm eventId={event.id} />
+              )}
+              {searchParams.get("sponsor") === "true" && !(event as any).seeking_sponsors && (
+                <div className="border rounded-xl p-5 text-center space-y-2">
+                  <Handshake className="h-8 w-8 mx-auto text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">This event is not currently seeking sponsors.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
