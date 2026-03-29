@@ -195,6 +195,27 @@ const Dashboard = () => {
                         </div>
                       </>
                     )}
+
+                    {/* Sponsorship Tiers */}
+                    <div className="border-t pt-4 mt-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Handshake className="h-4 w-4 text-primary" />
+                        <h3 className="text-sm font-semibold">Sponsorship</h3>
+                        <Button
+                          variant={event.seeking_sponsors ? "hero" : "outline"}
+                          size="sm"
+                          className="rounded-full text-xs ml-auto h-7"
+                          onClick={async () => {
+                            await supabase.from("events").update({ seeking_sponsors: !event.seeking_sponsors }).eq("id", event.id);
+                            queryClient.invalidateQueries({ queryKey: ["dashboard-events"] });
+                            toast({ title: event.seeking_sponsors ? "Sponsorship disabled" : "Now seeking sponsors!" });
+                          }}
+                        >
+                          {event.seeking_sponsors ? "Seeking Sponsors ✓" : "Enable Sponsorship"}
+                        </Button>
+                      </div>
+                      {event.seeking_sponsors && <SponsorshipTierManager eventId={event.id} />}
+                    </div>
                   </div>
                 )}
               </div>
