@@ -210,6 +210,8 @@ const EventDetail = () => {
                 </div>
               </div>
             )}
+            {/* Artist Lineup */}
+            <EventLineupDisplay eventId={event.id} />
           </div>
 
           {/* Sidebar */}

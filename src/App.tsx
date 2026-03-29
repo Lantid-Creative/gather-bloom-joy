@@ -98,6 +98,7 @@ const App = () => (
             <Route path="/features/promo-codes" element={<FeaturePromoCodes />} />
             <Route path="/features/payments" element={<FeaturePayments />} />
             <Route path="/features/africa" element={<FeatureAfrica />} />
+            <Route path="/lineups" element={<Lineups />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
