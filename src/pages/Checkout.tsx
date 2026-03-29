@@ -254,10 +254,13 @@ const Checkout = () => {
 
         <div className="space-y-3 mb-6">
           {items.map((item) => (
-            <div key={item.ticketType.id} className="flex items-center justify-between p-4 rounded-xl border">
+            <div key={`${item.ticketType.id}-${item.timeSlotId || ""}`} className="flex items-center justify-between p-4 rounded-xl border">
               <div className="space-y-1">
                 <p className="font-semibold">{item.ticketType.name}</p>
                 <p className="text-sm text-muted-foreground">{item.eventTitle}</p>
+                {item.timeSlotLabel && (
+                  <p className="text-xs text-primary font-medium">🕐 {item.timeSlotLabel}</p>
+                )}
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
