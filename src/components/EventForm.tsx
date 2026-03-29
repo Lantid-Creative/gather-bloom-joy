@@ -52,7 +52,10 @@ interface EventFormProps {
 
 const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormProps) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [generatingDesc, setGeneratingDesc] = useState(false);
+  const [suggestingCats, setSuggestingCats] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initial?.imageUrl || null);
