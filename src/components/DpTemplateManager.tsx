@@ -429,9 +429,15 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
   // ─── Upload canvas touch handlers ───
   const handleCanvasTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
-    const touch = e.touches[0];
     const canvas = canvasRef.current;
     if (!canvas) return;
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchRef.current = { dist: Math.hypot(dx, dy), size: photoRect.w };
+      return;
+    }
+    const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
     const scale = Math.min(500 / (imgNaturalSize.w || 500), 400 / (imgNaturalSize.h || 400), 1);
     const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
@@ -448,6 +454,15 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
 
   const handleCanvasTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
+    if (e.touches.length === 2 && pinchRef.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const newDist = Math.hypot(dx, dy);
+      const ratio = newDist / pinchRef.current.dist;
+      const newSize = Math.max(40, Math.min(500, Math.round(pinchRef.current.size * ratio)));
+      setPhotoRect((prev) => ({ ...prev, w: newSize, h: newSize }));
+      return;
+    }
     if (!dragging) return;
     const touch = e.touches[0];
     const canvas = canvasRef.current;
@@ -457,6 +472,11 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
     const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
     const scale = Math.min(500 / (imgNaturalSize.w || 500), 400 / (imgNaturalSize.h || 400), 1);
     setPhotoRect((prev) => ({ ...prev, x: (mx - dragOffset.x) / scale, y: (my - dragOffset.y) / scale }));
+  };
+
+  const handleCanvasTouchEnd = () => {
+    setDragging(false);
+    pinchRef.current = null;
   };
 
   // ─── Preset drag handlers ───
