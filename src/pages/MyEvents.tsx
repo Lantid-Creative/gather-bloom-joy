@@ -47,7 +47,7 @@ const MyEvents = () => {
     }
   };
 
-  const handleDuplicate = async (event: Tables<"events"> & { ticket_types?: Array<{ name: string; price: number; description: string; available: number; max_per_order: number }> }) => {
+  const handleDuplicate = async (event: Event & { ticket_types?: Array<{ name: string; price: number; description: string; available: number; max_per_order: number }> }) => {
     if (!user) return;
     try {
       const { data: newEvent, error } = await supabase
