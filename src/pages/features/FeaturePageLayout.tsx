@@ -10,6 +10,7 @@ interface FeaturePageLayoutProps {
   title: string;
   subtitle: string;
   heroColor: string;
+  heroImage?: string;
   children: ReactNode;
 }
 
