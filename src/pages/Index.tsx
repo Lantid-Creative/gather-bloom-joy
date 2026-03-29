@@ -203,7 +203,7 @@ const Index = () => {
                   {cities.map((c) => (
                     <button
                       key={c}
-                      onClick={() => { setCity(c); setCityOpen(false); }}
+                      onClick={() => { setCity(c); setCityOpen(false); setSearchParams(prev => { if (c) prev.set("city", c); else prev.delete("city"); return prev; }); }}
                       className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${city === c ? "font-bold text-primary" : ""}`}
                     >
                       {c}
