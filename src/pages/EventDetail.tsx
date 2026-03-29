@@ -49,23 +49,27 @@ const EventDetail = () => {
     }
   }, [id, searchParams]);
 
-  // OG meta tags & document title
-  useEffect(() => {
-    if (event) {
-      document.title = `${event.title} | Afritickets`;
-      const setMeta = (property: string, content: string) => {
-        let el = document.querySelector(`meta[property="${property}"]`);
-        if (!el) { el = document.createElement("meta"); el.setAttribute("property", property); document.head.appendChild(el); }
-        el.setAttribute("content", content);
-      };
-      setMeta("og:title", event.title);
-      setMeta("og:description", event.description?.slice(0, 160) ?? "");
-      setMeta("og:image", event.image_url);
-      setMeta("og:url", window.location.href);
-      setMeta("og:type", "website");
-    }
-    return () => { document.title = "Afritickets"; };
-  }, [event]);
+  // Build JSON-LD for event
+  const eventJsonLd = event
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Event",
+        name: event.title,
+        description: event.description?.slice(0, 300),
+        startDate: event.date,
+        ...(event.end_date ? { endDate: event.end_date } : {}),
+        location: event.is_online
+          ? { "@type": "VirtualLocation", url: event.meeting_url }
+          : { "@type": "Place", name: event.location, address: event.location },
+        image: event.image_url,
+        organizer: { "@type": "Organization", name: event.organizer },
+        eventAttendanceMode: event.is_online
+          ? "https://schema.org/OnlineEventAttendanceMode"
+          : "https://schema.org/OfflineEventAttendanceMode",
+        eventStatus: "https://schema.org/EventScheduled",
+        url: window.location.href,
+      }
+    : undefined;
 
   if (isLoading) {
     return (
