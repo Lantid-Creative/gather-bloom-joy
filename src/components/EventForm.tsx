@@ -323,7 +323,20 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-bold">Category & Tags</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold">Category & Tags</h2>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={suggestCategoryTags}
+            disabled={suggestingCats}
+            className="text-xs gap-1.5 rounded-full border-primary/30 text-primary hover:bg-primary/10"
+          >
+            <Tags className="h-3.5 w-3.5" />
+            {suggestingCats ? "Suggesting..." : "AI Suggest"}
+          </Button>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="category">Category</Label>
           <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
