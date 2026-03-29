@@ -109,6 +109,12 @@ const App = () => (
             <Route path="/features/ai" element={<FeatureAI />} />
             <Route path="/lineups" element={<Lineups />} />
             <Route path="/marketing-tools" element={<MarketingTools />} />
+            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+              <Route index element={<AdminOverview />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="events" element={<AdminEvents />} />
+              <Route path="orders" element={<AdminOrders />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
