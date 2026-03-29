@@ -367,7 +367,7 @@ const EventDetail = () => {
             time: event.time,
             location: event.location,
             is_online: event.is_online,
-            meeting_platform: (event as unknown as Record<string, unknown>).meeting_platform as string,
+            meeting_platform: event.meeting_platform ?? "",
             organizer: event.organizer,
             ticket_types: event.ticket_types?.map((t) => ({ name: t.name, price: t.price, available: t.available })),
           }}

@@ -77,7 +77,7 @@ const InfluencerProfile = () => {
     );
   }
 
-  const services = ((influencer as unknown as Record<string, unknown>).influencer_services as Array<{ id: string; is_active: boolean; title: string; description: string; price: number; delivery_days: number; category: string }>) ?? [] ?? [];
+  const services = ((influencer as unknown as Record<string, unknown>).influencer_services as Array<{ id: string; is_active: boolean; title: string; description: string; price: number; delivery_days: number; category: string }>) ?? [];
   const isOwner = user?.id === influencer.user_id;
   const socials = [
     { label: "Instagram", url: influencer.instagram_url, count: influencer.instagram_followers, icon: Instagram },

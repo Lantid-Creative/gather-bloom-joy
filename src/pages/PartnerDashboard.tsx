@@ -208,7 +208,7 @@ const PartnerDashboard = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                {requests.map((req: Record<string, unknown> & { id: string; events?: { title?: string }; status: string; tier_id: string | null; custom_offer_amount: number | null; sponsorship_tiers?: { name?: string; price?: number } | null; created_at: string; payment_status: string }) => (
+                {requests.map((req: { id: string; events?: { title?: string; date?: string; location?: string }; status: string; tier_id: string | null; custom_offer_amount: number | null; sponsorship_tiers?: { name?: string; price?: number } | null; created_at: string; payment_status: string; message?: string }) => (
                   <div key={req.id} className="border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4">
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">

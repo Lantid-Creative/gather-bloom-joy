@@ -87,7 +87,7 @@ const AdminEvents = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {events.map((e: Tables<"events">) => (
+                {events.map((e: { id: string; title: string; organizer: string; date: string; tickets_sold: number; capacity: number; status: string }) => (
                   <TableRow key={e.id}>
                     <TableCell className="font-medium max-w-[200px] truncate">{e.title}</TableCell>
                     <TableCell>{e.organizer || "—"}</TableCell>

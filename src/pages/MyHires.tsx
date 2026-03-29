@@ -122,7 +122,7 @@ const MyHires = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {orders.map((order: Record<string, unknown> & { id: string; influencer_profiles?: Record<string, unknown>; title: string; status: string; amount: number; created_at: string; influencer_submitted: boolean; client_approved: boolean }) => (
+            {orders.map((order: { id: string; influencer_id: string; influencer_profiles?: { avatar_url?: string; display_name?: string }; title: string; description: string; status: string; amount: number; created_at: string; influencer_submitted: boolean; client_approved: boolean; escrow_status: string; deadline?: string; deliverables_note?: string; deliverables_url?: string }) => (
               <div key={order.id} className="border rounded-xl p-5 space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">

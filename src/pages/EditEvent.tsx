@@ -60,7 +60,6 @@ const EditEvent = () => {
   }
 
   const eventDate = new Date(event.date);
-  const dbEvent = event as unknown as Record<string, unknown>;
   const initialData: Partial<EventFormData> = {
     title: event.title,
     description: event.description,
@@ -69,17 +68,17 @@ const EditEvent = () => {
     time: event.time || format(eventDate, "HH:mm"),
     location: event.location,
     imageUrl: event.image_url,
-    extraImages: dbEvent.extra_images ?? [],
+    extraImages: event.extra_images ?? [],
     category: event.category,
     organizer: event.organizer,
     capacity: String(event.capacity),
     isOnline: event.is_online,
-    meetingPlatform: dbEvent.meeting_platform ?? "",
-    meetingUrl: dbEvent.meeting_url ?? "",
+    meetingPlatform: event.meeting_platform ?? "",
+    meetingUrl: event.meeting_url ?? "",
     tags: event.tags.join(", "),
-    status: dbEvent.status ?? "published",
-    recurrenceType: dbEvent.recurrence_type ?? "none",
-    recurrenceEndDate: dbEvent.recurrence_end_date ? format(new Date(dbEvent.recurrence_end_date), "yyyy-MM-dd") : "",
+    status: event.status ?? "published",
+    recurrenceType: event.recurrence_type ?? "none",
+    recurrenceEndDate: event.recurrence_end_date ? format(new Date(event.recurrence_end_date), "yyyy-MM-dd") : "",
     tickets: event.ticket_types.length > 0
       ? event.ticket_types.map((t) => ({
           id: t.id,

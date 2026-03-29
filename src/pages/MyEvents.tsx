@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Event } from "@/lib/types";
 import { Plus, Calendar, MapPin, Users, Pencil, Trash2, Eye, Copy, QrCode } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
