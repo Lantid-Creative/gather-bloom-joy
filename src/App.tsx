@@ -27,6 +27,8 @@ import Careers from "./pages/Careers.tsx";
 import OrganizerProfile from "./pages/OrganizerProfile.tsx";
 import CheckIn from "./pages/CheckIn.tsx";
 import SavedEvents from "./pages/SavedEvents.tsx";
+import Partners from "./pages/Partners.tsx";
+import PartnerDashboard from "./pages/PartnerDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -61,6 +63,8 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
