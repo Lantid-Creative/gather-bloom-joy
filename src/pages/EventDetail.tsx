@@ -279,6 +279,21 @@ const EventDetail = () => {
         </div>
       </div>
       <EventbriteFooter />
+      {event && (
+        <EventChatbot
+          event={{
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            time: event.time,
+            location: event.location,
+            is_online: event.is_online,
+            meeting_platform: (event as any).meeting_platform,
+            organizer: event.organizer,
+            ticket_types: event.ticket_types?.map((t) => ({ name: t.name, price: t.price, available: t.available })),
+          }}
+        />
+      )}
     </div>
   );
 };
