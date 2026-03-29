@@ -3,23 +3,10 @@ import { Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import EventbriteCard from "@/components/EventbriteCard";
-
-interface EventLike {
-  id: string;
-  title: string;
-  date: string;
-  location: string;
-  image_url: string;
-  category: string;
-  organizer: string;
-  tags: string[];
-  tickets_sold?: number;
-  capacity?: number;
-  time?: string;
-}
+import type { Event } from "@/lib/types";
 
 interface Props {
-  allEvents: EventLike[];
+  allEvents: Event[];
 }
 
 const SmartRecommendations = ({ allEvents }: Props) => {
