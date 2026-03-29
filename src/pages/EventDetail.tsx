@@ -19,6 +19,19 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+const platformLabels: Record<string, string> = {
+  zoom: "Zoom",
+  google_meet: "Google Meet",
+  microsoft_teams: "Microsoft Teams",
+  webex: "Cisco Webex",
+  youtube_live: "YouTube Live",
+  facebook_live: "Facebook Live",
+  twitter_spaces: "X (Twitter) Spaces",
+  discord: "Discord",
+  other: "Virtual Meeting",
+};
+const platformLabel = (p?: string) => (p && platformLabels[p]) || "Online Event";
+
 const EventDetail = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
