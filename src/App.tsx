@@ -100,6 +100,7 @@ const App = () => (
             <Route path="/features/promo-codes" element={<FeaturePromoCodes />} />
             <Route path="/features/payments" element={<FeaturePayments />} />
             <Route path="/features/africa" element={<FeatureAfrica />} />
+            <Route path="/features/ai" element={<FeatureAI />} />
             <Route path="/lineups" element={<Lineups />} />
             <Route path="/marketing-tools" element={<MarketingTools />} />
             <Route path="*" element={<NotFound />} />
