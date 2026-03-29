@@ -73,6 +73,8 @@ const EditEvent = () => {
     organizer: event.organizer,
     capacity: String(event.capacity),
     isOnline: event.is_online,
+    meetingPlatform: dbEvent.meeting_platform ?? "",
+    meetingUrl: dbEvent.meeting_url ?? "",
     tags: event.tags.join(", "),
     status: dbEvent.status ?? "published",
     recurrenceType: dbEvent.recurrence_type ?? "none",
