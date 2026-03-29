@@ -142,6 +142,36 @@ const Dashboard = () => {
           <StatCard icon={TrendingUp} label="Revenue/Event" value={events && events.length > 0 ? `$${Math.round(totalRevenue / events.length)}` : "$0"} />
         </div>
 
+        {/* Sales Trend + Revenue by Event */}
+        {orderItems && orderItems.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-xl font-bold mb-4">Sales Trend (Last 30 Days)</h2>
+            <div className="rounded-xl border bg-card p-4 h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={(() => {
+                  const endDate = startOfDay(new Date());
+                  const days = eachDayOfInterval({ start: subDays(endDate, 29), end: endDate });
+                  let cumRev = 0;
+                  return days.map((day) => {
+                    const dayStr = format(day, "yyyy-MM-dd");
+                    const dayItems = orderItems.filter((i) => format(parseISO(i.created_at), "yyyy-MM-dd") === dayStr);
+                    const dayRev = dayItems.reduce((s, i) => s + i.ticket_price * i.quantity, 0);
+                    cumRev += dayRev;
+                    return { date: format(day, "MMM d"), revenue: dayRev, cumulative: cumRev };
+                  });
+                })()}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis dataKey="date" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "0.75rem", fontSize: "0.75rem" }} formatter={(value: number, name: string) => [`$${value}`, name === "cumulative" ? "Cumulative" : "Daily Revenue"]} />
+                  <Line type="monotone" dataKey="cumulative" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="revenue" stroke="hsl(var(--chart-2, 173 58% 39%))" strokeWidth={1.5} dot={false} strokeDasharray="4 2" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
         {chartData.length > 0 && (
           <div className="mb-10">
             <h2 className="text-xl font-bold mb-4">Revenue by Event</h2>
