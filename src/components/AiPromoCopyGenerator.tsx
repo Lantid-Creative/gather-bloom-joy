@@ -29,7 +29,7 @@ const AiPromoCopyGenerator = ({ events }: Props) => {
   const [platform, setPlatform] = useState("twitter");
   const [tone, setTone] = useState("exciting");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ copy?: string; hashtags?: string[] } | null>(null);
+  const [result, setResult] = useState<{ copy?: string; hashtags?: string[]; call_to_action?: string; platform_tips?: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 

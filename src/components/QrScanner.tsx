@@ -35,7 +35,7 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
       setIsScanning(true);
     } catch (err: unknown) {
       setError(
-        err?.message?.includes("NotAllowed")
+        (err instanceof Error && err.message?.includes("NotAllowed"))
           ? "Camera access denied. Please allow camera permissions."
           : "Could not start camera. Make sure no other app is using it."
       );

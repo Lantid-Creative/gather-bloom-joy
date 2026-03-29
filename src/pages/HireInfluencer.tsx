@@ -41,7 +41,7 @@ const HireInfluencer = () => {
     },
   });
 
-  const services = ((influencer as Record<string, unknown>)?.influencer_services as Array<Record<string, unknown>> ?? []).filter((s) => s.is_active) ?? [];
+  const services = ((influencer as unknown as Record<string, unknown>)?.influencer_services as Array<{ id: string; is_active: boolean; price: number; title: string; description: string; delivery_days: number; category: string }> ?? []).filter((s) => s.is_active) ?? [];
 
   // When a service is selected, auto-fill
   const selectedService = services.find((s) => s.id === selectedServiceId);
@@ -129,7 +129,7 @@ const HireInfluencer = () => {
             <div className="space-y-3">
               <Label>Select a Service</Label>
               <div className="space-y-2">
-                {services.map((s: Record<string, unknown>) => (
+                {services.map((s) => (
                   <label
                     key={s.id}
                     className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-colors ${

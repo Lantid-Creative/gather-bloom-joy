@@ -77,7 +77,7 @@ const InfluencerProfile = () => {
     );
   }
 
-  const services = (influencer as Record<string, unknown>).influencer_services as Array<Record<string, unknown>> ?? [];
+  const services = ((influencer as unknown as Record<string, unknown>).influencer_services as Array<{ id: string; is_active: boolean; title: string; description: string; price: number; delivery_days: number; category: string }>) ?? [] ?? [];
   const isOwner = user?.id === influencer.user_id;
   const socials = [
     { label: "Instagram", url: influencer.instagram_url, count: influencer.instagram_followers, icon: Instagram },
@@ -185,7 +185,7 @@ const InfluencerProfile = () => {
               <div className="space-y-3">
                 <h2 className="text-lg font-bold">Services</h2>
                 <div className="space-y-3">
-                  {services.filter((s: Record<string, unknown>) => s.is_active).map((service: Record<string, unknown>) => (
+                  {services.filter((s) => s.is_active).map((service) => (
                     <div key={service.id} className="border rounded-xl p-4 space-y-2">
                       <div className="flex items-start justify-between">
                         <div>

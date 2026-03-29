@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Tables } from "@/integrations/supabase/types";
 import { Link, useNavigate } from "react-router-dom";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
@@ -137,7 +138,7 @@ const MarketingTools = () => {
 
 /* ─── Dashboard Tab ─── */
 const DashboardTab = ({ events, totalRevenue, totalTickets, totalImpressions, totalClicks }: {
-  events: Array<{ id: string; title: string; date: string; revenue: number; tickets: number }>; totalRevenue: number; totalTickets: number; totalImpressions: number; totalClicks: number;
+  events: Tables<"events">[]; totalRevenue: number; totalTickets: number; totalImpressions: number; totalClicks: number;
 }) => (
   <div className="space-y-8">
     <div>
@@ -169,7 +170,7 @@ const DashboardTab = ({ events, totalRevenue, totalTickets, totalImpressions, to
 );
 
 /* ─── Email Tab ─── */
-const EmailTab = ({ events }: { events: Array<{ id: string; title: string }> }) => {
+const EmailTab = ({ events }: { events: Tables<"events">[] }) => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -249,7 +250,7 @@ const EmailTab = ({ events }: { events: Array<{ id: string; title: string }> }) 
 };
 
 /* ─── Social Media Tab ─── */
-const SocialTab = ({ events }: { events: Array<{ id: string; title: string }> }) => {
+const SocialTab = ({ events }: { events: Tables<"events">[] }) => {
   const [subTab, setSubTab] = useState<"share" | "facebook">("share");
 
   return (
@@ -344,7 +345,7 @@ const SocialTab = ({ events }: { events: Array<{ id: string; title: string }> })
 };
 
 /* ─── Paid Ads Tab ─── */
-const AdsTab = ({ events, totalImpressions, totalClicks }: { events: Array<{ id: string; title: string }>; totalImpressions: number; totalClicks: number }) => (
+const AdsTab = ({ events, totalImpressions, totalClicks }: { events: Tables<"events">[]; totalImpressions: number; totalClicks: number }) => (
   <div className="space-y-8">
     <div>
       <h2 className="text-2xl font-bold mb-2">Afritickets Ads</h2>
@@ -429,7 +430,7 @@ const GrowthTab = () => (
 );
 
 /* ─── Promotions Tab ─── */
-const PromotionsTab = ({ events }: { events: Array<{ id: string; title: string }> }) => (
+const PromotionsTab = ({ events }: { events: Tables<"events">[] }) => (
   <div className="space-y-10">
     <div>
       <h2 className="text-2xl font-bold mb-2">Promotions</h2>

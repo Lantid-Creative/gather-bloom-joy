@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Tables } from "@/integrations/supabase/types";
 import { Link } from "react-router-dom";
 import { Search, MapPin, Star, Users, Instagram, Youtube, Twitter, Filter } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
@@ -74,7 +75,7 @@ const Influencers = () => {
     const matchesCategory =
       selectedCategory === "All" ||
       inf.categories?.includes(selectedCategory) ||
-      (inf as Record<string, unknown> & { influencer_services?: Array<{ category: string }> }).influencer_services?.some((s) => s.category === selectedCategory);
+      ((inf as unknown as Record<string, unknown>)?.influencer_services as Array<{ category: string }> | undefined)?.some((s) => s.category === selectedCategory);
     const matchesRegion =
       selectedRegion === "All Regions" || inf.region === selectedRegion;
     return matchesSearch && matchesCategory && matchesRegion;
