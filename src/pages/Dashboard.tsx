@@ -129,11 +129,17 @@ const Dashboard = () => {
         </div>
         <p className="text-muted-foreground mb-8">Track sales, revenue, and attendees across all your events.</p>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} />
           <StatCard icon={Ticket} label="Tickets Sold" value={totalTickets.toString()} />
           <StatCard icon={TrendingUp} label="Total Orders" value={totalOrders.toString()} />
           <StatCard icon={Users} label="Unique Attendees" value={uniqueAttendees.toString()} />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          <StatCard icon={Activity} label="Avg Order Value" value={totalOrders > 0 ? `$${(totalRevenue / totalOrders).toFixed(2)}` : "$0"} />
+          <StatCard icon={CalendarDays} label="Active Events" value={String(events?.filter(e => new Date(e.date) >= new Date()).length ?? 0)} sub={`${events?.filter(e => new Date(e.date) < new Date()).length ?? 0} past`} />
+          <StatCard icon={Percent} label="Avg Fill Rate" value={`${events && events.length > 0 ? Math.round(events.reduce((s, e) => s + (e.capacity > 0 ? (e.tickets_sold / e.capacity) * 100 : 0), 0) / events.length) : 0}%`} />
+          <StatCard icon={TrendingUp} label="Revenue/Event" value={events && events.length > 0 ? `$${Math.round(totalRevenue / events.length)}` : "$0"} />
         </div>
 
         {chartData.length > 0 && (
