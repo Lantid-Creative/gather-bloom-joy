@@ -68,6 +68,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [time, setTime] = useState(initial?.time ?? "");
   const [location, setLocation] = useState(initial?.location ?? "");
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "");
+  const [extraImages, setExtraImages] = useState<string[]>(initial?.extraImages ?? []);
   const [category, setCategory] = useState(initial?.category ?? "");
   const [organizer, setOrganizer] = useState(initial?.organizer ?? "");
   const [capacity, setCapacity] = useState(initial?.capacity ?? "100");
