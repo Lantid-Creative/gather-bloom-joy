@@ -87,7 +87,24 @@ const CheckIn = () => {
         return;
       }
 
-      await handleCheckIn(orderItemId);
+      const success = await handleCheckIn(orderItemId);
+      if (success) {
+        // Vibration feedback (if supported)
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        // Audio beep feedback
+        try {
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = 880;
+          osc.type = "sine";
+          gain.gain.value = 0.3;
+          osc.start();
+          osc.stop(ctx.currentTime + 0.15);
+        } catch {}
+      }
       // Highlight the scanned attendee
       setSearch(attendee.customer_name);
     } catch {
