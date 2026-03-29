@@ -1,5 +1,6 @@
 import { Megaphone, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-influencers.jpg";
 
 const benefits = [
   "Browse verified influencers across Africa — filter by region, category, and follower count",
