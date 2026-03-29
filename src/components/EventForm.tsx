@@ -26,6 +26,7 @@ export interface EventFormData {
   time: string;
   location: string;
   imageUrl: string;
+  extraImages: string[];
   category: string;
   organizer: string;
   capacity: string;
