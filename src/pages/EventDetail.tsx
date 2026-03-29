@@ -264,7 +264,13 @@ const EventDetail = () => {
                 <span>{soldOut ? "This event is sold out" : `${spotsLeft} spots remaining out of ${event.capacity}`}</span>
               </div>
 
-              {/* Sponsorship section */}
+              {/* DP Generator Link */}
+              <Link to={`/event/${event.id}/dp`}>
+                <Button variant="outline" className="w-full gap-2">
+                  <ImagePlus className="h-4 w-4" /> Create Your Event DP
+                </Button>
+              </Link>
+
               {(event as any).seeking_sponsors && (
                 <SponsorshipRequestForm eventId={event.id} />
               )}
