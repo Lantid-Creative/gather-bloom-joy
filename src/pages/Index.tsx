@@ -47,7 +47,53 @@ const Index = () => {
     return Array.from(citySet).sort();
   }, [allEvents]);
 
+  // Detect if search is "smart" (natural language, 3+ words)
+  const isSmartSearch = searchQuery.trim().split(/\s+/).length >= 3;
+
+  // AI search effect
+  useEffect(() => {
+    if (!isSmartSearch || !searchQuery.trim() || allEvents.length === 0) {
+      setAiSearchResults(null);
+      setAiInterpretation("");
+      return;
+    }
+
+    let cancelled = false;
+    const runAiSearch = async () => {
+      setAiSearching(true);
+      try {
+        const { data, error } = await supabase.functions.invoke("ai-event-tools", {
+          body: {
+            action: "smart_search",
+            query: searchQuery,
+            events: allEvents.slice(0, 50), // limit to avoid token overflow
+          },
+        });
+        if (cancelled) return;
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        setAiSearchResults(data.event_ids || []);
+        setAiInterpretation(data.interpretation || "");
+      } catch (e) {
+        console.error("AI search failed, falling back to basic:", e);
+        setAiSearchResults(null);
+      } finally {
+        if (!cancelled) setAiSearching(false);
+      }
+    };
+
+    const timeout = setTimeout(runAiSearch, 300); // debounce
+    return () => { cancelled = true; clearTimeout(timeout); };
+  }, [searchQuery, isSmartSearch, allEvents]);
+
   const filtered = useMemo(() => {
+    // If AI search returned results, use those
+    if (aiSearchResults !== null && isSmartSearch) {
+      return aiSearchResults
+        .map((id) => allEvents.find((e) => e.id === id))
+        .filter(Boolean) as typeof allEvents;
+    }
+
     const q = searchQuery.toLowerCase().trim();
     return allEvents.filter((e) => {
       if (category && e.category !== category) return false;
@@ -61,10 +107,12 @@ const Index = () => {
       }
       return true;
     });
-  }, [category, city, allEvents, searchQuery]);
+  }, [category, city, allEvents, searchQuery, aiSearchResults, isSmartSearch]);
 
   const clearSearch = () => {
     setSearchParams({});
+    setAiSearchResults(null);
+    setAiInterpretation("");
   };
 
   return (
