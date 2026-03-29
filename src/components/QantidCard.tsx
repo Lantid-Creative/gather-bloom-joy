@@ -5,11 +5,11 @@ import { Flame, Clock, Zap } from "lucide-react";
 import FavoriteButton from "@/components/FavoriteButton";
 import { Badge } from "@/components/ui/badge";
 
-interface EventbriteCardProps {
+interface QantidCardProps {
   event: Event;
 }
 
-const EventbriteCard = ({ event }: EventbriteCardProps) => {
+const QantidCard = ({ event }: QantidCardProps) => {
   const lowestPrice = event.ticket_types.length > 0 ? Math.min(...event.ticket_types.map((t) => t.price)) : 0;
   const soldOut = event.capacity - event.tickets_sold <= 0;
   const spotsLeft = event.capacity - event.tickets_sold;
@@ -83,4 +83,4 @@ const EventbriteCard = ({ event }: EventbriteCardProps) => {
   );
 };
 
-export default EventbriteCard;
+export default QantidCard;

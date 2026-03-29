@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
-import EventbriteCard from "@/components/EventbriteCard";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
+import QantidCard from "@/components/QantidCard";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -44,7 +44,7 @@ const SavedEvents = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container py-10">
         <h1 className="text-3xl font-bold mb-8">Saved Events</h1>
         {isLoading ? (
@@ -61,12 +61,12 @@ const SavedEvents = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {events.map((e) => (
-              <EventbriteCard key={e.id} event={e} />
+              <QantidCard key={e.id} event={e} />
             ))}
           </div>
         )}
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

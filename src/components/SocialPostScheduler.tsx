@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Share2, Plus, Trash2, Loader2, Clock, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,7 +92,7 @@ const SocialPostScheduler = ({ eventId, eventTitle }: Props) => {
     toast({ title: "Copied to clipboard!" });
   };
 
-  const getStatusBadge = (post: Tables<"scheduled_posts">) => {
+  const getStatusBadge = (post: DbTable<"scheduled_posts">) => {
     if (post.status === "posted") return <Badge className="bg-green-500/10 text-green-600 text-[10px]">Posted</Badge>;
     if (post.status === "failed") return <Badge className="bg-red-500/10 text-red-600 text-[10px]">Failed</Badge>;
     const scheduled = new Date(post.scheduled_at);

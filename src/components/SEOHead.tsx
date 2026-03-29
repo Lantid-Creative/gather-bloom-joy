@@ -24,7 +24,7 @@ const SEOHead = ({
   jsonLd,
   noIndex = false,
 }: SEOHeadProps) => {
-  const siteName = "Afritickets";
+  const siteName = "Qantid";
   const fullTitle = title ? `${title} | ${siteName}` : `${siteName} — Discover & Book Events Across Africa`;
 
   useEffect(() => {

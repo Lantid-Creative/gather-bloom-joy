@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import SEOHead from "@/components/SEOHead";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -232,7 +232,7 @@ const apps: AppItem[] = [
   {
     id: "zapier-connect",
     name: "Zapier",
-    description: "Connect Afritickets to 5,000+ apps. Automate workflows between your favourite tools.",
+    description: "Connect Qantid to 5,000+ apps. Automate workflows between your favourite tools.",
     icon: Zap,
     iconBg: "bg-orange-500",
     categories: ["productivity", "recommended"],
@@ -262,7 +262,7 @@ const apps: AppItem[] = [
   {
     id: "wordpress-embed",
     name: "WordPress Widget",
-    description: "Embed your Afritickets event listings and ticket buttons on your WordPress site.",
+    description: "Embed your Qantid event listings and ticket buttons on your WordPress site.",
     icon: Globe,
     iconBg: "bg-blue-700",
     categories: ["website"],
@@ -386,10 +386,10 @@ const AppMarketplace = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="App Marketplace — Afritickets"
+        title="App Marketplace — Qantid"
         description="Find the right app to create unforgettable events. Easy to use, made just for you."
       />
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10 py-16 md:py-24">
@@ -477,7 +477,7 @@ const AppMarketplace = () => {
             {(activeCategory === "popular" || activeCategory === "recommended") && (
               <section>
                 <h2 className="text-2xl font-bold mb-2">Staff Picks</h2>
-                <p className="text-muted-foreground mb-6">Hand-picked by the Afritickets team.</p>
+                <p className="text-muted-foreground mb-6">Hand-picked by the Qantid team.</p>
                 <div className="grid md:grid-cols-2 gap-6">
                   {staffPicks.map((app) => (
                     <StaffPickCard key={app.id} app={app} />
@@ -526,7 +526,7 @@ const AppMarketplace = () => {
         )}
       </div>
 
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

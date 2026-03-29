@@ -15,6 +15,20 @@ export interface Event {
   tags: string[];
   ticket_types: TicketType[];
   schedule?: ScheduleItem[];
+  // DB-only fields
+  user_id?: string;
+  status?: string;
+  currency?: string;
+  meeting_platform?: string;
+  meeting_url?: string;
+  extra_images?: string[];
+  seeking_sponsors?: boolean;
+  sponsor_description?: string;
+  recurrence_type?: string;
+  recurrence_end_date?: string;
+  parent_event_id?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface TicketType {

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Music, Search, Star, MapPin, Calendar, ExternalLink, Filter } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -87,8 +87,8 @@ const Lineups = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Lineups | Afritickets" description="Discover upcoming event lineups, artists, and performers across Africa." />
-      <EventbriteHeader />
+      <SEOHead title="Lineups | Qantid" description="Discover upcoming event lineups, artists, and performers across Africa." />
+      <QantidHeader />
 
       <div className="container max-w-5xl py-8 space-y-6">
         {/* Hero */}
@@ -213,7 +213,7 @@ const Lineups = () => {
           </div>
         )}
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

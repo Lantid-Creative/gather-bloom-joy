@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Building2, Globe, Briefcase, FileText, Send, CheckCircle, XCircle, Clock, Plus, Loader2 } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -109,7 +109,7 @@ const PartnerDashboard = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to access Partner Dashboard</h1>
           <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button>
@@ -122,7 +122,7 @@ const PartnerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-4xl py-10">
         <Button variant="ghost" size="sm" className="-ml-2 mb-6" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
@@ -208,7 +208,7 @@ const PartnerDashboard = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                {requests.map((req: Record<string, unknown> & { id: string; events?: { title?: string }; status: string; tier_id: string | null; custom_offer_amount: number | null; sponsorship_tiers?: { name?: string; price?: number } | null; created_at: string; payment_status: string }) => (
+                {requests.map((req: { id: string; events?: { title?: string; date?: string; location?: string }; status: string; tier_id: string | null; custom_offer_amount: number | null; sponsorship_tiers?: { name?: string; price?: number } | null; created_at: string; payment_status: string; message?: string }) => (
                   <div key={req.id} className="border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4">
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">

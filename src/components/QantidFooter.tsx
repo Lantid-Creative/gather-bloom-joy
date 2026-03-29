@@ -6,7 +6,7 @@ const popularCities = [
   "Dakar", "Casablanca", "Lusaka", "Maputo", "Harare",
 ];
 
-const EventbriteFooter = () => {
+const QantidFooter = () => {
   return (
     <footer className="border-t bg-background">
       {/* Popular cities section */}
@@ -28,9 +28,9 @@ const EventbriteFooter = () => {
       <div className="border-t">
         <div className="container py-10">
           <div className="grid grid-cols-2 md:grid-cols-6 gap-8 text-left">
-            {/* Use Afritickets */}
+            {/* Use Qantid */}
             <div className="space-y-3">
-              <h4 className="text-sm font-bold">Use Afritickets</h4>
+              <h4 className="text-sm font-bold">Use Qantid</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/create-event" className="hover:text-foreground transition-colors">Create Events</Link></li>
                 <li><Link to="/pricing" className="hover:text-foreground transition-colors">Pricing</Link></li>
@@ -110,7 +110,7 @@ const EventbriteFooter = () => {
           {/* Bottom bar */}
           <div className="mt-10 pt-6 border-t flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>© 2026 Afritickets</span>
+              <span>© 2026 Qantid</span>
               <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
               <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
               <Link to="/help" className="hover:text-foreground transition-colors">Accessibility</Link>
@@ -125,4 +125,4 @@ const EventbriteFooter = () => {
   );
 };
 
-export default EventbriteFooter;
+export default QantidFooter;

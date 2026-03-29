@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Zap, Plus, Trash2, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,7 +85,7 @@ const FlashSaleManager = ({ eventId, ticketTypes }: Props) => {
     toast({ title: "Flash sale deleted" });
   };
 
-  const getSaleStatus = (sale: Tables<"flash_sales">) => {
+  const getSaleStatus = (sale: DbTable<"flash_sales">) => {
     const now = new Date();
     const start = new Date(sale.starts_at);
     const end = new Date(sale.ends_at);

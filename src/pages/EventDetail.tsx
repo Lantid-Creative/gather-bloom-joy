@@ -1,8 +1,8 @@
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Calendar, MapPin, Users, Bookmark, Bell, Handshake, Video, ExternalLink, ImagePlus, Flame, Clock, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, differenceInHours, differenceInDays } from "date-fns";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import TicketSelector from "@/components/TicketSelector";
 import GoogleMap from "@/components/GoogleMap";
 import ShareButtons from "@/components/ShareButtons";
@@ -77,7 +77,7 @@ const EventDetail = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-5xl py-20 text-center">
           <div className="animate-pulse space-y-4">
             <div className="aspect-[5/2] rounded-xl bg-muted" />
@@ -91,7 +91,7 @@ const EventDetail = () => {
   if (!event) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-bold">Event not found</h1>
           <Button variant="link" asChild className="mt-4"><Link to="/">← Back to events</Link></Button>
@@ -102,8 +102,8 @@ const EventDetail = () => {
 
   const spotsLeft = event.capacity - event.tickets_sold;
   const soldOut = spotsLeft <= 0;
-  const organizerId = (dbEvent as unknown as Record<string, unknown>)?.user_id as string | undefined;
-  const extraImages: string[] = (dbEvent as unknown as Record<string, unknown>)?.extra_images as string[] ?? [];
+  const organizerId = event.user_id;
+  const extraImages: string[] = event.extra_images ?? [];
   const allImages = [event.image_url, ...extraImages].filter(Boolean);
   
   // Urgency calculations
@@ -123,7 +123,7 @@ const EventDetail = () => {
         ogType="website"
         jsonLd={eventJsonLd}
       />
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Image Gallery */}
       <div className="container max-w-5xl py-6">
@@ -234,17 +234,17 @@ const EventDetail = () => {
               {!event.is_online && (
                 <div className="h-48 rounded-xl overflow-hidden border"><GoogleMap location={event.location} /></div>
               )}
-              {event.is_online && (dbEvent as unknown as Record<string, unknown>)?.meeting_url && (
+              {event.is_online && event.meeting_url && (
                 <div className="flex items-center gap-3 p-4 rounded-xl border border-primary/20 bg-primary/5">
                   <Video className="h-5 w-5 text-primary shrink-0" />
                   <div className="flex-1">
                     <p className="font-semibold text-sm">
-                      {platformLabel((dbEvent as unknown as Record<string, unknown>)?.meeting_platform as string)}
+                      {platformLabel(event.meeting_platform)}
                     </p>
                     <p className="text-xs text-muted-foreground">Online event — join via the link below</p>
                   </div>
                   <Button size="sm" className="rounded-full gap-1.5" asChild>
-                    <a href={(dbEvent as unknown as Record<string, unknown>).meeting_url as string} target="_blank" rel="noopener noreferrer">
+                    <a href={event.meeting_url} target="_blank" rel="noopener noreferrer">
                       Join <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   </Button>
@@ -344,10 +344,10 @@ const EventDetail = () => {
                 </Button>
               </Link>
 
-              {(event as unknown as Record<string, unknown>).seeking_sponsors && (
+              {event.seeking_sponsors && (
                 <SponsorshipRequestForm eventId={event.id} />
               )}
-              {searchParams.get("sponsor") === "true" && !(event as unknown as Record<string, unknown>).seeking_sponsors && (
+              {searchParams.get("sponsor") === "true" && !event.seeking_sponsors && (
                 <div className="border rounded-xl p-5 text-center space-y-2">
                   <Handshake className="h-8 w-8 mx-auto text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">This event is not currently seeking sponsors.</p>
@@ -357,7 +357,7 @@ const EventDetail = () => {
           </div>
         </div>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
       {event && (
         <EventChatbot
           event={{
@@ -367,7 +367,7 @@ const EventDetail = () => {
             time: event.time,
             location: event.location,
             is_online: event.is_online,
-            meeting_platform: (event as unknown as Record<string, unknown>).meeting_platform as string,
+            meeting_platform: event.meeting_platform ?? "",
             organizer: event.organizer,
             ticket_types: event.ticket_types?.map((t) => ({ name: t.name, price: t.price, available: t.available })),
           }}

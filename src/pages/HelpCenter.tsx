@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Search, BookOpen, Ticket, Settings, CreditCard, Shield, ChevronDown, ChevronUp } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Input } from "@/components/ui/input";
 
 const categories = [
@@ -18,7 +18,7 @@ const faqs = [
   { q: "How do I get my payout?", a: "Payouts are processed automatically after your event ends. Funds are sent to your registered bank account or mobile money wallet within 3-5 business days. You can track payout status from your organizer dashboard." },
   { q: "Can I offer free tickets?", a: "Yes! You can create events with free tickets at no cost to you. There are no platform fees for free events. Simply set the ticket price to $0 when creating your ticket types." },
   { q: "How do I cancel or reschedule an event?", a: "Go to My Events, find the event you want to modify, and click Edit. You can update the date, time, and other details. To cancel, click the Delete button. If tickets have been sold, attendees will be notified automatically." },
-  { q: "Is there a mobile app?", a: "Yes! The Afritickets mobile app is available for both iOS and Android. Attendees can use it to discover events and store digital tickets, while organizers can use it for on-site check-in with QR code scanning." },
+  { q: "Is there a mobile app?", a: "Yes! The Qantid mobile app is available for both iOS and Android. Attendees can use it to discover events and store digital tickets, while organizers can use it for on-site check-in with QR code scanning." },
   { q: "What's the maximum event capacity?", a: "On the Free plan, events can have up to 100 attendees. Professional plans support up to 5,000 attendees, and Enterprise plans have no capacity limits. Contact us for large-scale events." },
   { q: "Can I issue refunds?", a: "Yes, you can issue full or partial refunds through your organizer dashboard. Refunds are processed within 5-7 business days. Platform fees on refunded tickets are also returned." },
 ];
@@ -35,7 +35,7 @@ const HelpCenter = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-4xl py-16 space-y-16">
         {/* Hero */}
         <div className="text-center space-y-6">
@@ -90,7 +90,7 @@ const HelpCenter = () => {
           </div>
         </div>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

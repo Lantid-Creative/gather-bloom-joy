@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, Clock, CheckCircle2, Star, Send, XCircle } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -95,7 +95,7 @@ const MyHires = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to view your hires</h1>
           <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button>
@@ -106,7 +106,7 @@ const MyHires = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-3xl py-10">
         <h1 className="text-3xl font-bold mb-2">My Hires</h1>
         <p className="text-muted-foreground mb-8">Track influencer jobs and manage escrow payments</p>
@@ -122,7 +122,7 @@ const MyHires = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {orders.map((order: Record<string, unknown> & { id: string; influencer_profiles?: Record<string, unknown>; title: string; status: string; amount: number; created_at: string; influencer_submitted: boolean; client_approved: boolean }) => (
+            {orders.map((order: { id: string; influencer_id: string; influencer_profiles?: { avatar_url?: string; display_name?: string }; title: string; description: string; status: string; amount: number; created_at: string; influencer_submitted: boolean; client_approved: boolean; escrow_status: string; deadline?: string; deliverables_note?: string; deliverables_url?: string }) => (
               <div key={order.id} className="border rounded-xl p-5 space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">

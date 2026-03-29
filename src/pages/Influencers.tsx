@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Link } from "react-router-dom";
 import { Search, MapPin, Star, Users, Instagram, Youtube, Twitter, Filter } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -50,7 +50,7 @@ const Influencers = () => {
     },
   });
 
-  const totalFollowers = (inf: Tables<"influencer_profiles">) =>
+  const totalFollowers = (inf: DbTable<"influencer_profiles">) =>
     (inf.instagram_followers || 0) +
     (inf.tiktok_followers || 0) +
     (inf.twitter_followers || 0) +
@@ -83,7 +83,7 @@ const Influencers = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Hero */}
       <div className="bg-gradient-to-br from-primary/10 via-background to-primary/5 py-16">
@@ -269,7 +269,7 @@ const Influencers = () => {
           </div>
         )}
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

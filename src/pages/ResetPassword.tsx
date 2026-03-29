@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2 } from "lucide-react";
@@ -42,7 +42,7 @@ const ResetPassword = () => {
   if (confirmed) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-sm py-20 text-center space-y-6">
           <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
             <CheckCircle2 className="h-8 w-8 text-success" />
@@ -59,7 +59,7 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container flex items-center justify-center py-20">
         <div className="w-full max-w-sm space-y-6">
           <div className="text-center space-y-2">

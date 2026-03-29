@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, MapPin, Calendar, Users, ArrowRight, Handshake, Eye, TrendingUp, Award } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
@@ -55,7 +55,7 @@ const Partners = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-primary/10 via-background to-primary/5 py-16 md:py-24">
@@ -185,7 +185,7 @@ const Partners = () => {
         </div>
       </section>
 
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

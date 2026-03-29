@@ -21,9 +21,9 @@ interface Props {
 }
 
 const EMAIL_TEMPLATES = [
-  { value: "reminder", label: "Event Reminder", subject: "Reminder: {event} is coming up!", body: "Hi {name},\n\nThis is a friendly reminder that {event} is happening soon. We can't wait to see you there!\n\nBest regards,\nThe Afritickets Team" },
-  { value: "update", label: "Event Update", subject: "Important update for {event}", body: "Hi {name},\n\nWe have an important update regarding {event}. Please read the details below.\n\n[Your update here]\n\nBest regards,\nThe Afritickets Team" },
-  { value: "thankyou", label: "Thank You", subject: "Thank you for attending {event}!", body: "Hi {name},\n\nThank you for attending {event}! We hope you had an amazing experience.\n\nWe'd love to hear your feedback. Please take a moment to share your thoughts.\n\nBest regards,\nThe Afritickets Team" },
+  { value: "reminder", label: "Event Reminder", subject: "Reminder: {event} is coming up!", body: "Hi {name},\n\nThis is a friendly reminder that {event} is happening soon. We can't wait to see you there!\n\nBest regards,\nThe Qantid Team" },
+  { value: "update", label: "Event Update", subject: "Important update for {event}", body: "Hi {name},\n\nWe have an important update regarding {event}. Please read the details below.\n\n[Your update here]\n\nBest regards,\nThe Qantid Team" },
+  { value: "thankyou", label: "Thank You", subject: "Thank you for attending {event}!", body: "Hi {name},\n\nThank you for attending {event}! We hope you had an amazing experience.\n\nWe'd love to hear your feedback. Please take a moment to share your thoughts.\n\nBest regards,\nThe Qantid Team" },
   { value: "custom", label: "Custom Email", subject: "", body: "" },
 ];
 

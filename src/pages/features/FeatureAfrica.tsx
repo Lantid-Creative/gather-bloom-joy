@@ -16,7 +16,7 @@ const FeatureAfrica = () => (
   <FeaturePageLayout
     icon={<Globe className="h-10 w-10 text-orange-600" />}
     title="Africa-First Platform"
-    subtitle="Built by Africans, for Africa. Afritickets is the event platform that understands the continent's vibrant culture, cities, and communities."
+    subtitle="Built by Africans, for Africa. Qantid is the event platform that understands the continent's vibrant culture, cities, and communities."
     heroColor="bg-orange-500/5"
     heroImage={heroImg}
   >
