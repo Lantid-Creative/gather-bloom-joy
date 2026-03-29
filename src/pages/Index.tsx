@@ -204,6 +204,12 @@ const Index = () => {
       {/* Divider */}
       <div className="border-t" />
 
+      {/* Features Showcase */}
+      <FeaturesShowcase />
+
+      {/* Divider */}
+      <div className="border-t" />
+
       {/* Top Destinations */}
       <div className="container">
         <DestinationCards />
