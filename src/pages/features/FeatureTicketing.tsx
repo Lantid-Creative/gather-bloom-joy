@@ -19,6 +19,7 @@ const FeatureTicketing = () => (
     title="Smart Ticketing"
     subtitle="Flexible ticket types, pricing, and access controls built for every kind of African event — from intimate meetups to massive festivals."
     heroColor="bg-primary/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

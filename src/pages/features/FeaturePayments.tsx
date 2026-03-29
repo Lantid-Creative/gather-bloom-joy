@@ -18,6 +18,7 @@ const FeaturePayments = () => (
     title="Secure Payments"
     subtitle="Trusted payment processing with Stripe. Multi-currency support, escrow for influencer hires, and built-in refund handling."
     heroColor="bg-emerald-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

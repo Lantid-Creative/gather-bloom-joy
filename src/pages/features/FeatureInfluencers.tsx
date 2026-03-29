@@ -20,6 +20,7 @@ const FeatureInfluencers = () => (
     title="Influencer Marketplace"
     subtitle="Find and hire trusted influencers across Africa to amplify your events and products. Escrow-protected payments keep both parties safe."
     heroColor="bg-purple-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

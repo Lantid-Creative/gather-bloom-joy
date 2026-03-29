@@ -18,6 +18,7 @@ const FeaturePromoCodes = () => (
     title="Promo Codes"
     subtitle="Drive ticket sales with flexible discount codes. Create time-limited offers, group discounts, and influencer-specific promotions."
     heroColor="bg-pink-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>
