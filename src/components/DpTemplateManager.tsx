@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { ImagePlus, Trash2, Move, Circle, Square, Palette, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { ImagePlus, Trash2, Move, Circle, Square, Palette, Sparkles, ChevronDown, ChevronUp, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -802,8 +802,9 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
 
                 {/* Live preview */}
                 <div>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1 mb-1.5">
-                    <Move className="h-3 w-3" /> Drag the photo zone to reposition
+                  <p className="text-xs text-muted-foreground flex items-center gap-1 mb-1.5 flex-wrap">
+                    <span className="inline-flex items-center gap-0.5"><Move className="h-3 w-3" /> Drag to reposition</span>
+                    <span className="inline-flex items-center gap-0.5 md:hidden"><ZoomIn className="h-3 w-3" /> Pinch to resize</span>
                   </p>
                   <canvas
                     ref={presetCanvasRef}
@@ -841,8 +842,9 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
 
             {uploadedUrl && (
               <>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Move className="h-3 w-3" /> Drag the orange zone to position where attendee photo goes
+                <p className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
+                  <span className="inline-flex items-center gap-0.5"><Move className="h-3 w-3" /> Drag to position photo</span>
+                  <span className="inline-flex items-center gap-0.5 md:hidden"><ZoomIn className="h-3 w-3" /> Pinch to resize</span>
                 </p>
                 <canvas
                   ref={canvasRef}
