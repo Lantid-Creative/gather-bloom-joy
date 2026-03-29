@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import SEOHead from "@/components/SEOHead";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -389,7 +389,7 @@ const AppMarketplace = () => {
         title="App Marketplace — Qantid"
         description="Find the right app to create unforgettable events. Easy to use, made just for you."
       />
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10 py-16 md:py-24">
@@ -526,7 +526,7 @@ const AppMarketplace = () => {
         )}
       </div>
 
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

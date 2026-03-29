@@ -1,8 +1,8 @@
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Calendar, MapPin, Users, Bookmark, Bell, Handshake, Video, ExternalLink, ImagePlus, Flame, Clock, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, differenceInHours, differenceInDays } from "date-fns";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import TicketSelector from "@/components/TicketSelector";
 import GoogleMap from "@/components/GoogleMap";
 import ShareButtons from "@/components/ShareButtons";
@@ -77,7 +77,7 @@ const EventDetail = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-5xl py-20 text-center">
           <div className="animate-pulse space-y-4">
             <div className="aspect-[5/2] rounded-xl bg-muted" />
@@ -91,7 +91,7 @@ const EventDetail = () => {
   if (!event) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-bold">Event not found</h1>
           <Button variant="link" asChild className="mt-4"><Link to="/">← Back to events</Link></Button>
@@ -123,7 +123,7 @@ const EventDetail = () => {
         ogType="website"
         jsonLd={eventJsonLd}
       />
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Image Gallery */}
       <div className="container max-w-5xl py-6">
@@ -357,7 +357,7 @@ const EventDetail = () => {
           </div>
         </div>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
       {event && (
         <EventChatbot
           event={{

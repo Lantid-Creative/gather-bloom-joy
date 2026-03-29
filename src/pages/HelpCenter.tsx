@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Search, BookOpen, Ticket, Settings, CreditCard, Shield, ChevronDown, ChevronUp } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Input } from "@/components/ui/input";
 
 const categories = [
@@ -35,7 +35,7 @@ const HelpCenter = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-4xl py-16 space-y-16">
         {/* Hero */}
         <div className="text-center space-y-6">
@@ -90,7 +90,7 @@ const HelpCenter = () => {
           </div>
         </div>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

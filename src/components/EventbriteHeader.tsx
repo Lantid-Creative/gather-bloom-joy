@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
 
-const EventbriteHeader = () => {
+const QantidHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -153,4 +153,4 @@ const EventbriteHeader = () => {
   );
 };
 
-export default EventbriteHeader;
+export default QantidHeader;

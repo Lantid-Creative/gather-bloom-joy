@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import EventForm, { type EventFormData, type TicketDraft } from "@/components/EventForm";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,7 +21,7 @@ const EditEvent = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to edit events</h1>
           <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>
@@ -35,7 +35,7 @@ const EditEvent = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-2xl py-20">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-muted rounded w-48" />
@@ -50,7 +50,7 @@ const EditEvent = () => {
   if (!event) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Event not found</h1>
           <Button variant="link" onClick={() => navigate("/my-events")}>← Back to My Events</Button>
@@ -151,7 +151,7 @@ const EditEvent = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-2xl py-10">
         <Button variant="ghost" size="sm" className="-ml-2 mb-6" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back

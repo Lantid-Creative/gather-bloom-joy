@@ -6,7 +6,7 @@ const popularCities = [
   "Dakar", "Casablanca", "Lusaka", "Maputo", "Harare",
 ];
 
-const EventbriteFooter = () => {
+const QantidFooter = () => {
   return (
     <footer className="border-t bg-background">
       {/* Popular cities section */}
@@ -125,4 +125,4 @@ const EventbriteFooter = () => {
   );
 };
 
-export default EventbriteFooter;
+export default QantidFooter;

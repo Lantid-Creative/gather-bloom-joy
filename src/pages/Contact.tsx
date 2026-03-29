@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Mail, MessageSquare, MapPin, Phone } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +31,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-5xl py-16 space-y-16">
         <div className="text-center space-y-4 max-w-2xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold">Get in Touch</h1>
@@ -82,7 +82,7 @@ const Contact = () => {
           </form>
         </div>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, Clock, CheckCircle2, Star, Send, XCircle } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -95,7 +95,7 @@ const MyHires = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to view your hires</h1>
           <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button>
@@ -106,7 +106,7 @@ const MyHires = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-3xl py-10">
         <h1 className="text-3xl font-bold mb-2">My Hires</h1>
         <p className="text-muted-foreground mb-8">Track influencer jobs and manage escrow payments</p>

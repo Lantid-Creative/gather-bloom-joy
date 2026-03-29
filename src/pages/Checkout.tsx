@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Trash2, ArrowLeft, CheckCircle2, Download, CreditCard, Loader2 } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -175,7 +175,7 @@ const Checkout = () => {
   if (verifying) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-6">
           <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary" />
           <h1 className="text-2xl font-bold">Verifying your payment...</h1>
@@ -188,7 +188,7 @@ const Checkout = () => {
   if (confirmed) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-6">
           <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
             <CheckCircle2 className="h-8 w-8 text-success" />
@@ -218,7 +218,7 @@ const Checkout = () => {
   if (items.length === 0 && !searchParams.get("session_id")) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Your cart is empty</h1>
           <p className="text-muted-foreground">Find an event and add tickets to get started.</p>
@@ -234,7 +234,7 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-2xl py-10">
         <Button variant="ghost" size="sm" asChild className="-ml-2 mb-6">
           <Link to="/">

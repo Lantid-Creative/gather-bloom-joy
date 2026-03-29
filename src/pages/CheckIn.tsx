@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { CheckCircle2, Search, ScanLine, Clock, History } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -136,7 +136,7 @@ const CheckIn = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-3xl py-10">
         <h1 className="text-3xl font-bold mb-2">Check-In</h1>
         <p className="text-muted-foreground mb-6">{event?.title ?? "Event"}</p>

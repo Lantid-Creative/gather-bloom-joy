@@ -1,9 +1,9 @@
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 
 const Terms = () => (
   <div className="min-h-screen bg-background">
-    <EventbriteHeader />
+    <QantidHeader />
     <div className="container max-w-3xl py-16 prose prose-sm dark:prose-invert">
       <h1 className="text-4xl font-bold mb-2">Terms of Service</h1>
       <p className="text-muted-foreground mb-10">Last updated: March 1, 2026</p>
@@ -38,7 +38,7 @@ const Terms = () => (
       <h2>10. Contact</h2>
       <p>For questions about these terms, contact us at legal@qantid.com or visit our Help Center.</p>
     </div>
-    <EventbriteFooter />
+    <QantidFooter />
   </div>
 );
 

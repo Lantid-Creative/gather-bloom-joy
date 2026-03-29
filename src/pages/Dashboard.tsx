@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { DbTable } from "@/lib/db-types";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy, Activity, CalendarDays, Percent } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -67,7 +67,7 @@ const Dashboard = () => {
     queryFn: async () => { const orderIds = [...new Set(orderItems!.map((i) => i.order_id))]; const { data, error } = await supabase.from("orders").select("*").in("id", orderIds); if (error) throw error; return data as Order[]; },
   });
 
-  if (!user) return <div className="min-h-screen bg-background"><EventbriteHeader /><div className="container max-w-lg py-20 text-center space-y-4"><h1 className="text-2xl font-bold">Sign in to view your dashboard</h1><Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button></div></div>;
+  if (!user) return <div className="min-h-screen bg-background"><QantidHeader /><div className="container max-w-lg py-20 text-center space-y-4"><h1 className="text-2xl font-bold">Sign in to view your dashboard</h1><Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button></div></div>;
 
   const totalRevenue = orderItems?.reduce((sum, i) => sum + i.ticket_price * i.quantity, 0) ?? 0;
   const totalTickets = orderItems?.reduce((sum, i) => sum + i.quantity, 0) ?? 0;
@@ -122,7 +122,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-5xl py-10">
         <Button variant="ghost" size="sm" className="-ml-2 mb-6" onClick={() => navigate(-1)}><ArrowLeft className="h-4 w-4 mr-1" /> Back</Button>
         <div className="flex items-center justify-between mb-2">

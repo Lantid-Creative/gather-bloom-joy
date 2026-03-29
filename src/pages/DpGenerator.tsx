@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Download, Share2, Camera, ImagePlus, User } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -189,7 +189,7 @@ const DpGenerator = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
         <div>
           <Link to={`/event/${eventId}`} className="text-primary text-sm hover:underline">← Back to event</Link>
@@ -279,7 +279,7 @@ const DpGenerator = () => {
           )}
         </div>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

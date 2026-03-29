@@ -1,9 +1,9 @@
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 
 const Privacy = () => (
   <div className="min-h-screen bg-background">
-    <EventbriteHeader />
+    <QantidHeader />
     <div className="container max-w-3xl py-16 prose prose-sm dark:prose-invert">
       <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
       <p className="text-muted-foreground mb-10">Last updated: March 1, 2026</p>
@@ -38,7 +38,7 @@ const Privacy = () => (
       <h2>10. Contact Us</h2>
       <p>For privacy-related questions, contact our Data Protection Officer at privacy@qantid.com or write to: Qantid Ltd, 14 Adeola Hopewell Street, Victoria Island, Lagos, Nigeria.</p>
     </div>
-    <EventbriteFooter />
+    <QantidFooter />
   </div>
 );
 

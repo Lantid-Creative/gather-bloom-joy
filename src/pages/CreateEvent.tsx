@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import EventForm, { type EventFormData } from "@/components/EventForm";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -17,7 +17,7 @@ const CreateEvent = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to create events</h1>
           <p className="text-muted-foreground">You need an account to create and manage events on Qantid.</p>
@@ -85,7 +85,7 @@ const CreateEvent = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-2xl py-10">
         <Button variant="ghost" size="sm" className="-ml-2 mb-6" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back

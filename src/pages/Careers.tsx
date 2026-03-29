@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Rocket, Heart, Globe, Coffee, Users, Zap, MapPin } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 
 const perks = [
@@ -22,7 +22,7 @@ const roles = [
 
 const Careers = () => (
   <div className="min-h-screen bg-background">
-    <EventbriteHeader />
+    <QantidHeader />
     <div className="container max-w-5xl py-16 space-y-20">
       {/* Hero */}
       <div className="text-center space-y-4 max-w-2xl mx-auto">
@@ -88,7 +88,7 @@ const Careers = () => (
         </Button>
       </div>
     </div>
-    <EventbriteFooter />
+    <QantidFooter />
   </div>
 );
 

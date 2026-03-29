@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { DbTable } from "@/lib/db-types";
 import { Link, useNavigate } from "react-router-dom";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -79,13 +79,13 @@ const MarketingTools = () => {
     return (
       <div className="min-h-screen bg-background">
         <SEOHead title="Marketing Tools — Qantid" description="Premium marketing tools to drive ticket sales." />
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to access Marketing Tools</h1>
           <p className="text-muted-foreground">Manage campaigns, ads, social media, and promotions for your events.</p>
           <Button className="rounded-full" onClick={() => navigate("/auth")}>Sign In</Button>
         </div>
-        <EventbriteFooter />
+        <QantidFooter />
       </div>
     );
   }
@@ -93,7 +93,7 @@ const MarketingTools = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead title="Marketing Tools — Qantid" description="Premium marketing tools to drive ticket sales. Email campaigns, ads, promo codes, referrals, AI copy and more." />
-      <EventbriteHeader />
+      <QantidHeader />
 
       <div className="container max-w-6xl py-8">
         {/* Page title */}
@@ -131,7 +131,7 @@ const MarketingTools = () => {
         {activeTab === "settings" && <SettingsTab />}
       </div>
 
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

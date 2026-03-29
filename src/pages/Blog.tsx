@@ -1,7 +1,7 @@
 import { Calendar, TrendingUp, Lightbulb, Users, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 
 const posts = [
@@ -57,7 +57,7 @@ const posts = [
 
 const Blog = () => (
   <div className="min-h-screen bg-background">
-    <EventbriteHeader />
+    <QantidHeader />
     <div className="container max-w-5xl py-16 space-y-12">
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold">Qantid Blog</h1>
@@ -107,7 +107,7 @@ const Blog = () => (
         ))}
       </div>
     </div>
-    <EventbriteFooter />
+    <QantidFooter />
   </div>
 );
 
