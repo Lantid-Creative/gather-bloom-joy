@@ -30,6 +30,7 @@ const Dashboard = () => {
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
   const [syncingEvent, setSyncingEvent] = useState<string | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: events } = useQuery({
     queryKey: ["dashboard-events", user?.id], enabled: !!user,
