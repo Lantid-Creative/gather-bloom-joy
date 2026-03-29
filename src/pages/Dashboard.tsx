@@ -15,6 +15,8 @@ import SponsorshipTierManager from "@/components/SponsorshipTierManager";
 import AiSalesInsights from "@/components/AiSalesInsights";
 import AiPromoCopyGenerator from "@/components/AiPromoCopyGenerator";
 import AiInfluencerMatcher from "@/components/AiInfluencerMatcher";
+import AiSmartPricing from "@/components/AiSmartPricing";
+import AiSponsorshipProposal from "@/components/AiSponsorshipProposal";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
