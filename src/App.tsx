@@ -110,6 +110,7 @@ const App = () => (
             <Route path="/features/ai" element={<FeatureAI />} />
             <Route path="/lineups" element={<Lineups />} />
             <Route path="/marketing-tools" element={<MarketingTools />} />
+            <Route path="/apps" element={<AppMarketplace />} />
             <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
               <Route index element={<AdminOverview />} />
               <Route path="users" element={<AdminUsers />} />
