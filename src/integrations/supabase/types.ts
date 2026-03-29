@@ -300,6 +300,266 @@ export type Database = {
           },
         ]
       }
+      influencer_orders: {
+        Row: {
+          amount: number
+          client_approved: boolean
+          client_id: string
+          created_at: string
+          deadline: string | null
+          deliverables_note: string | null
+          deliverables_url: string | null
+          description: string
+          escrow_status: string
+          id: string
+          influencer_id: string
+          influencer_submitted: boolean
+          service_id: string | null
+          status: string
+          stripe_payment_intent_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          client_approved?: boolean
+          client_id: string
+          created_at?: string
+          deadline?: string | null
+          deliverables_note?: string | null
+          deliverables_url?: string | null
+          description?: string
+          escrow_status?: string
+          id?: string
+          influencer_id: string
+          influencer_submitted?: boolean
+          service_id?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_approved?: boolean
+          client_id?: string
+          created_at?: string
+          deadline?: string | null
+          deliverables_note?: string | null
+          deliverables_url?: string | null
+          description?: string
+          escrow_status?: string
+          id?: string
+          influencer_id?: string
+          influencer_submitted?: boolean
+          service_id?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_orders_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "influencer_orders_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_profiles: {
+        Row: {
+          avatar_url: string | null
+          avg_rating: number
+          bio: string
+          categories: string[]
+          city: string
+          country: string
+          created_at: string
+          display_name: string
+          facebook_followers: number | null
+          facebook_url: string | null
+          hourly_rate: number | null
+          id: string
+          instagram_followers: number | null
+          instagram_url: string | null
+          is_available: boolean
+          linkedin_followers: number | null
+          linkedin_url: string | null
+          min_budget: number | null
+          proof_screenshots: string[]
+          region: string
+          tiktok_followers: number | null
+          tiktok_url: string | null
+          total_jobs: number
+          twitter_followers: number | null
+          twitter_url: string | null
+          updated_at: string
+          user_id: string
+          youtube_subscribers: number | null
+          youtube_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          avg_rating?: number
+          bio?: string
+          categories?: string[]
+          city?: string
+          country?: string
+          created_at?: string
+          display_name: string
+          facebook_followers?: number | null
+          facebook_url?: string | null
+          hourly_rate?: number | null
+          id?: string
+          instagram_followers?: number | null
+          instagram_url?: string | null
+          is_available?: boolean
+          linkedin_followers?: number | null
+          linkedin_url?: string | null
+          min_budget?: number | null
+          proof_screenshots?: string[]
+          region?: string
+          tiktok_followers?: number | null
+          tiktok_url?: string | null
+          total_jobs?: number
+          twitter_followers?: number | null
+          twitter_url?: string | null
+          updated_at?: string
+          user_id: string
+          youtube_subscribers?: number | null
+          youtube_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          avg_rating?: number
+          bio?: string
+          categories?: string[]
+          city?: string
+          country?: string
+          created_at?: string
+          display_name?: string
+          facebook_followers?: number | null
+          facebook_url?: string | null
+          hourly_rate?: number | null
+          id?: string
+          instagram_followers?: number | null
+          instagram_url?: string | null
+          is_available?: boolean
+          linkedin_followers?: number | null
+          linkedin_url?: string | null
+          min_budget?: number | null
+          proof_screenshots?: string[]
+          region?: string
+          tiktok_followers?: number | null
+          tiktok_url?: string | null
+          total_jobs?: number
+          twitter_followers?: number | null
+          twitter_url?: string | null
+          updated_at?: string
+          user_id?: string
+          youtube_subscribers?: number | null
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      influencer_reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          influencer_id: string
+          order_id: string
+          rating: number
+          reviewer_id: string
+        }
+        Insert: {
+          comment?: string
+          created_at?: string
+          id?: string
+          influencer_id: string
+          order_id: string
+          rating?: number
+          reviewer_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          influencer_id?: string
+          order_id?: string
+          rating?: number
+          reviewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_reviews_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "influencer_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "influencer_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_services: {
+        Row: {
+          category: string
+          created_at: string
+          delivery_days: number
+          description: string
+          id: string
+          influencer_id: string
+          is_active: boolean
+          price: number
+          title: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          delivery_days?: number
+          description?: string
+          id?: string
+          influencer_id: string
+          is_active?: boolean
+          price?: number
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          delivery_days?: number
+          description?: string
+          id?: string
+          influencer_id?: string
+          is_active?: boolean
+          price?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_services_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
