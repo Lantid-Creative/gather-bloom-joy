@@ -9,6 +9,7 @@ import EventbriteCard from "@/components/EventbriteCard";
 import DestinationCards from "@/components/DestinationCards";
 import { useEvents } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
+import FeaturesShowcase from "@/components/FeaturesShowcase";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
