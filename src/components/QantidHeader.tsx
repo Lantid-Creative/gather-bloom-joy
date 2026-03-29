@@ -13,6 +13,7 @@ const QantidHeader = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [searchText, setSearchText] = useState(searchParams.get("q") ?? "");
+  const [cityText, setCityText] = useState(searchParams.get("city") ?? "");
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const handleSignOut = async () => {
