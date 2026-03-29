@@ -344,10 +344,10 @@ const EventDetail = () => {
                 </Button>
               </Link>
 
-              {(event as unknown as Record<string, unknown>).seeking_sponsors && (
+              {event.seeking_sponsors && (
                 <SponsorshipRequestForm eventId={event.id} />
               )}
-              {searchParams.get("sponsor") === "true" && !(event as unknown as Record<string, unknown>).seeking_sponsors && (
+              {searchParams.get("sponsor") === "true" && !event.seeking_sponsors && (
                 <div className="border rounded-xl p-5 text-center space-y-2">
                   <Handshake className="h-8 w-8 mx-auto text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">This event is not currently seeking sponsors.</p>
