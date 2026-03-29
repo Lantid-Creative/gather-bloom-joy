@@ -274,6 +274,9 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Smart Recommendations */}
+      <SmartRecommendations allEvents={allEvents} />
+
       {/* Divider */}
       <div className="border-t" />
 
