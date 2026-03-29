@@ -15,6 +15,8 @@ const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") ?? "";
   const [category, setCategory] = useState("");
+  const [city, setCity] = useState("");
+  const [cityOpen, setCityOpen] = useState(false);
   const [tab, setTab] = useState("All");
   const { data: dbEvents, isLoading } = useEvents();
 
@@ -26,10 +28,24 @@ const Index = () => {
     return [...db, ...uniqueMocks];
   }, [dbEvents]);
 
+  // Extract unique cities from events
+  const cities = useMemo(() => {
+    const citySet = new Set<string>();
+    allEvents.forEach((e) => {
+      // Extract city from location (typically "Venue, City, Country" or "City, Country")
+      const parts = e.location.split(",").map((p) => p.trim());
+      if (parts.length >= 2) {
+        citySet.add(parts[parts.length - 2]); // second-to-last is usually the city
+      }
+    });
+    return Array.from(citySet).sort();
+  }, [allEvents]);
+
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return allEvents.filter((e) => {
       if (category && e.category !== category) return false;
+      if (city && !e.location.toLowerCase().includes(city.toLowerCase())) return false;
       if (q) {
         const matchTitle = e.title.toLowerCase().includes(q);
         const matchLocation = e.location.toLowerCase().includes(q);
@@ -39,7 +55,7 @@ const Index = () => {
       }
       return true;
     });
-  }, [category, allEvents, searchQuery]);
+  }, [category, city, allEvents, searchQuery]);
 
   const clearSearch = () => {
     setSearchParams({});
@@ -101,15 +117,39 @@ const Index = () => {
                   : "Browsing events in"}
             </h2>
             {!category && !searchQuery && (
-              <button className="flex items-center gap-1 text-2xl font-bold text-eb-blue">
-                <ChevronDown className="h-5 w-5" />
-                Your City
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setCityOpen(!cityOpen)}
+                  className="flex items-center gap-1 text-2xl font-bold text-eb-blue"
+                >
+                  <ChevronDown className={`h-5 w-5 transition-transform ${cityOpen ? "rotate-180" : ""}`} />
+                  {city || "All Cities"}
+                </button>
+                {cityOpen && (
+                  <div className="absolute top-full left-0 mt-2 bg-card border rounded-xl shadow-lg z-50 py-2 min-w-[200px] max-h-[300px] overflow-y-auto">
+                    <button
+                      onClick={() => { setCity(""); setCityOpen(false); }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${!city ? "font-bold text-primary" : ""}`}
+                    >
+                      All Cities
+                    </button>
+                    {cities.map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => { setCity(c); setCityOpen(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${city === c ? "font-bold text-primary" : ""}`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </div>
-          {(category || searchQuery) && (
+          {(category || searchQuery || city) && (
             <button
-              onClick={() => { setCategory(""); clearSearch(); }}
+              onClick={() => { setCategory(""); setCity(""); clearSearch(); }}
               className="text-sm font-medium text-primary hover:underline"
             >
               Clear filter ✕
