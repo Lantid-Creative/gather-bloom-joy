@@ -61,6 +61,7 @@ const EventbriteHeader = () => {
           <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Find Events</Link>
           <Link to="/create-event" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Create Events</Link>
           <Link to="/partners" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Partners</Link>
+          <Link to="/influencers" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Influencers</Link>
           <Link to="/help" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Help Center</Link>
 
           <ThemeToggle />
