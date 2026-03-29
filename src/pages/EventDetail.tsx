@@ -59,7 +59,7 @@ const EventDetail = () => {
         startDate: event.date,
         ...(event.end_date ? { endDate: event.end_date } : {}),
         location: event.is_online
-          ? { "@type": "VirtualLocation", url: event.meeting_url }
+          ? { "@type": "VirtualLocation", url: window.location.href }
           : { "@type": "Place", name: event.location, address: event.location },
         image: event.image_url,
         organizer: { "@type": "Organization", name: event.organizer },
