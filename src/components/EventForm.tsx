@@ -193,7 +193,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit({ title, description, date, endDate, time, location, imageUrl, category, organizer, capacity, isOnline, meetingPlatform, meetingUrl, tags, tickets, status, recurrenceType, recurrenceEndDate });
+      await onSubmit({ title, description, date, endDate, time, location, imageUrl, extraImages, category, organizer, capacity, isOnline, meetingPlatform, meetingUrl, tags, tickets, status, recurrenceType, recurrenceEndDate });
     } finally {
       setLoading(false);
     }
