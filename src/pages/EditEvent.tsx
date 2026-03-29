@@ -109,6 +109,7 @@ const EditEvent = () => {
         time: data.time,
         location: data.location,
         image_url: data.imageUrl || event.image_url,
+        extra_images: data.extraImages || [],
         category: data.category,
         organizer: data.organizer,
         capacity: parseInt(data.capacity) || 100,
