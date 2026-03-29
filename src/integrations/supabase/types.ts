@@ -394,6 +394,7 @@ export type Database = {
           date: string
           description: string
           end_date: string | null
+          extra_images: string[]
           id: string
           image_url: string
           is_online: boolean
@@ -422,6 +423,7 @@ export type Database = {
           date: string
           description?: string
           end_date?: string | null
+          extra_images?: string[]
           id?: string
           image_url?: string
           is_online?: boolean
@@ -450,6 +452,7 @@ export type Database = {
           date?: string
           description?: string
           end_date?: string | null
+          extra_images?: string[]
           id?: string
           image_url?: string
           is_online?: boolean
