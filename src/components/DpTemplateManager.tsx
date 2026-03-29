@@ -804,11 +804,14 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
                 </p>
                 <canvas
                   ref={canvasRef}
-                  className="border rounded-lg cursor-move max-w-full"
+                  className="border rounded-lg cursor-move max-w-full touch-none"
                   onMouseDown={handleCanvasMouseDown}
                   onMouseMove={handleCanvasMouseMove}
                   onMouseUp={() => setDragging(false)}
                   onMouseLeave={() => setDragging(false)}
+                  onTouchStart={handleCanvasTouchStart}
+                  onTouchMove={handleCanvasTouchMove}
+                  onTouchEnd={() => setDragging(false)}
                 />
                 <div className="flex flex-wrap gap-2">
                   <div className="space-y-1">
