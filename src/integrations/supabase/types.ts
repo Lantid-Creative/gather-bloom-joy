@@ -43,6 +43,62 @@ export type Database = {
           },
         ]
       }
+      dp_templates: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          is_active: boolean
+          is_preset: boolean
+          name: string
+          photo_height: number
+          photo_shape: string
+          photo_width: number
+          photo_x: number
+          photo_y: number
+          template_image_url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          is_active?: boolean
+          is_preset?: boolean
+          name?: string
+          photo_height?: number
+          photo_shape?: string
+          photo_width?: number
+          photo_x?: number
+          photo_y?: number
+          template_image_url?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          is_active?: boolean
+          is_preset?: boolean
+          name?: string
+          photo_height?: number
+          photo_shape?: string
+          photo_width?: number
+          photo_x?: number
+          photo_y?: number
+          template_image_url?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dp_templates_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_addons: {
         Row: {
           available: number
