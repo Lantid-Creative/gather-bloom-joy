@@ -1,5 +1,6 @@
 import { QrCode, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-checkin.jpg";
 
 const benefits = [
   "Scan QR codes from attendees' tickets using your phone camera — no extra hardware needed",
