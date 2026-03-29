@@ -55,6 +55,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
+          <BackToTopButton />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/event/:id" element={<EventDetail />} />
