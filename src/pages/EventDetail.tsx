@@ -102,8 +102,17 @@ const EventDetail = () => {
 
   const spotsLeft = event.capacity - event.tickets_sold;
   const soldOut = spotsLeft <= 0;
-  // Try to extract user_id from dbEvent for organizer features
   const organizerId = (dbEvent as any)?.user_id;
+  const extraImages: string[] = (dbEvent as any)?.extra_images ?? [];
+  const allImages = [event.image_url, ...extraImages].filter(Boolean);
+  
+  // Urgency calculations
+  const hoursUntilEvent = differenceInHours(new Date(event.date), new Date());
+  const daysUntilEvent = differenceInDays(new Date(event.date), new Date());
+  const capacityPercent = event.capacity > 0 ? (event.tickets_sold / event.capacity) * 100 : 0;
+  const isSellingFast = capacityPercent >= 70 && !soldOut;
+  const isAlmostSoldOut = spotsLeft > 0 && spotsLeft <= 10;
+  const isToday = daysUntilEvent === 0 && hoursUntilEvent > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -116,11 +125,71 @@ const EventDetail = () => {
       />
       <EventbriteHeader />
 
+      {/* Image Gallery */}
       <div className="container max-w-5xl py-6">
         <div className="relative rounded-xl overflow-hidden aspect-[2/1] md:aspect-[5/2]">
-          <img src={event.image_url} alt={event.title} className="h-full w-full object-cover" width={1920} height={960} />
+          <img src={allImages[galleryIndex] || event.image_url} alt={event.title} className="h-full w-full object-cover" width={1920} height={960} />
           <FavoriteButton eventId={event.id} />
+          {/* Urgency badges */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1.5">
+            {soldOut && <Badge className="bg-destructive text-destructive-foreground text-xs font-bold border-0">Sold Out</Badge>}
+            {isAlmostSoldOut && !soldOut && (
+              <Badge className="bg-destructive/90 text-destructive-foreground text-xs font-bold border-0 animate-pulse">
+                <Flame className="h-3.5 w-3.5 mr-1" /> Only {spotsLeft} tickets left!
+              </Badge>
+            )}
+            {isSellingFast && !isAlmostSoldOut && !soldOut && (
+              <Badge className="bg-amber-500 text-white text-xs font-bold border-0">
+                <Zap className="h-3.5 w-3.5 mr-1" /> Selling Fast · {Math.round(capacityPercent)}% sold
+              </Badge>
+            )}
+            {isToday && (
+              <Badge className="bg-primary text-primary-foreground text-xs font-bold border-0">
+                <Clock className="h-3.5 w-3.5 mr-1" /> Happening Today!
+              </Badge>
+            )}
+          </div>
+          {/* Gallery navigation */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                onClick={() => setGalleryIndex((i) => (i - 1 + allImages.length) % allImages.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => setGalleryIndex((i) => (i + 1) % allImages.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {allImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setGalleryIndex(i)}
+                    className={`w-2 h-2 rounded-full transition-all ${i === galleryIndex ? "bg-white scale-125" : "bg-white/50"}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
+        {/* Thumbnail strip */}
+        {allImages.length > 1 && (
+          <div className="flex gap-2 mt-2 overflow-x-auto pb-1">
+            {allImages.map((img, i) => (
+              <button
+                key={i}
+                onClick={() => setGalleryIndex(i)}
+                className={`shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === galleryIndex ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}
+              >
+                <img src={img} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="container max-w-5xl pb-16">
