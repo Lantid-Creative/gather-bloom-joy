@@ -10,6 +10,7 @@ import WaitlistButton from "@/components/WaitlistButton";
 import FollowButton from "@/components/FollowButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import SponsorshipRequestForm from "@/components/SponsorshipRequestForm";
+import SEOHead from "@/components/SEOHead";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";

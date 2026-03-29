@@ -65,6 +65,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={searchQuery ? `Search: ${searchQuery}` : undefined}
+        description="Africa's #1 event ticketing platform. Discover concerts, festivals, conferences and cultural events across Lagos, Nairobi, Accra, Johannesburg and 50+ African cities."
+      />
       <EventbriteHeader />
 
       {/* Hero Banner */}
