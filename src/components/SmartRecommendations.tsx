@@ -53,7 +53,7 @@ const SmartRecommendations = ({ allEvents }: Props) => {
 
         const recs = (data.event_ids || [])
           .map((id: string) => allEvents.find((e) => e.id === id))
-          .filter(Boolean) as EventLike[];
+          .filter(Boolean) as Event[];
 
         setRecommended(recs);
         setReasoning(data.reasoning || "");
