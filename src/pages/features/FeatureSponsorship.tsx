@@ -1,5 +1,6 @@
 import { Handshake, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-sponsorship.jpg";
 
 const benefits = [
   "Create tiered sponsorship packages — Gold, Silver, Bronze or custom names",
