@@ -142,7 +142,7 @@ const AiPromoCopyGenerator = ({ events }: Props) => {
                 className="absolute top-2 right-2 h-7 w-7"
                 onClick={copyToClipboard}
               >
-                {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
               </Button>
             </div>
 
