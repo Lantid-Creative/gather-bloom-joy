@@ -13,6 +13,8 @@ import FeaturesShowcase from "@/components/FeaturesShowcase";
 import SEOHead from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
 import SmartRecommendations from "@/components/SmartRecommendations";
+import PromotedEventCard from "@/components/PromotedEventCard";
+import { usePromotedEvents } from "@/hooks/usePromotedEvents";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
