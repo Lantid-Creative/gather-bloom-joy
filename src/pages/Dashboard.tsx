@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode } from "lucide-react";
+import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -135,7 +135,20 @@ const Dashboard = () => {
                   <div className="border-t px-5 py-4">
                     {eventOrders.length === 0 ? <p className="text-sm text-muted-foreground">No orders yet.</p> : (
                       <>
-                        <h3 className="text-sm font-semibold mb-3">Attendees ({eventOrders.length})</h3>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-sm font-semibold">Attendees ({eventOrders.length})</h3>
+                          <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => {
+                            const emails = [...new Set(eventOrders.map(o => o.customer_email))];
+                            const rows = [["Name", "Email"], ...eventOrders.map(o => [o.customer_name, o.customer_email])];
+                            const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+                            const blob = new Blob([csv], { type: "text/csv" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a"); a.href = url; a.download = `attendees-${event.title.slice(0,30).replace(/\s+/g,"-").toLowerCase()}.csv`; a.click();
+                            URL.revokeObjectURL(url);
+                          }}>
+                            <Mail className="h-3 w-3 mr-1" /> Export Emails
+                          </Button>
+                        </div>
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm">
                             <thead><tr className="border-b text-left text-muted-foreground"><th className="pb-2 pr-4 font-medium">Name</th><th className="pb-2 pr-4 font-medium">Email</th><th className="pb-2 pr-4 font-medium">Date</th><th className="pb-2 font-medium text-right">Amount</th></tr></thead>
