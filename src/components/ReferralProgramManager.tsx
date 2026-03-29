@@ -67,7 +67,7 @@ const ReferralProgramManager = ({ eventId, eventTitle }: Props) => {
     }
   };
 
-  const updateProgram = async (updates: Partial<Tables<"referral_programs">>) => {
+  const updateProgram = async (updates: Partial<DbTable<"referral_programs">>) => {
     if (!program) return;
     await supabase.from("referral_programs").update(updates).eq("id", program.id);
     queryClient.invalidateQueries({ queryKey: ["referral-program", eventId] });

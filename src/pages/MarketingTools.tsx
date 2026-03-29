@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Link, useNavigate } from "react-router-dom";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";

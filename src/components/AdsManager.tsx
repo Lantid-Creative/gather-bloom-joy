@@ -150,7 +150,7 @@ const AdsManager = ({ eventId, eventTitle }: AdsManagerProps) => {
 
       {ads && ads.length > 0 && (
         <div className="space-y-3">
-          {ads.map((ad: Tables<"event_ads">) => {
+          {ads.map((ad: DbTable<"event_ads">) => {
             const ctr = ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(1) : "0";
             return (
               <Card key={ad.id} className="overflow-hidden">

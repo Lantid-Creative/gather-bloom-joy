@@ -85,7 +85,7 @@ const FlashSaleManager = ({ eventId, ticketTypes }: Props) => {
     toast({ title: "Flash sale deleted" });
   };
 
-  const getSaleStatus = (sale: Tables<"flash_sales">) => {
+  const getSaleStatus = (sale: DbTable<"flash_sales">) => {
     const now = new Date();
     const start = new Date(sale.starts_at);
     const end = new Date(sale.ends_at);

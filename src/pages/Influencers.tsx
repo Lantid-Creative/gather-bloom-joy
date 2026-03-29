@@ -50,7 +50,7 @@ const Influencers = () => {
     },
   });
 
-  const totalFollowers = (inf: Tables<"influencer_profiles">) =>
+  const totalFollowers = (inf: DbTable<"influencer_profiles">) =>
     (inf.instagram_followers || 0) +
     (inf.tiktok_followers || 0) +
     (inf.twitter_followers || 0) +

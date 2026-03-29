@@ -246,7 +246,7 @@ const Dashboard = () => {
                             const { data: tickets } = await supabase.from("ticket_types").select("*").eq("event_id", event.id);
                             if (tickets && tickets.length > 0) {
                               await supabase.from("ticket_types").insert(
-                                tickets.map((t: Tables<"ticket_types">) => ({ event_id: cloned.id, name: t.name, price: t.price, description: t.description, available: t.available, max_per_order: t.max_per_order }))
+                                tickets.map((t: DbTable<"ticket_types">) => ({ event_id: cloned.id, name: t.name, price: t.price, description: t.description, available: t.available, max_per_order: t.max_per_order }))
                               );
                             }
                             queryClient.invalidateQueries({ queryKey: ["dashboard-events"] });
