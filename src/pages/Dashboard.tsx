@@ -238,6 +238,33 @@ const Dashboard = () => {
                         </Button>
                       </div>
                       {event.seeking_sponsors && <SponsorshipTierManager eventId={event.id} />}
+                      {event.seeking_sponsors && (
+                        <div className="mt-3">
+                          <AiSponsorshipProposal
+                            eventTitle={event.title}
+                            eventCategory={event.category}
+                            eventDescription={event.description}
+                            eventLocation={event.location}
+                            eventDate={event.date}
+                            capacity={event.capacity}
+                            ticketsSold={event.tickets_sold}
+                            seekingSponsors={event.seeking_sponsors}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* AI Smart Pricing */}
+                    <div className="border-t pt-4 mt-4">
+                      <AiSmartPricing
+                        eventTitle={event.title}
+                        eventCategory={event.category}
+                        eventLocation={event.location}
+                        capacity={event.capacity}
+                        ticketsSold={event.tickets_sold}
+                        isOnline={event.is_online}
+                        currentTickets={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ name: t.name, price: t.price, available: t.available }))}
+                      />
                     </div>
 
                     {/* AI Influencer Matching */}
