@@ -61,6 +61,7 @@ const EventbriteHeader = () => {
           <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Find Events</Link>
           <Link to="/create-event" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Create Events</Link>
           <Link to="/partners" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Partners</Link>
+          <Link to="/influencers" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Influencers</Link>
           <Link to="/help" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Help Center</Link>
 
           <ThemeToggle />
@@ -80,6 +81,7 @@ const EventbriteHeader = () => {
               <Link to="/saved" className="p-2 rounded-md hover:bg-accent transition-colors"><Heart className="h-4 w-4" /></Link>
               <Link to="/my-events" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Events</Link>
               <Link to="/my-tickets" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Tickets</Link>
+              <Link to="/my-hires" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Hires</Link>
               <Link to="/dashboard" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Dashboard</Link>
               <Link to="/profile" className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all">
                 <User className="h-4 w-4 text-primary" />
@@ -128,6 +130,7 @@ const EventbriteHeader = () => {
           <Link to="/" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Find Events</Link>
           <Link to="/create-event" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Create Events</Link>
           <Link to="/partners" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Partners</Link>
+          <Link to="/influencers" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Influencers</Link>
           <Link to="/help" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Help Center</Link>
           <div className="border-t my-2" />
           {user ? (
@@ -135,6 +138,8 @@ const EventbriteHeader = () => {
               <Link to="/saved" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Saved Events</Link>
               <Link to="/my-events" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Events</Link>
               <Link to="/my-tickets" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Tickets</Link>
+              <Link to="/my-hires" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Hires</Link>
+              <Link to="/influencer-dashboard" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Influencer Dashboard</Link>
               <Link to="/dashboard" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Dashboard</Link>
               <Link to="/profile" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Profile</Link>
               <button onClick={() => { handleSignOut(); setMobileOpen(false); }} className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Sign out</button>

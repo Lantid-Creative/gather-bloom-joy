@@ -29,6 +29,11 @@ import CheckIn from "./pages/CheckIn.tsx";
 import SavedEvents from "./pages/SavedEvents.tsx";
 import Partners from "./pages/Partners.tsx";
 import PartnerDashboard from "./pages/PartnerDashboard.tsx";
+import Influencers from "./pages/Influencers.tsx";
+import InfluencerProfile from "./pages/InfluencerProfile.tsx";
+import InfluencerDashboard from "./pages/InfluencerDashboard.tsx";
+import HireInfluencer from "./pages/HireInfluencer.tsx";
+import MyHires from "./pages/MyHires.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -65,6 +70,11 @@ const App = () => (
             <Route path="/careers" element={<Careers />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
+            <Route path="/influencers" element={<Influencers />} />
+            <Route path="/influencer/:id" element={<InfluencerProfile />} />
+            <Route path="/influencer-dashboard" element={<ProtectedRoute><InfluencerDashboard /></ProtectedRoute>} />
+            <Route path="/hire/:influencerId" element={<ProtectedRoute><HireInfluencer /></ProtectedRoute>} />
+            <Route path="/my-hires" element={<ProtectedRoute><MyHires /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
