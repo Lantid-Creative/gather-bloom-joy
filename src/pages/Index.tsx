@@ -147,9 +147,9 @@ const Index = () => {
               </div>
             )}
           </div>
-          {(category || searchQuery) && (
+          {(category || searchQuery || city) && (
             <button
-              onClick={() => { setCategory(""); clearSearch(); }}
+              onClick={() => { setCategory(""); setCity(""); clearSearch(); }}
               className="text-sm font-medium text-primary hover:underline"
             >
               Clear filter ✕
