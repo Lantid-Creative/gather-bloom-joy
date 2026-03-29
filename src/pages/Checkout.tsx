@@ -96,6 +96,8 @@ const Checkout = () => {
             ticket_name: item.ticketType.name,
             ticket_price: item.ticketType.price,
             quantity: item.quantity,
+            time_slot_id: item.timeSlotId || null,
+            time_slot_label: item.timeSlotLabel || null,
           }))
         );
 
