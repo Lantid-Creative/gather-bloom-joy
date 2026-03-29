@@ -49,6 +49,12 @@ import DpGenerator from "./pages/DpGenerator.tsx";
 import Lineups from "./pages/Lineups.tsx";
 import MarketingTools from "./pages/MarketingTools.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import AdminRoute from "./components/AdminRoute.tsx";
+import AdminLayout from "./pages/admin/AdminLayout.tsx";
+import AdminOverview from "./pages/admin/AdminOverview.tsx";
+import AdminUsers from "./pages/admin/AdminUsers.tsx";
+import AdminEvents from "./pages/admin/AdminEvents.tsx";
+import AdminOrders from "./pages/admin/AdminOrders.tsx";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +109,12 @@ const App = () => (
             <Route path="/features/ai" element={<FeatureAI />} />
             <Route path="/lineups" element={<Lineups />} />
             <Route path="/marketing-tools" element={<MarketingTools />} />
+            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+              <Route index element={<AdminOverview />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="events" element={<AdminEvents />} />
+              <Route path="orders" element={<AdminOrders />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
