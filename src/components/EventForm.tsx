@@ -206,7 +206,20 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
           <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. AfroTech Summit Lagos" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="description">Description</Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={generateDescription}
+              disabled={generatingDesc}
+              className="text-xs gap-1.5 rounded-full border-primary/30 text-primary hover:bg-primary/10"
+            >
+              <Wand2 className="h-3.5 w-3.5" />
+              {generatingDesc ? "Generating..." : "AI Generate"}
+            </Button>
+          </div>
           <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Tell people what your event is about..." rows={4} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
