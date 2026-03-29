@@ -815,7 +815,7 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
                     onMouseLeave={() => setPresetDragging(false)}
                     onTouchStart={handlePresetTouchStart}
                     onTouchMove={handlePresetTouchMove}
-                    onTouchEnd={() => setPresetDragging(false)}
+                    onTouchEnd={handlePresetTouchEnd}
                   />
                 </div>
 
