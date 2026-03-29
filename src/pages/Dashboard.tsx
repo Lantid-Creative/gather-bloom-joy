@@ -30,7 +30,7 @@ import AdsManager from "@/components/AdsManager";
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
 
-const StatCard = ({ icon: Icon, label, value, sub }: { icon: any; label: string; value: string; sub?: string }) => (
+const StatCard = ({ icon: Icon, label, value, sub }: { icon: React.ElementType; label: string; value: string; sub?: string }) => (
   <div className="rounded-xl border bg-card p-5 space-y-1">
     <div className="flex items-center gap-2 text-muted-foreground text-sm"><Icon className="h-4 w-4" />{label}</div>
     <p className="text-2xl font-bold">{value}</p>
@@ -113,7 +113,7 @@ const Dashboard = () => {
         description: `${data.added} added, ${data.updated} updated to "${data.listName}"`,
       });
     } catch (err: unknown) {
-      toast({ title: "Mailchimp sync failed", description: err.message, variant: "destructive" });
+      toast({ title: "Mailchimp sync failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSyncingEvent(null);
     }
@@ -228,7 +228,7 @@ const Dashboard = () => {
                               time: event.time,
                               location: event.location,
                               image_url: event.image_url,
-                              extra_images: (event as any).extra_images || [],
+                              extra_images: (event as Record<string, unknown>).extra_images as string[] || [],
                               category: event.category,
                               organizer: event.organizer,
                               capacity: event.capacity,
@@ -245,13 +245,13 @@ const Dashboard = () => {
                             const { data: tickets } = await supabase.from("ticket_types").select("*").eq("event_id", event.id);
                             if (tickets && tickets.length > 0) {
                               await supabase.from("ticket_types").insert(
-                                tickets.map((t: any) => ({ event_id: cloned.id, name: t.name, price: t.price, description: t.description, available: t.available, max_per_order: t.max_per_order }))
+                                tickets.map((t: Tables<"ticket_types">) => ({ event_id: cloned.id, name: t.name, price: t.price, description: t.description, available: t.available, max_per_order: t.max_per_order }))
                               );
                             }
                             queryClient.invalidateQueries({ queryKey: ["dashboard-events"] });
                             toast({ title: "Event duplicated as draft! ✨" });
                           } catch (err: unknown) {
-                            toast({ title: "Failed to duplicate", description: err.message, variant: "destructive" });
+                            toast({ title: "Failed to duplicate", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
                           }
                         }}
                         className="text-xs text-primary hover:underline flex items-center gap-1"
@@ -314,8 +314,8 @@ const Dashboard = () => {
                       eventDate={event.date}
                       capacity={event.capacity}
                       ticketsSold={event.tickets_sold}
-                      orderItems={(orderItems?.filter((i) => i.event_id === event.id) ?? []) as any}
-                      orders={eventOrders as any}
+                      orderItems={orderItems?.filter((i) => i.event_id === event.id) ?? []}
+                      orders={eventOrders ?? []}
                     />
 
                     {/* Ads Manager */}

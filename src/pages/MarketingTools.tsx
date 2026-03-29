@@ -24,7 +24,7 @@ import AiPromoCopyGenerator from "@/components/AiPromoCopyGenerator";
 
 type TabKey = "dashboard" | "email" | "social" | "ads" | "growth" | "promotions" | "settings";
 
-const tabs: { key: TabKey; label: string; icon: any; badge?: string }[] = [
+const tabs: { key: TabKey; label: string; icon: React.ElementType; badge?: string }[] = [
   { key: "dashboard", label: "Dashboard", icon: BarChart3 },
   { key: "email", label: "Email Campaigns", icon: Mail },
   { key: "social", label: "Social Media", icon: Share2, badge: "New" },
@@ -69,10 +69,10 @@ const MarketingTools = () => {
     },
   });
 
-  const totalRevenue = orderItems?.reduce((sum, i) => sum + (i as any).ticket_price * (i as any).quantity, 0) ?? 0;
-  const totalTickets = orderItems?.reduce((sum, i) => sum + (i as any).quantity, 0) ?? 0;
-  const totalImpressions = ads?.reduce((sum, a) => sum + (a as any).impressions, 0) ?? 0;
-  const totalClicks = ads?.reduce((sum, a) => sum + (a as any).clicks, 0) ?? 0;
+  const totalRevenue = orderItems?.reduce((sum, i) => sum + i.ticket_price * i.quantity, 0) ?? 0;
+  const totalTickets = orderItems?.reduce((sum, i) => sum + i.quantity, 0) ?? 0;
+  const totalImpressions = ads?.reduce((sum, a) => sum + a.impressions, 0) ?? 0;
+  const totalClicks = ads?.reduce((sum, a) => sum + a.clicks, 0) ?? 0;
 
   if (!user) {
     return (
@@ -137,7 +137,7 @@ const MarketingTools = () => {
 
 /* ─── Dashboard Tab ─── */
 const DashboardTab = ({ events, totalRevenue, totalTickets, totalImpressions, totalClicks }: {
-  events: any[]; totalRevenue: number; totalTickets: number; totalImpressions: number; totalClicks: number;
+  events: Array<{ id: string; title: string; date: string; revenue: number; tickets: number }>; totalRevenue: number; totalTickets: number; totalImpressions: number; totalClicks: number;
 }) => (
   <div className="space-y-8">
     <div>
@@ -169,7 +169,7 @@ const DashboardTab = ({ events, totalRevenue, totalTickets, totalImpressions, to
 );
 
 /* ─── Email Tab ─── */
-const EmailTab = ({ events }: { events: any[] }) => {
+const EmailTab = ({ events }: { events: Array<{ id: string; title: string }> }) => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -249,7 +249,7 @@ const EmailTab = ({ events }: { events: any[] }) => {
 };
 
 /* ─── Social Media Tab ─── */
-const SocialTab = ({ events }: { events: any[] }) => {
+const SocialTab = ({ events }: { events: Array<{ id: string; title: string }> }) => {
   const [subTab, setSubTab] = useState<"share" | "facebook">("share");
 
   return (
@@ -344,7 +344,7 @@ const SocialTab = ({ events }: { events: any[] }) => {
 };
 
 /* ─── Paid Ads Tab ─── */
-const AdsTab = ({ events, totalImpressions, totalClicks }: { events: any[]; totalImpressions: number; totalClicks: number }) => (
+const AdsTab = ({ events, totalImpressions, totalClicks }: { events: Array<{ id: string; title: string }>; totalImpressions: number; totalClicks: number }) => (
   <div className="space-y-8">
     <div>
       <h2 className="text-2xl font-bold mb-2">Afritickets Ads</h2>
@@ -429,7 +429,7 @@ const GrowthTab = () => (
 );
 
 /* ─── Promotions Tab ─── */
-const PromotionsTab = ({ events }: { events: any[] }) => (
+const PromotionsTab = ({ events }: { events: Array<{ id: string; title: string }> }) => (
   <div className="space-y-10">
     <div>
       <h2 className="text-2xl font-bold mb-2">Promotions</h2>
@@ -493,14 +493,14 @@ const SettingsTab = () => (
 );
 
 /* ─── Shared Components ─── */
-const StatBox = ({ icon: Icon, label, value, color }: { icon: any; label: string; value: string; color: string }) => (
+const StatBox = ({ icon: Icon, label, value, color }: { icon: React.ElementType; label: string; value: string; color: string }) => (
   <div className="rounded-xl border bg-card p-5 space-y-1">
     <div className="flex items-center gap-2 text-muted-foreground text-sm"><Icon className={`h-4 w-4 ${color}`} />{label}</div>
     <p className="text-2xl font-bold">{value}</p>
   </div>
 );
 
-const QuickAction = ({ icon: Icon, title, desc, link, color }: { icon: any; title: string; desc: string; link: string; color: string }) => (
+const QuickAction = ({ icon: Icon, title, desc, link, color }: { icon: React.ElementType; title: string; desc: string; link: string; color: string }) => (
   <Card className="hover:shadow-md transition-shadow cursor-pointer group">
     <CardContent className="p-5 flex items-center gap-4">
       <div className={`h-10 w-10 rounded-xl ${color} flex items-center justify-center shrink-0`}>
@@ -515,7 +515,7 @@ const QuickAction = ({ icon: Icon, title, desc, link, color }: { icon: any; titl
   </Card>
 );
 
-const EmptyState = ({ icon: Icon, title, desc, cta, link }: { icon: any; title: string; desc: string; cta: string; link: string }) => (
+const EmptyState = ({ icon: Icon, title, desc, cta, link }: { icon: React.ElementType; title: string; desc: string; cta: string; link: string }) => (
   <div className="text-center py-16 border rounded-2xl bg-muted/30">
     <Icon className="h-10 w-10 mx-auto text-muted-foreground/50 mb-3" />
     <h3 className="text-lg font-bold mb-2">{title}</h3>

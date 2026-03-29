@@ -13,7 +13,7 @@ interface Props {
 
 const AiSalesInsights = ({ events, totalRevenue, totalTickets, totalOrders }: Props) => {
   const [insights, setInsights] = useState("");
-  const [forecast, setForecast] = useState<any>(null);
+  const [forecast, setForecast] = useState<{ summary?: string; predicted_revenue?: number; predicted_tickets?: number; confidence?: string } | null>(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
   const [loadingForecast, setLoadingForecast] = useState(false);
   const { toast } = useToast();
@@ -35,7 +35,7 @@ const AiSalesInsights = ({ events, totalRevenue, totalTickets, totalOrders }: Pr
       if (data?.error) throw new Error(data.error);
       setInsights(data.content);
     } catch (e: unknown) {
-      toast({ title: e.message || "Failed to generate insights", variant: "destructive" });
+      toast({ title: (e instanceof Error ? e.message : "Unknown error") || "Failed to generate insights", variant: "destructive" });
     } finally {
       setLoadingInsights(false);
     }
@@ -51,7 +51,7 @@ const AiSalesInsights = ({ events, totalRevenue, totalTickets, totalOrders }: Pr
       if (data?.error) throw new Error(data.error);
       setForecast(data);
     } catch (e: unknown) {
-      toast({ title: e.message || "Failed to generate forecast", variant: "destructive" });
+      toast({ title: (e instanceof Error ? e.message : "Unknown error") || "Failed to generate forecast", variant: "destructive" });
     } finally {
       setLoadingForecast(false);
     }

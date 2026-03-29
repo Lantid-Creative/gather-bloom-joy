@@ -50,7 +50,7 @@ const CheckIn = () => {
       return items.map((item) => {
         const order = orders?.find((o) => o.id === item.order_id);
         const checkin = checkins?.find((c) => c.order_item_id === item.id);
-        return { ...item, customer_name: order?.customer_name ?? "", customer_email: order?.customer_email ?? "", checked_in: !!checkin, checkin_time: checkin?.checked_in_at, time_slot_label: (item as any).time_slot_label };
+        return { ...item, customer_name: order?.customer_name ?? "", customer_email: order?.customer_email ?? "", checked_in: !!checkin, checkin_time: checkin?.checked_in_at, time_slot_label: item.time_slot_label };
       });
     },
   });

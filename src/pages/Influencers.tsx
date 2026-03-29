@@ -49,7 +49,7 @@ const Influencers = () => {
     },
   });
 
-  const totalFollowers = (inf: any) =>
+  const totalFollowers = (inf: Tables<"influencer_profiles">) =>
     (inf.instagram_followers || 0) +
     (inf.tiktok_followers || 0) +
     (inf.twitter_followers || 0) +
@@ -74,7 +74,7 @@ const Influencers = () => {
     const matchesCategory =
       selectedCategory === "All" ||
       inf.categories?.includes(selectedCategory) ||
-      (inf as any).influencer_services?.some((s: any) => s.category === selectedCategory);
+      (inf as Record<string, unknown> & { influencer_services?: Array<{ category: string }> }).influencer_services?.some((s) => s.category === selectedCategory);
     const matchesRegion =
       selectedRegion === "All Regions" || inf.region === selectedRegion;
     return matchesSearch && matchesCategory && matchesRegion;

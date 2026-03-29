@@ -60,13 +60,13 @@ const ReferralProgramManager = ({ eventId, eventTitle }: Props) => {
       toast({ title: "Referral program created! 🎉" });
       queryClient.invalidateQueries({ queryKey: ["referral-program", eventId] });
     } catch (err: unknown) {
-      toast({ title: "Failed to create program", description: err.message, variant: "destructive" });
+      toast({ title: "Failed to create program", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
   };
 
-  const updateProgram = async (updates: any) => {
+  const updateProgram = async (updates: Partial<Tables<"referral_programs">>) => {
     if (!program) return;
     await supabase.from("referral_programs").update(updates).eq("id", program.id);
     queryClient.invalidateQueries({ queryKey: ["referral-program", eventId] });

@@ -64,7 +64,7 @@ const EmailCampaignManager = ({ eventId, eventTitle, attendees }: Props) => {
         setSelectedTemplate("custom");
       }
     } catch (err: unknown) {
-      toast({ title: "AI generation failed", description: err.message, variant: "destructive" });
+      toast({ title: "AI generation failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setGenerating(false);
     }
@@ -96,7 +96,7 @@ const EmailCampaignManager = ({ eventId, eventTitle, attendees }: Props) => {
       });
       setShowCompose(false);
     } catch (err: unknown) {
-      toast({ title: "Failed to prepare email", description: err.message, variant: "destructive" });
+      toast({ title: "Failed to prepare email", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSending(false);
     }

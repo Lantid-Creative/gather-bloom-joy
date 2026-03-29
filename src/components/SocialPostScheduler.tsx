@@ -72,7 +72,7 @@ const SocialPostScheduler = ({ eventId, eventTitle }: Props) => {
       setForm({ platform: "twitter", content: "", scheduled_at: "" });
       queryClient.invalidateQueries({ queryKey: ["scheduled-posts", eventId] });
     } catch (err: unknown) {
-      toast({ title: "Failed to schedule", description: err.message, variant: "destructive" });
+      toast({ title: "Failed to schedule", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -91,7 +91,7 @@ const SocialPostScheduler = ({ eventId, eventTitle }: Props) => {
     toast({ title: "Copied to clipboard!" });
   };
 
-  const getStatusBadge = (post: any) => {
+  const getStatusBadge = (post: Tables<"scheduled_posts">) => {
     if (post.status === "posted") return <Badge className="bg-green-500/10 text-green-600 text-[10px]">Posted</Badge>;
     if (post.status === "failed") return <Badge className="bg-red-500/10 text-red-600 text-[10px]">Failed</Badge>;
     const scheduled = new Date(post.scheduled_at);

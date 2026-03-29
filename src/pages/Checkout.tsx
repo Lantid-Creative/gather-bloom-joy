@@ -56,7 +56,7 @@ const Checkout = () => {
           }
         } catch (err: unknown) {
           console.error("Verify error:", err);
-          toast({ title: "Payment verification error", description: err.message, variant: "destructive" });
+          toast({ title: "Payment verification error", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
         } finally {
           setVerifying(false);
         }
@@ -141,7 +141,7 @@ const Checkout = () => {
       }
     } catch (err: unknown) {
       console.error("Checkout error:", err);
-      toast({ title: "Something went wrong", description: err.message, variant: "destructive" });
+      toast({ title: "Something went wrong", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setLoading(false);
     }

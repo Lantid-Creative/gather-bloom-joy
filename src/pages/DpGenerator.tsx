@@ -183,7 +183,7 @@ const DpGenerator = () => {
       await supabase.from("profiles").update({ avatar_url: urlData.publicUrl }).eq("id", user.id);
       toast({ title: "Profile picture updated!" });
     } catch (err: unknown) {
-      toast({ title: "Failed to update", description: err.message, variant: "destructive" });
+      toast({ title: "Failed to update", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 

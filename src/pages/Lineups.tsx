@@ -49,14 +49,14 @@ const Lineups = () => {
 
       if (!lineupArtists?.length) return [];
 
-      const eventIds = [...new Set((lineupArtists as any[]).map((a: any) => a.event_id))];
+      const eventIds = [...new Set(lineupArtists.map((a) => a.event_id))];
       const { data: events } = await supabase
         .from("events")
         .select("id, title, date, location, image_url")
         .in("id", eventIds)
         .gte("date", new Date().toISOString());
 
-      return (lineupArtists as any[]).map((a: any) => {
+      return lineupArtists.map((a) => {
         const evt = events?.find((e) => e.id === a.event_id);
         if (!evt) return null;
         return { ...a, event_title: evt.title, event_date: evt.date, event_location: evt.location, event_image_url: evt.image_url };

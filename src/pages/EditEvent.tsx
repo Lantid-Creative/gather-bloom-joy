@@ -60,7 +60,7 @@ const EditEvent = () => {
   }
 
   const eventDate = new Date(event.date);
-  const dbEvent = event as any;
+  const dbEvent = event as Record<string, unknown>;
   const initialData: Partial<EventFormData> = {
     title: event.title,
     description: event.description,

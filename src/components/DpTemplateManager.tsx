@@ -392,7 +392,7 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
       img.src = urlData.publicUrl;
       toast({ title: "Flyer uploaded!" });
     } catch (err: unknown) {
-      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+      toast({ title: "Upload failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setUploading(false);
     }
@@ -599,7 +599,7 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
       setSelectedPreset(null);
       toast({ title: "Template saved!" });
     } catch (err: unknown) {
-      toast({ title: "Save failed", description: err.message, variant: "destructive" });
+      toast({ title: "Save failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -630,7 +630,7 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
       setName("");
       toast({ title: "DP template saved!" });
     } catch (err: unknown) {
-      toast({ title: "Save failed", description: err.message, variant: "destructive" });
+      toast({ title: "Save failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }

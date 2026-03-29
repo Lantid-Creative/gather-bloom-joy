@@ -72,7 +72,7 @@ const AdminUsers = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.map((u: any) => {
+                {users.map((u: { id: string; email: string; created_at: string; banned_until?: string }) => {
                   const isBanned = !!u.banned_until && new Date(u.banned_until) > new Date();
                   return (
                     <TableRow key={u.id}>

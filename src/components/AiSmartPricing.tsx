@@ -66,7 +66,7 @@ const AiSmartPricing = ({ eventTitle, eventCategory, eventLocation, capacity, ti
       if (data?.error) throw new Error(data.error);
       setResult(data);
     } catch (err: unknown) {
-      toast({ title: "Pricing analysis failed", description: err.message, variant: "destructive" });
+      toast({ title: "Pricing analysis failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setLoading(false);
     }

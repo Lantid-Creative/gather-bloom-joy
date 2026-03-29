@@ -87,7 +87,7 @@ const AdminEvents = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {events.map((e: any) => (
+                {events.map((e: Tables<"events">) => (
                   <TableRow key={e.id}>
                     <TableCell className="font-medium max-w-[200px] truncate">{e.title}</TableCell>
                     <TableCell>{e.organizer || "—"}</TableCell>

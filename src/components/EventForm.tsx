@@ -153,7 +153,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       setDescription(data.content);
       toast({ title: "✨ Description generated!" });
     } catch (e: unknown) {
-      toast({ title: e.message || "Failed to generate description", variant: "destructive" });
+      toast({ title: (e instanceof Error ? e.message : "Unknown error") || "Failed to generate description", variant: "destructive" });
     } finally {
       setGeneratingDesc(false);
     }
@@ -175,7 +175,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       if (data.tags?.length) setTags(data.tags.join(", "));
       toast({ title: `🏷️ Suggested: ${data.category} (${data.tags?.length || 0} tags)` });
     } catch (e: unknown) {
-      toast({ title: e.message || "Failed to suggest categories", variant: "destructive" });
+      toast({ title: (e instanceof Error ? e.message : "Unknown error") || "Failed to suggest categories", variant: "destructive" });
     } finally {
       setSuggestingCats(false);
     }

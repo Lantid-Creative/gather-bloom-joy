@@ -66,7 +66,7 @@ const TimeSlotManager = ({ eventId }: { eventId: string }) => {
       setAdding(false);
       toast({ title: "Time slot added!" });
     } catch (err: unknown) {
-      toast({ title: "Failed", description: err.message, variant: "destructive" });
+      toast({ title: "Failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }

@@ -58,7 +58,7 @@ const LineupManager = ({ eventId }: { eventId: string }) => {
     },
   });
 
-  const updateField = (key: string, value: any) => setForm((p) => ({ ...p, [key]: value }));
+  const updateField = (key: string, value: string | number | boolean) => setForm((p) => ({ ...p, [key]: value }));
 
   const handleSave = async () => {
     if (!form.name.trim()) {
@@ -78,7 +78,7 @@ const LineupManager = ({ eventId }: { eventId: string }) => {
       setAdding(false);
       toast({ title: "Artist added to lineup!" });
     } catch (err: unknown) {
-      toast({ title: "Failed", description: err.message, variant: "destructive" });
+      toast({ title: "Failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     } finally {
       setSaving(false);
     }

@@ -30,7 +30,7 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: `"${eventTitle}" deleted` });
     } catch (err: unknown) {
-      toast({ title: "Error deleting event", description: err.message, variant: "destructive" });
+      toast({ title: "Error deleting event", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 
@@ -42,11 +42,11 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: `Event ${newStatus}` });
     } catch (err: unknown) {
-      toast({ title: "Error updating status", description: err.message, variant: "destructive" });
+      toast({ title: "Error updating status", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 
-  const handleDuplicate = async (event: any) => {
+  const handleDuplicate = async (event: Record<string, unknown> & { id: string; title: string; ticket_types?: Array<{ name: string; price: number; description: string; available: number; max_per_order: number }> }) => {
     if (!user) return;
     try {
       const { data: newEvent, error } = await supabase
@@ -74,7 +74,7 @@ const MyEvents = () => {
       // Copy tickets
       if (event.ticket_types?.length) {
         await supabase.from("ticket_types").insert(
-          event.ticket_types.map((t: any) => ({
+          event.ticket_types.map((t: { name: string; price: number; description: string; available: number; max_per_order: number }) => ({
             event_id: newEvent.id, name: t.name, price: t.price,
             description: t.description, available: t.available, max_per_order: t.max_per_order,
           }))
@@ -84,7 +84,7 @@ const MyEvents = () => {
       toast({ title: "Event duplicated! Edit it below." });
       navigate(`/edit-event/${newEvent.id}`);
     } catch (err: unknown) {
-      toast({ title: "Error duplicating", description: err.message, variant: "destructive" });
+      toast({ title: "Error duplicating", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
     }
   };
 
@@ -131,7 +131,7 @@ const MyEvents = () => {
           <div className="space-y-4">
             {events.map((event) => {
               const isPast = new Date(event.date) < new Date();
-              const status = (event as any).status ?? "published";
+              const status = (event as Record<string, unknown>).status as string ?? "published";
               return (
                 <div key={event.id} className={`flex flex-col sm:flex-row gap-4 p-4 border rounded-xl transition-colors hover:bg-accent/30 ${isPast ? "opacity-60" : ""}`}>
                   <Link to={`/event/${event.id}`} className="shrink-0">

@@ -39,7 +39,7 @@ const PromoCodeInput = ({ eventIds, onDiscount }: PromoCodeInputProps) => {
       }
       toast({ title: "Invalid promo code", variant: "destructive" });
     } catch (err: unknown) {
-      toast({ title: err.message || "Invalid promo code", variant: "destructive" });
+      toast({ title: (err instanceof Error ? err.message : "Unknown error") || "Invalid promo code", variant: "destructive" });
     } finally {
       setLoading(false);
     }

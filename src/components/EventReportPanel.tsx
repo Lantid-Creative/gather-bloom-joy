@@ -44,7 +44,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5, 27 87% 67%))",
 ];
 
-const MiniStat = ({ icon: Icon, label, value, trend, trendLabel }: { icon: any; label: string; value: string; trend?: "up" | "down" | "neutral"; trendLabel?: string }) => (
+const MiniStat = ({ icon: Icon, label, value, trend, trendLabel }: { icon: React.ElementType; label: string; value: string; trend?: "up" | "down" | "neutral"; trendLabel?: string }) => (
   <div className="rounded-lg border bg-card p-3 space-y-0.5">
     <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]"><Icon className="h-3 w-3" />{label}</div>
     <div className="flex items-center gap-2">
