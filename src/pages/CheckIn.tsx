@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { CheckCircle2, Search, UserCheck, XCircle } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { CheckCircle2, Search, ScanLine } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import QrScanner from "@/components/QrScanner";
 
 const CheckIn = () => {
   const { eventId } = useParams();
@@ -15,6 +16,7 @@ const CheckIn = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [lastScanned, setLastScanned] = useState<string | null>(null);
 
   const { data: event } = useQuery({
     queryKey: ["event-checkin", eventId],
@@ -50,9 +52,46 @@ const CheckIn = () => {
     });
     if (error) {
       toast({ title: "Already checked in", variant: "destructive" });
+      return false;
     } else {
       toast({ title: "Checked in! ✅" });
       queryClient.invalidateQueries({ queryKey: ["checkin-items", eventId] });
+      return true;
+    }
+  };
+
+  const handleQrScan = async (rawData: string) => {
+    // Prevent processing same scan twice in a row
+    if (rawData === lastScanned) return;
+    setLastScanned(rawData);
+
+    try {
+      const parsed = JSON.parse(rawData);
+      const { orderItemId } = parsed;
+
+      if (!orderItemId) {
+        toast({ title: "Invalid QR code", description: "This doesn't look like an Afritickets ticket.", variant: "destructive" });
+        return;
+      }
+
+      // Find the attendee in the list
+      const attendee = orderItems?.find((i) => i.id === orderItemId);
+
+      if (!attendee) {
+        toast({ title: "Ticket not found", description: "This ticket doesn't belong to this event.", variant: "destructive" });
+        return;
+      }
+
+      if (attendee.checked_in) {
+        toast({ title: "Already checked in", description: `${attendee.customer_name} was already checked in.`, variant: "destructive" });
+        return;
+      }
+
+      await handleCheckIn(orderItemId);
+      // Highlight the scanned attendee
+      setSearch(attendee.customer_name);
+    } catch {
+      toast({ title: "Invalid QR code", description: "Could not read ticket data from this code.", variant: "destructive" });
     }
   };
 
@@ -87,6 +126,11 @@ const CheckIn = () => {
           </div>
         </div>
 
+        {/* QR Scanner Section */}
+        <div className="mb-6 p-4 rounded-xl border border-primary/20 bg-primary/5">
+          <QrScanner onScan={handleQrScan} />
+        </div>
+
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email..." className="pl-10" />
@@ -94,14 +138,16 @@ const CheckIn = () => {
 
         <div className="space-y-2">
           {filtered.map((item) => (
-            <div key={item.id} className="flex items-center justify-between p-4 border rounded-xl">
+            <div key={item.id} className={`flex items-center justify-between p-4 border rounded-xl transition-colors ${
+              lastScanned && item.customer_name === search ? "border-primary bg-primary/5" : ""
+            }`}>
               <div className="space-y-0.5">
                 <p className="font-semibold text-sm">{item.customer_name}</p>
                 <p className="text-xs text-muted-foreground">{item.customer_email}</p>
                 <p className="text-xs text-muted-foreground">{item.ticket_name} × {item.quantity}</p>
               </div>
               {item.checked_in ? (
-                <div className="flex items-center gap-1 text-success text-sm font-medium">
+                <div className="flex items-center gap-1 text-green-600 dark:text-green-400 text-sm font-medium">
                   <CheckCircle2 className="h-4 w-4" /> Checked in
                 </div>
               ) : (
