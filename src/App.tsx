@@ -83,6 +83,14 @@ const App = () => (
             <Route path="/influencer-dashboard" element={<ProtectedRoute><InfluencerDashboard /></ProtectedRoute>} />
             <Route path="/hire/:influencerId" element={<ProtectedRoute><HireInfluencer /></ProtectedRoute>} />
             <Route path="/my-hires" element={<ProtectedRoute><MyHires /></ProtectedRoute>} />
+            <Route path="/features/ticketing" element={<FeatureTicketing />} />
+            <Route path="/features/check-in" element={<FeatureCheckIn />} />
+            <Route path="/features/dashboard" element={<FeatureDashboard />} />
+            <Route path="/features/influencers" element={<FeatureInfluencers />} />
+            <Route path="/features/sponsorship" element={<FeatureSponsorship />} />
+            <Route path="/features/promo-codes" element={<FeaturePromoCodes />} />
+            <Route path="/features/payments" element={<FeaturePayments />} />
+            <Route path="/features/africa" element={<FeatureAfrica />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
