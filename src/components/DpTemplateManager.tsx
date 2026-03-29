@@ -485,6 +485,38 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
     }));
   };
 
+  // ─── Preset touch handlers ───
+  const handlePresetTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const canvas = presetCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    const pr = presetPhotoRect;
+    if (mx >= pr.x && mx <= pr.x + pr.w && my >= pr.y && my <= pr.y + pr.h) {
+      setPresetDragging(true);
+      setPresetDragOffset({ x: mx - pr.x, y: my - pr.y });
+    }
+  };
+
+  const handlePresetTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!presetDragging) return;
+    const touch = e.touches[0];
+    const canvas = presetCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    setPresetPhotoRect((prev) => ({
+      ...prev,
+      x: Math.max(0, Math.min(mx - presetDragOffset.x, PRESET_W - prev.w)),
+      y: Math.max(0, Math.min(my - presetDragOffset.y, PRESET_H - prev.h)),
+    }));
+  };
+
   // ─── Save preset as template ───
   const savePreset = async () => {
     if (!selectedPreset || !presetName.trim()) {
