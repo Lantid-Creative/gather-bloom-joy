@@ -261,6 +261,83 @@ export type Database = {
           },
         ]
       }
+      event_lineup_artists: {
+        Row: {
+          apple_music_url: string
+          bio: string
+          created_at: string
+          event_id: string
+          genre: string
+          headliner: boolean
+          id: string
+          instagram_url: string
+          name: string
+          photo_url: string
+          set_end_time: string
+          set_time: string
+          sort_order: number
+          soundcloud_embed_url: string
+          soundcloud_url: string
+          spotify_embed_url: string
+          spotify_url: string
+          stage: string
+          twitter_url: string
+          website_url: string
+        }
+        Insert: {
+          apple_music_url?: string
+          bio?: string
+          created_at?: string
+          event_id: string
+          genre?: string
+          headliner?: boolean
+          id?: string
+          instagram_url?: string
+          name: string
+          photo_url?: string
+          set_end_time?: string
+          set_time?: string
+          sort_order?: number
+          soundcloud_embed_url?: string
+          soundcloud_url?: string
+          spotify_embed_url?: string
+          spotify_url?: string
+          stage?: string
+          twitter_url?: string
+          website_url?: string
+        }
+        Update: {
+          apple_music_url?: string
+          bio?: string
+          created_at?: string
+          event_id?: string
+          genre?: string
+          headliner?: boolean
+          id?: string
+          instagram_url?: string
+          name?: string
+          photo_url?: string
+          set_end_time?: string
+          set_time?: string
+          sort_order?: number
+          soundcloud_embed_url?: string
+          soundcloud_url?: string
+          spotify_embed_url?: string
+          spotify_url?: string
+          stage?: string
+          twitter_url?: string
+          website_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_lineup_artists_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_time_slots: {
         Row: {
           booked: number
