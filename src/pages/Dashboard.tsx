@@ -318,6 +318,11 @@ const Dashboard = () => {
                       orders={eventOrders as any}
                     />
 
+                    {/* Ads Manager */}
+                    <div className="border-t pt-4 mt-4">
+                      <AdsManager eventId={event.id} eventTitle={event.title} />
+                    </div>
+
                     {/* Timed Entry Slots */}
                     <div className="border-t pt-4 mt-4">
                       <TimeSlotManager eventId={event.id} />
