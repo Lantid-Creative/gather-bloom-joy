@@ -44,6 +44,7 @@ import FeatureSponsorship from "./pages/features/FeatureSponsorship.tsx";
 import FeaturePromoCodes from "./pages/features/FeaturePromoCodes.tsx";
 import FeaturePayments from "./pages/features/FeaturePayments.tsx";
 import FeatureAfrica from "./pages/features/FeatureAfrica.tsx";
+import FeatureAI from "./pages/features/FeatureAI.tsx";
 import DpGenerator from "./pages/DpGenerator.tsx";
 import Lineups from "./pages/Lineups.tsx";
 import MarketingTools from "./pages/MarketingTools.tsx";
