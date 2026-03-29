@@ -1,5 +1,6 @@
 import { CreditCard, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-payments.jpg";
 
 const benefits = [
   "Stripe-powered payment processing with support for cards and mobile money",
@@ -17,6 +18,7 @@ const FeaturePayments = () => (
     title="Secure Payments"
     subtitle="Trusted payment processing with Stripe. Multi-currency support, escrow for influencer hires, and built-in refund handling."
     heroColor="bg-emerald-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

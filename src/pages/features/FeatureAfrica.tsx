@@ -1,5 +1,6 @@
 import { Globe, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-africa.jpg";
 
 const benefits = [
   "Discover events in Lagos, Nairobi, Accra, Dakar, Johannesburg, Addis Ababa, and more",
@@ -17,6 +18,7 @@ const FeatureAfrica = () => (
     title="Africa-First Platform"
     subtitle="Built by Africans, for Africa. Afritickets is the event platform that understands the continent's vibrant culture, cities, and communities."
     heroColor="bg-orange-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

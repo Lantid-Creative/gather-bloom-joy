@@ -1,5 +1,6 @@
 import { Handshake, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-sponsorship.jpg";
 
 const benefits = [
   "Create tiered sponsorship packages — Gold, Silver, Bronze or custom names",
@@ -18,6 +19,7 @@ const FeatureSponsorship = () => (
     title="Sponsorship Management"
     subtitle="Connect with brands and sponsors who want to support your events. Create tiers, receive proposals, and manage partnerships."
     heroColor="bg-amber-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

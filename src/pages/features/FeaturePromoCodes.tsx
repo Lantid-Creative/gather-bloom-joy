@@ -1,5 +1,6 @@
 import { Tag, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-promocodes.jpg";
 
 const benefits = [
   "Create percentage-based or fixed-amount discount codes",
@@ -17,6 +18,7 @@ const FeaturePromoCodes = () => (
     title="Promo Codes"
     subtitle="Drive ticket sales with flexible discount codes. Create time-limited offers, group discounts, and influencer-specific promotions."
     heroColor="bg-pink-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

@@ -1,5 +1,6 @@
 import { QrCode, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-checkin.jpg";
 
 const benefits = [
   "Scan QR codes from attendees' tickets using your phone camera — no extra hardware needed",
@@ -18,6 +19,7 @@ const FeatureCheckIn = () => (
     title="QR Check-In"
     subtitle="Fast, reliable attendee check-in with your phone camera. Sound feedback, scan history, and real-time attendance tracking."
     heroColor="bg-green-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>

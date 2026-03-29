@@ -1,5 +1,6 @@
 import { BarChart3, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-dashboard.jpg";
 
 const benefits = [
   "Real-time revenue, ticket sales, and order tracking across all your events",
@@ -19,6 +20,7 @@ const FeatureDashboard = () => (
     title="Organizer Dashboard"
     subtitle="Your command center for event management. Track every sale, manage attendees, and grow your events with data-driven insights."
     heroColor="bg-blue-500/5"
+    heroImage={heroImg}
   >
     <div className="space-y-12">
       <div>
