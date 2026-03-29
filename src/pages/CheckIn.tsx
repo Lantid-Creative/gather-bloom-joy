@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, Search, ScanLine } from "lucide-react";
+import { CheckCircle2, Search, ScanLine, Clock, History } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import QrScanner from "@/components/QrScanner";
+import { format } from "date-fns";
+
+interface ScanLogEntry {
+  name: string;
+  email: string;
+  ticket: string;
+  time: Date;
+  status: "success" | "already" | "error";
+  message?: string;
+}
 
 const CheckIn = () => {
   const { eventId } = useParams();
@@ -17,6 +27,7 @@ const CheckIn = () => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [lastScanned, setLastScanned] = useState<string | null>(null);
+  const [scanLog, setScanLog] = useState<ScanLogEntry[]>([]);
 
   const { data: event } = useQuery({
     queryKey: ["event-checkin", eventId],
