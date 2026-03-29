@@ -231,6 +231,11 @@ const Dashboard = () => {
                       <TimeSlotManager eventId={event.id} />
                     </div>
 
+                    {/* Artist Lineup */}
+                    <div className="border-t pt-4 mt-4">
+                      <LineupManager eventId={event.id} />
+                    </div>
+
                     {/* Sponsorship Tiers */}
                     <div className="border-t pt-4 mt-4">
                       <div className="flex items-center gap-2 mb-3">
