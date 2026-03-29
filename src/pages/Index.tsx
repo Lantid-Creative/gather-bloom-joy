@@ -216,9 +216,24 @@ const Index = () => {
         </div>
 
         {(category || searchQuery) && (
-          <p className="text-sm text-muted-foreground mb-4">
-            Showing {filtered.length} event{filtered.length !== 1 ? "s" : ""}
-          </p>
+          <div className="mb-4 space-y-1">
+            <p className="text-sm text-muted-foreground">
+              {aiSearching ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 animate-pulse text-primary" />
+                  AI is searching for you...
+                </span>
+              ) : (
+                <>Showing {filtered.length} event{filtered.length !== 1 ? "s" : ""}</>
+              )}
+            </p>
+            {aiInterpretation && isSmartSearch && (
+              <p className="text-xs text-primary/80 flex items-center gap-1">
+                <Sparkles className="h-3 w-3" />
+                {aiInterpretation}
+              </p>
+            )}
+          </div>
         )}
 
         <BrowsingTabs active={tab} onChange={setTab} />
