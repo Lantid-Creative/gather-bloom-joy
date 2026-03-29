@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Sparkles } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -11,6 +11,7 @@ import { useEvents } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
 import FeaturesShowcase from "@/components/FeaturesShowcase";
 import SEOHead from "@/components/SEOHead";
+import { supabase } from "@/integrations/supabase/client";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
