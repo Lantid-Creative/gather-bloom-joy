@@ -11,7 +11,7 @@ interface Props {
 
 const SmartRecommendations = ({ allEvents }: Props) => {
   const { user } = useAuth();
-  const [recommended, setRecommended] = useState<EventLike[]>([]);
+  const [recommended, setRecommended] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [reasoning, setReasoning] = useState("");
 
