@@ -29,6 +29,8 @@ export interface EventFormData {
   organizer: string;
   capacity: string;
   isOnline: boolean;
+  meetingPlatform: string;
+  meetingUrl: string;
   tags: string;
   tickets: TicketDraft[];
   status: string;
