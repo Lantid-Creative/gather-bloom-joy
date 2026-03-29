@@ -1,5 +1,5 @@
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { Calendar, MapPin, Users, Bookmark, Bell, Handshake } from "lucide-react";
+import { Calendar, MapPin, Users, Bookmark, Bell, Handshake, Video, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
@@ -18,6 +18,19 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
+const platformLabels: Record<string, string> = {
+  zoom: "Zoom",
+  google_meet: "Google Meet",
+  microsoft_teams: "Microsoft Teams",
+  webex: "Cisco Webex",
+  youtube_live: "YouTube Live",
+  facebook_live: "Facebook Live",
+  twitter_spaces: "X (Twitter) Spaces",
+  discord: "Discord",
+  other: "Virtual Meeting",
+};
+const platformLabel = (p?: string) => (p && platformLabels[p]) || "Online Event";
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -136,6 +149,22 @@ const EventDetail = () => {
               </div>
               {!event.is_online && (
                 <div className="h-48 rounded-xl overflow-hidden border"><GoogleMap location={event.location} /></div>
+              )}
+              {event.is_online && (dbEvent as any)?.meeting_url && (
+                <div className="flex items-center gap-3 p-4 rounded-xl border border-primary/20 bg-primary/5">
+                  <Video className="h-5 w-5 text-primary shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">
+                      {platformLabel((dbEvent as any)?.meeting_platform)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Online event — join via the link below</p>
+                  </div>
+                  <Button size="sm" className="rounded-full gap-1.5" asChild>
+                    <a href={(dbEvent as any).meeting_url} target="_blank" rel="noopener noreferrer">
+                      Join <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                </div>
               )}
             </div>
 

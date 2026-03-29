@@ -29,6 +29,8 @@ export interface EventFormData {
   organizer: string;
   capacity: string;
   isOnline: boolean;
+  meetingPlatform: string;
+  meetingUrl: string;
   tags: string;
   tickets: TicketDraft[];
   status: string;
@@ -65,6 +67,8 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [organizer, setOrganizer] = useState(initial?.organizer ?? "");
   const [capacity, setCapacity] = useState(initial?.capacity ?? "100");
   const [isOnline, setIsOnline] = useState(initial?.isOnline ?? false);
+  const [meetingPlatform, setMeetingPlatform] = useState(initial?.meetingPlatform ?? "");
+  const [meetingUrl, setMeetingUrl] = useState(initial?.meetingUrl ?? "");
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [tickets, setTickets] = useState<TicketDraft[]>(initial?.tickets ?? [{ ...emptyTicket }]);
   const [status, setStatus] = useState(initial?.status ?? "published");
@@ -140,7 +144,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit({ title, description, date, endDate, time, location, imageUrl, category, organizer, capacity, isOnline, tags, tickets, status, recurrenceType, recurrenceEndDate });
+      await onSubmit({ title, description, date, endDate, time, location, imageUrl, category, organizer, capacity, isOnline, meetingPlatform, meetingUrl, tags, tickets, status, recurrenceType, recurrenceEndDate });
     } finally {
       setLoading(false);
     }
@@ -186,6 +190,46 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
           <input type="checkbox" id="isOnline" checked={isOnline} onChange={(e) => setIsOnline(e.target.checked)} className="rounded" />
           <Label htmlFor="isOnline">This is an online event</Label>
         </div>
+        {isOnline && (
+          <div className="space-y-3 p-4 rounded-xl border border-primary/20 bg-primary/5">
+            <h3 className="text-sm font-semibold text-primary">Virtual Event Platform</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="meetingPlatform">Platform</Label>
+                <select
+                  id="meetingPlatform"
+                  value={meetingPlatform}
+                  onChange={(e) => setMeetingPlatform(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Select platform</option>
+                  <option value="zoom">Zoom</option>
+                  <option value="google_meet">Google Meet</option>
+                  <option value="microsoft_teams">Microsoft Teams</option>
+                  <option value="webex">Cisco Webex</option>
+                  <option value="youtube_live">YouTube Live</option>
+                  <option value="facebook_live">Facebook Live</option>
+                  <option value="twitter_spaces">X (Twitter) Spaces</option>
+                  <option value="discord">Discord</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="meetingUrl">Meeting Link</Label>
+                <Input
+                  id="meetingUrl"
+                  type="url"
+                  value={meetingUrl}
+                  onChange={(e) => setMeetingUrl(e.target.value)}
+                  placeholder="https://zoom.us/j/123456789"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Attendees will see the join link after purchasing their ticket.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">
