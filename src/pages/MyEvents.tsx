@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Event } from "@/lib/types";
 import { Plus, Calendar, MapPin, Users, Pencil, Trash2, Eye, Copy, QrCode } from "lucide-react";
 import { format } from "date-fns";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
@@ -47,7 +47,7 @@ const MyEvents = () => {
     }
   };
 
-  const handleDuplicate = async (event: Tables<"events"> & { ticket_types?: Array<{ name: string; price: number; description: string; available: number; max_per_order: number }> }) => {
+  const handleDuplicate = async (event: Event & { ticket_types?: Array<{ name: string; price: number; description: string; available: number; max_per_order: number }> }) => {
     if (!user) return;
     try {
       const { data: newEvent, error } = await supabase
@@ -89,21 +89,21 @@ const MyEvents = () => {
     }
   };
 
-  if (authLoading) return <div className="min-h-screen bg-background"><EventbriteHeader /><div className="container py-20 text-center"><div className="animate-pulse space-y-4"><div className="h-8 bg-muted rounded w-48 mx-auto" /></div></div></div>;
+  if (authLoading) return <div className="min-h-screen bg-background"><QantidHeader /><div className="container py-20 text-center"><div className="animate-pulse space-y-4"><div className="h-8 bg-muted rounded w-48 mx-auto" /></div></div></div>;
 
   if (!user) return (
-    <div className="min-h-screen bg-background"><EventbriteHeader />
+    <div className="min-h-screen bg-background"><QantidHeader />
       <div className="container max-w-lg py-20 text-center space-y-4">
         <h1 className="text-2xl font-bold">Sign in to manage your events</h1>
         <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container py-10">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -132,7 +132,7 @@ const MyEvents = () => {
           <div className="space-y-4">
             {events.map((event) => {
               const isPast = new Date(event.date) < new Date();
-              const status = (event as unknown as Record<string, unknown>).status as string ?? "published";
+              const status = event.status ?? "published";
               return (
                 <div key={event.id} className={`flex flex-col sm:flex-row gap-4 p-4 border rounded-xl transition-colors hover:bg-accent/30 ${isPast ? "opacity-60" : ""}`}>
                   <Link to={`/event/${event.id}`} className="shrink-0">
@@ -193,7 +193,7 @@ const MyEvents = () => {
           </div>
         )}
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

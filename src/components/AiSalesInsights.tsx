@@ -13,7 +13,14 @@ interface Props {
 
 const AiSalesInsights = ({ events, totalRevenue, totalTickets, totalOrders }: Props) => {
   const [insights, setInsights] = useState("");
-  const [forecast, setForecast] = useState<Record<string, unknown> | null>(null);
+  const [forecast, setForecast] = useState<{
+    projected_revenue?: number;
+    projected_tickets?: number;
+    growth_rate?: string;
+    confidence?: string;
+    summary?: string;
+    recommendations?: string[];
+  } | null>(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
   const [loadingForecast, setLoadingForecast] = useState(false);
   const { toast } = useToast();

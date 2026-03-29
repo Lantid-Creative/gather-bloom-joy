@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 
 interface FeaturePageLayoutProps {
@@ -19,7 +19,7 @@ const FeaturePageLayout = ({ icon, title, subtitle, heroColor, heroImage, childr
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Hero */}
       <section className={`${heroColor} py-16 md:py-24`}>
@@ -57,7 +57,7 @@ const FeaturePageLayout = ({ icon, title, subtitle, heroColor, heroImage, childr
         {children}
       </div>
 
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

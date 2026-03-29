@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ChevronDown, X, Sparkles } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import CategoryIcons from "@/components/CategoryIcons";
 import BrowsingTabs from "@/components/BrowsingTabs";
-import EventbriteCard from "@/components/EventbriteCard";
+import QantidCard from "@/components/QantidCard";
 import DestinationCards from "@/components/DestinationCards";
 import { useEvents } from "@/hooks/useEvents";
 import { mockEvents } from "@/lib/mock-data";
@@ -125,7 +125,7 @@ const Index = () => {
         title={searchQuery ? `Search: ${searchQuery}` : undefined}
         description="Africa's #1 event ticketing platform. Discover concerts, festivals, conferences and cultural events across Lagos, Nairobi, Accra, Johannesburg and 50+ African cities."
       />
-      <EventbriteHeader />
+      <QantidHeader />
 
       {/* Hero Banner */}
       <section className="relative overflow-hidden mx-4 md:mx-8 mt-2 rounded-xl">
@@ -278,7 +278,7 @@ const Index = () => {
             </div>
           ) : (
             filtered.map((event) => (
-              <EventbriteCard key={event.id} event={event} />
+              <QantidCard key={event.id} event={event} />
             ))
           )}
         </div>
@@ -309,7 +309,7 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

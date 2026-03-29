@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Ticket, Calendar, MapPin, RotateCcw, Download, Bell } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
@@ -84,7 +84,7 @@ const MyTickets = () => {
   };
 
   if (!user) return (
-    <div className="min-h-screen bg-background"><EventbriteHeader />
+    <div className="min-h-screen bg-background"><QantidHeader />
       <div className="container max-w-lg py-20 text-center space-y-4">
         <h1 className="text-2xl font-bold">Sign in to view your tickets</h1>
         <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button>
@@ -94,7 +94,7 @@ const MyTickets = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-3xl py-10">
         <h1 className="text-3xl font-bold mb-8">My Tickets</h1>
         {isLoading ? <p className="text-muted-foreground">Loading...</p> : !orders || orders.length === 0 ? (

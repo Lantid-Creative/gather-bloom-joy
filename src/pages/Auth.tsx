@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,7 +40,7 @@ const Auth = () => {
       } else {
         const { error } = await signUp(email, password, fullName);
         if (error) throw error;
-        toast({ title: "Account created! Welcome to Afritickets 🎉" });
+        toast({ title: "Account created! Welcome to Qantid 🎉" });
         navigate("/");
       }
     } catch (err: unknown) {
@@ -62,7 +62,7 @@ const Auth = () => {
   if (mode === "forgot" && resetSent) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container flex items-center justify-center py-20">
           <div className="w-full max-w-md space-y-6 text-center p-8 rounded-2xl border bg-card shadow-lg">
             <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
@@ -83,7 +83,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container flex items-center justify-center py-8 md:py-16 px-4">
         <div className="w-full max-w-4xl grid md:grid-cols-2 rounded-3xl overflow-hidden border shadow-2xl bg-card">
 
@@ -110,7 +110,7 @@ const Auth = () => {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-white/5 border border-white/10" />
 
             <div className="relative z-10 space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">Afritickets</h2>
+              <h2 className="text-3xl font-bold tracking-tight">Qantid</h2>
               <p className="text-white/70 text-sm">Africa's premier event platform</p>
             </div>
 
@@ -245,7 +245,7 @@ const Auth = () => {
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="bg-card px-4 text-muted-foreground">
-                  {mode === "forgot" ? "or" : mode === "login" ? "New to Afritickets?" : "Already have an account?"}
+                  {mode === "forgot" ? "or" : mode === "login" ? "New to Qantid?" : "Already have an account?"}
                 </span>
               </div>
             </div>

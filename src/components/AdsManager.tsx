@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -97,7 +97,7 @@ const AdsManager = ({ eventId, eventTitle }: AdsManagerProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Megaphone className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-semibold">Afritickets Ads</h3>
+          <h3 className="text-sm font-semibold">Qantid Ads</h3>
         </div>
         <Button size="sm" variant="outline" onClick={() => setShowCreate(!showCreate)}>
           <Plus className="h-3 w-3 mr-1" /> New Campaign
@@ -150,7 +150,7 @@ const AdsManager = ({ eventId, eventTitle }: AdsManagerProps) => {
 
       {ads && ads.length > 0 && (
         <div className="space-y-3">
-          {ads.map((ad: Tables<"event_ads">) => {
+          {ads.map((ad: DbTable<"event_ads">) => {
             const ctr = ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(1) : "0";
             return (
               <Card key={ad.id} className="overflow-hidden">

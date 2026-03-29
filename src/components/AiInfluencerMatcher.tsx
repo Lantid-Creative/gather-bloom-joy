@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Sparkles, Users, Star, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,7 +71,7 @@ const AiInfluencerMatcher = ({ eventId, eventTitle, eventCategory, eventLocation
 
   const getInfluencer = (id: string) => influencers?.find((i) => i.id === id);
 
-  const totalFollowers = (inf: Tables<"influencer_profiles">) =>
+  const totalFollowers = (inf: Partial<DbTable<"influencer_profiles">>) =>
     (inf.instagram_followers || 0) + (inf.tiktok_followers || 0) + (inf.twitter_followers || 0) + (inf.youtube_subscribers || 0);
 
   return (

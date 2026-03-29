@@ -1,9 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { format } from "date-fns";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
-import EventbriteCard from "@/components/EventbriteCard";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
+import QantidCard from "@/components/QantidCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -73,7 +73,7 @@ const OrganizerProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-5xl py-10">
         <div className="flex items-center gap-6 mb-10">
           <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -101,12 +101,12 @@ const OrganizerProfile = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((e) => (
-              <EventbriteCard key={e.id} event={e} />
+              <QantidCard key={e.id} event={e} />
             ))}
           </div>
         )}
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

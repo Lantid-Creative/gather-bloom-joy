@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import EventForm, { type EventFormData, type TicketDraft } from "@/components/EventForm";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,7 +21,7 @@ const EditEvent = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to edit events</h1>
           <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>
@@ -35,7 +35,7 @@ const EditEvent = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-2xl py-20">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-muted rounded w-48" />
@@ -50,7 +50,7 @@ const EditEvent = () => {
   if (!event) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Event not found</h1>
           <Button variant="link" onClick={() => navigate("/my-events")}>← Back to My Events</Button>
@@ -60,7 +60,6 @@ const EditEvent = () => {
   }
 
   const eventDate = new Date(event.date);
-  const dbEvent = event as unknown as Record<string, unknown>;
   const initialData: Partial<EventFormData> = {
     title: event.title,
     description: event.description,
@@ -69,17 +68,17 @@ const EditEvent = () => {
     time: event.time || format(eventDate, "HH:mm"),
     location: event.location,
     imageUrl: event.image_url,
-    extraImages: dbEvent.extra_images ?? [],
+    extraImages: event.extra_images ?? [],
     category: event.category,
     organizer: event.organizer,
     capacity: String(event.capacity),
     isOnline: event.is_online,
-    meetingPlatform: dbEvent.meeting_platform ?? "",
-    meetingUrl: dbEvent.meeting_url ?? "",
+    meetingPlatform: event.meeting_platform ?? "",
+    meetingUrl: event.meeting_url ?? "",
     tags: event.tags.join(", "),
-    status: dbEvent.status ?? "published",
-    recurrenceType: dbEvent.recurrence_type ?? "none",
-    recurrenceEndDate: dbEvent.recurrence_end_date ? format(new Date(dbEvent.recurrence_end_date), "yyyy-MM-dd") : "",
+    status: event.status ?? "published",
+    recurrenceType: event.recurrence_type ?? "none",
+    recurrenceEndDate: event.recurrence_end_date ? format(new Date(event.recurrence_end_date), "yyyy-MM-dd") : "",
     tickets: event.ticket_types.length > 0
       ? event.ticket_types.map((t) => ({
           id: t.id,
@@ -152,7 +151,7 @@ const EditEvent = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-2xl py-10">
         <Button variant="ghost" size="sm" className="-ml-2 mb-6" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back

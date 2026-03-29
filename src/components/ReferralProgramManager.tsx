@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { DbTable } from "@/lib/db-types";
 import { Users, Link as LinkIcon, Copy, Check, Loader2, TrendingUp, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,7 +67,7 @@ const ReferralProgramManager = ({ eventId, eventTitle }: Props) => {
     }
   };
 
-  const updateProgram = async (updates: Partial<Tables<"referral_programs">>) => {
+  const updateProgram = async (updates: Partial<DbTable<"referral_programs">>) => {
     if (!program) return;
     await supabase.from("referral_programs").update(updates).eq("id", program.id);
     queryClient.invalidateQueries({ queryKey: ["referral-program", eventId] });

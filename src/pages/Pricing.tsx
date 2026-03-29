@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Check, Sparkles } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 
 const plans = [
@@ -61,7 +61,7 @@ const plans = [
 
 const Pricing = () => (
   <div className="min-h-screen bg-background">
-    <EventbriteHeader />
+    <QantidHeader />
     <div className="container max-w-5xl py-16 space-y-16">
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold">Simple, Transparent Pricing</h1>
@@ -121,7 +121,7 @@ const Pricing = () => (
         </p>
       </div>
     </div>
-    <EventbriteFooter />
+    <QantidFooter />
   </div>
 );
 

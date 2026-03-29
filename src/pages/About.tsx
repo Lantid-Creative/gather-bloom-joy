@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Users, Globe, Heart, Zap, Target, Award } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
 
 const values = [
@@ -27,13 +27,13 @@ const team = [
 
 const About = () => (
   <div className="min-h-screen bg-background">
-    <EventbriteHeader />
+    <QantidHeader />
     <div className="container max-w-5xl py-16 space-y-20">
       {/* Hero */}
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold">Connecting Africa Through Events</h1>
         <p className="text-lg text-muted-foreground">
-          Afritickets is Africa's leading event discovery and ticketing platform, empowering organizers
+          Qantid is Africa's leading event discovery and ticketing platform, empowering organizers
           and connecting communities across the continent.
         </p>
       </div>
@@ -59,7 +59,7 @@ const About = () => (
             and create memorable experiences.
           </p>
           <p className="text-muted-foreground leading-relaxed">
-            Founded in 2024, Afritickets has grown from a small idea into the continent's most
+            Founded in 2024, Qantid has grown from a small idea into the continent's most
             trusted ticketing platform, serving organizers of all sizes from independent creators
             to major entertainment brands.
           </p>
@@ -102,7 +102,7 @@ const About = () => (
         </Button>
       </div>
     </div>
-    <EventbriteFooter />
+    <QantidFooter />
   </div>
 );
 

@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { MapPin, Star, Users, Instagram, Youtube, Twitter, ExternalLink, Calendar, DollarSign, Clock, Shield } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
-import EventbriteFooter from "@/components/EventbriteFooter";
+import QantidHeader from "@/components/QantidHeader";
+import QantidFooter from "@/components/QantidFooter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -51,7 +51,7 @@ const InfluencerProfile = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-4xl py-20">
           <div className="animate-pulse space-y-6">
             <div className="flex items-center gap-4">
@@ -68,7 +68,7 @@ const InfluencerProfile = () => {
   if (!influencer) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-bold">Influencer not found</h1>
           <Button variant="link" asChild className="mt-4"><Link to="/influencers">← Browse influencers</Link></Button>
@@ -77,7 +77,7 @@ const InfluencerProfile = () => {
     );
   }
 
-  const services = ((influencer as unknown as Record<string, unknown>).influencer_services as Array<{ id: string; is_active: boolean; title: string; description: string; price: number; delivery_days: number; category: string }>) ?? [] ?? [];
+  const services = ((influencer as unknown as Record<string, unknown>).influencer_services as Array<{ id: string; is_active: boolean; title: string; description: string; price: number; delivery_days: number; category: string }>) ?? [];
   const isOwner = user?.id === influencer.user_id;
   const socials = [
     { label: "Instagram", url: influencer.instagram_url, count: influencer.instagram_followers, icon: Instagram },
@@ -89,7 +89,7 @@ const InfluencerProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-4xl py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main content */}
@@ -297,7 +297,7 @@ const InfluencerProfile = () => {
           </div>
         </div>
       </div>
-      <EventbriteFooter />
+      <QantidFooter />
     </div>
   );
 };

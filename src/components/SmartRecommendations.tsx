@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import EventbriteCard from "@/components/EventbriteCard";
+import QantidCard from "@/components/QantidCard";
 import type { Event } from "@/lib/types";
 
 interface Props {
@@ -82,7 +82,7 @@ const SmartRecommendations = ({ allEvents }: Props) => {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {recommended.slice(0, 4).map((event) => (
-          <EventbriteCard key={event.id} event={event} />
+          <QantidCard key={event.id} event={event} />
         ))}
       </div>
     </div>

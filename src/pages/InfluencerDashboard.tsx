@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Upload, X, Star, Clock, DollarSign, Package, CheckCircle2, XCircle, Send } from "lucide-react";
-import EventbriteHeader from "@/components/EventbriteHeader";
+import QantidHeader from "@/components/QantidHeader";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -208,7 +208,7 @@ const InfluencerDashboard = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <EventbriteHeader />
+        <QantidHeader />
         <div className="container max-w-lg py-20 text-center space-y-4">
           <h1 className="text-2xl font-bold">Sign in to manage your influencer profile</h1>
           <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button>
@@ -219,7 +219,7 @@ const InfluencerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EventbriteHeader />
+      <QantidHeader />
       <div className="container max-w-3xl py-10">
         <h1 className="text-3xl font-bold mb-2">Influencer Dashboard</h1>
         <p className="text-muted-foreground mb-8">Manage your profile, services, and orders</p>

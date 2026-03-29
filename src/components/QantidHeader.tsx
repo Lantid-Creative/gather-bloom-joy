@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
 
-const EventbriteHeader = () => {
+const QantidHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const EventbriteHeader = () => {
     <header className="sticky top-0 z-50 bg-background border-b">
       <div className="container flex h-14 items-center gap-4">
         <Link to="/" className="shrink-0">
-          <span className="text-xl font-bold text-primary tracking-tight">afritickets</span>
+          <span className="text-xl font-bold text-primary tracking-tight">qantid</span>
         </Link>
 
         {/* Search Bar - Desktop */}
@@ -153,4 +153,4 @@ const EventbriteHeader = () => {
   );
 };
 
-export default EventbriteHeader;
+export default QantidHeader;
