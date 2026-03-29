@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, Search, ScanLine } from "lucide-react";
+import { CheckCircle2, Search, ScanLine, Clock, History } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import QrScanner from "@/components/QrScanner";
+import { format } from "date-fns";
+
+interface ScanLogEntry {
+  name: string;
+  email: string;
+  ticket: string;
+  time: Date;
+  status: "success" | "already" | "error";
+  message?: string;
+}
 
 const CheckIn = () => {
   const { eventId } = useParams();
@@ -17,6 +27,7 @@ const CheckIn = () => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [lastScanned, setLastScanned] = useState<string | null>(null);
+  const [scanLog, setScanLog] = useState<ScanLogEntry[]>([]);
 
   const { data: event } = useQuery({
     queryKey: ["event-checkin", eventId],
@@ -84,11 +95,13 @@ const CheckIn = () => {
 
       if (attendee.checked_in) {
         toast({ title: "Already checked in", description: `${attendee.customer_name} was already checked in.`, variant: "destructive" });
+        setScanLog(prev => [{ name: attendee.customer_name, email: attendee.customer_email, ticket: attendee.ticket_name, time: new Date(), status: "already", message: "Already checked in" }, ...prev]);
         return;
       }
 
       const success = await handleCheckIn(orderItemId);
       if (success) {
+        setScanLog(prev => [{ name: attendee.customer_name, email: attendee.customer_email, ticket: attendee.ticket_name, time: new Date(), status: "success" }, ...prev]);
         // Vibration feedback (if supported)
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         // Audio beep feedback
@@ -147,6 +160,39 @@ const CheckIn = () => {
         <div className="mb-6 p-4 rounded-xl border border-primary/20 bg-primary/5">
           <QrScanner onScan={handleQrScan} />
         </div>
+
+        {/* Scan History Log */}
+        {scanLog.length > 0 && (
+          <div className="mb-6 p-4 rounded-xl border border-border bg-muted/30">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold flex items-center gap-2">
+                <History className="h-4 w-4 text-primary" />
+                Scan History ({scanLog.length})
+              </h3>
+              <Button size="sm" variant="ghost" className="text-xs" onClick={() => setScanLog([])}>
+                Clear
+              </Button>
+            </div>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {scanLog.map((entry, i) => (
+                <div key={i} className={`flex items-center justify-between p-2.5 rounded-lg text-sm ${
+                  entry.status === "success" ? "bg-green-500/10 border border-green-500/20" :
+                  entry.status === "already" ? "bg-yellow-500/10 border border-yellow-500/20" :
+                  "bg-destructive/10 border border-destructive/20"
+                }`}>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium truncate">{entry.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{entry.ticket}{entry.message ? ` · ${entry.message}` : ""}</p>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap ml-3">
+                    <Clock className="h-3 w-3" />
+                    {format(entry.time, "HH:mm:ss")}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
