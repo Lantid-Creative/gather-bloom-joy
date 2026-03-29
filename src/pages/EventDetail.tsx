@@ -11,6 +11,7 @@ import FollowButton from "@/components/FollowButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import SponsorshipRequestForm from "@/components/SponsorshipRequestForm";
 import SEOHead from "@/components/SEOHead";
+import EventChatbot from "@/components/EventChatbot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
