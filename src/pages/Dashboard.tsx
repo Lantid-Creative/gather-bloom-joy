@@ -300,6 +300,11 @@ const Dashboard = () => {
                       <SocialPostScheduler eventId={event.id} eventTitle={event.title} />
                     </div>
 
+                    {/* DP & Flyer Generator */}
+                    <div className="border-t pt-4 mt-4">
+                      <DpTemplateManager eventId={event.id} />
+                    </div>
+
                     {/* Email Campaigns */}
                     <div className="border-t pt-4 mt-4">
                       <EmailCampaignManager
