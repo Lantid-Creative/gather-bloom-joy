@@ -1,5 +1,6 @@
 import { BarChart3, Check } from "lucide-react";
 import FeaturePageLayout from "./FeaturePageLayout";
+import heroImg from "@/assets/feature-dashboard.jpg";
 
 const benefits = [
   "Real-time revenue, ticket sales, and order tracking across all your events",
