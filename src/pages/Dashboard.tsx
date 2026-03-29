@@ -17,6 +17,10 @@ import AiPromoCopyGenerator from "@/components/AiPromoCopyGenerator";
 import AiInfluencerMatcher from "@/components/AiInfluencerMatcher";
 import AiSmartPricing from "@/components/AiSmartPricing";
 import AiSponsorshipProposal from "@/components/AiSponsorshipProposal";
+import FlashSaleManager from "@/components/FlashSaleManager";
+import ReferralProgramManager from "@/components/ReferralProgramManager";
+import SocialPostScheduler from "@/components/SocialPostScheduler";
+import EmailCampaignManager from "@/components/EmailCampaignManager";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
@@ -275,6 +279,33 @@ const Dashboard = () => {
                         eventCategory={event.category}
                         eventLocation={event.location}
                         eventTags={event.tags || []}
+                      />
+                    </div>
+
+                    {/* Flash Sales */}
+                    <div className="border-t pt-4 mt-4">
+                      <FlashSaleManager
+                        eventId={event.id}
+                        ticketTypes={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ id: t.id, name: t.name, price: t.price }))}
+                      />
+                    </div>
+
+                    {/* Referral Program */}
+                    <div className="border-t pt-4 mt-4">
+                      <ReferralProgramManager eventId={event.id} eventTitle={event.title} />
+                    </div>
+
+                    {/* Social Media Scheduler */}
+                    <div className="border-t pt-4 mt-4">
+                      <SocialPostScheduler eventId={event.id} eventTitle={event.title} />
+                    </div>
+
+                    {/* Email Campaigns */}
+                    <div className="border-t pt-4 mt-4">
+                      <EmailCampaignManager
+                        eventId={event.id}
+                        eventTitle={event.title}
+                        attendees={eventOrders.map(o => ({ name: o.customer_name, email: o.customer_email }))}
                       />
                     </div>
                   </div>

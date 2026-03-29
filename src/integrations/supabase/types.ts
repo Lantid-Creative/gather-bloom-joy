@@ -300,6 +300,59 @@ export type Database = {
           },
         ]
       }
+      flash_sales: {
+        Row: {
+          applies_to_ticket_ids: string[]
+          created_at: string
+          discount_type: string
+          discount_value: number
+          ends_at: string
+          event_id: string
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          name: string
+          starts_at: string
+          used_count: number
+        }
+        Insert: {
+          applies_to_ticket_ids?: string[]
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          ends_at: string
+          event_id: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          name: string
+          starts_at: string
+          used_count?: number
+        }
+        Update: {
+          applies_to_ticket_ids?: string[]
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          ends_at?: string
+          event_id?: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          name?: string
+          starts_at?: string
+          used_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flash_sales_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       influencer_orders: {
         Row: {
           amount: number
@@ -812,6 +865,124 @@ export type Database = {
           },
         ]
       }
+      referral_conversions: {
+        Row: {
+          commission_amount: number
+          created_at: string
+          id: string
+          order_id: string
+          referral_link_id: string
+          status: string
+        }
+        Insert: {
+          commission_amount?: number
+          created_at?: string
+          id?: string
+          order_id: string
+          referral_link_id: string
+          status?: string
+        }
+        Update: {
+          commission_amount?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          referral_link_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_conversions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_conversions_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_links: {
+        Row: {
+          clicks: number
+          code: string
+          conversions: number
+          created_at: string
+          id: string
+          program_id: string
+          referrer_id: string
+          total_earned: number
+        }
+        Insert: {
+          clicks?: number
+          code: string
+          conversions?: number
+          created_at?: string
+          id?: string
+          program_id: string
+          referrer_id: string
+          total_earned?: number
+        }
+        Update: {
+          clicks?: number
+          code?: string
+          conversions?: number
+          created_at?: string
+          id?: string
+          program_id?: string
+          referrer_id?: string
+          total_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_links_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "referral_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_programs: {
+        Row: {
+          commission_type: string
+          commission_value: number
+          created_at: string
+          event_id: string
+          id: string
+          is_active: boolean
+        }
+        Insert: {
+          commission_type?: string
+          commission_value?: number
+          created_at?: string
+          event_id: string
+          id?: string
+          is_active?: boolean
+        }
+        Update: {
+          commission_type?: string
+          commission_value?: number
+          created_at?: string
+          event_id?: string
+          id?: string
+          is_active?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_programs_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       refund_requests: {
         Row: {
           created_at: string
@@ -884,6 +1055,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "schedule_items_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduled_posts: {
+        Row: {
+          content: string
+          created_at: string
+          error_message: string | null
+          event_id: string
+          id: string
+          platform: string
+          posted_at: string | null
+          scheduled_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          error_message?: string | null
+          event_id: string
+          id?: string
+          platform: string
+          posted_at?: string | null
+          scheduled_at: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          error_message?: string | null
+          event_id?: string
+          id?: string
+          platform?: string
+          posted_at?: string | null
+          scheduled_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_posts_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
@@ -1132,6 +1350,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_active_flash_sale: {
+        Args: { p_event_id: string; p_ticket_type_id: string }
+        Returns: {
+          discount_type: string
+          discount_value: number
+          sale_name: string
+        }[]
+      }
       is_event_organizer_for_order: {
         Args: { p_order_id: string }
         Returns: boolean
@@ -1140,6 +1366,7 @@ export type Database = {
         Args: { p_code: string; p_event_id: string }
         Returns: undefined
       }
+      track_referral_click: { Args: { p_code: string }; Returns: undefined }
       use_promo_code: {
         Args: { p_code: string; p_event_id: string }
         Returns: {
