@@ -79,6 +79,25 @@ const Dashboard = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleMailchimpSync = async (eventId: string, eventTitle: string) => {
+    setSyncingEvent(eventId);
+    try {
+      const { data, error } = await supabase.functions.invoke("sync-mailchimp", {
+        body: { eventId, eventTitle },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({
+        title: "Synced to Mailchimp! 📧",
+        description: `${data.added} added, ${data.updated} updated to "${data.listName}"`,
+      });
+    } catch (err: any) {
+      toast({ title: "Mailchimp sync failed", description: err.message, variant: "destructive" });
+    } finally {
+      setSyncingEvent(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <EventbriteHeader />
