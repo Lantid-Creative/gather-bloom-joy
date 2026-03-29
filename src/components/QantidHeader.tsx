@@ -29,9 +29,6 @@ const QantidHeader = () => {
     navigate(qs ? `/?${qs}` : "/");
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSearch();
-  };
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b">
