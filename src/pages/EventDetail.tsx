@@ -104,6 +104,13 @@ const EventDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={event.title}
+        description={event.description?.slice(0, 160) || `${event.title} in ${event.location}`}
+        ogImage={event.image_url}
+        ogType="website"
+        jsonLd={eventJsonLd}
+      />
       <EventbriteHeader />
 
       <div className="container max-w-5xl py-6">
