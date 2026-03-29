@@ -95,11 +95,13 @@ const CheckIn = () => {
 
       if (attendee.checked_in) {
         toast({ title: "Already checked in", description: `${attendee.customer_name} was already checked in.`, variant: "destructive" });
+        setScanLog(prev => [{ name: attendee.customer_name, email: attendee.customer_email, ticket: attendee.ticket_name, time: new Date(), status: "already", message: "Already checked in" }, ...prev]);
         return;
       }
 
       const success = await handleCheckIn(orderItemId);
       if (success) {
+        setScanLog(prev => [{ name: attendee.customer_name, email: attendee.customer_email, ticket: attendee.ticket_name, time: new Date(), status: "success" }, ...prev]);
         // Vibration feedback (if supported)
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         // Audio beep feedback
