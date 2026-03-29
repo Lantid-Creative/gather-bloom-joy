@@ -18,8 +18,8 @@ const QantidHeader = () => {
   const [cityText, setCityText] = useState(cityParam);
 
   // Keep inputs in sync with URL params (e.g. when city dropdown on Index changes)
-  React.useEffect(() => { setSearchText(qParam); }, [qParam]);
-  React.useEffect(() => { setCityText(cityParam); }, [cityParam]);
+  useEffect(() => { setSearchText(qParam); }, [qParam]);
+  useEffect(() => { setCityText(cityParam); }, [cityParam]);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const handleSignOut = async () => {
