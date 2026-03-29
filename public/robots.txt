@@ -1,3 +1,4 @@
+# Afritickets — Africa's Event Ticketing Platform
 User-agent: Googlebot
 Allow: /
 
@@ -12,3 +13,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://afritickets.com/sitemap.xml

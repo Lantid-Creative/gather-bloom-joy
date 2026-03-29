@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://afritickets.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://afritickets.com/about</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/pricing</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://afritickets.com/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/contact</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://afritickets.com/help</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://afritickets.com/careers</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://afritickets.com/partners</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/influencers</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://afritickets.com/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://afritickets.com/features/ticketing</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://afritickets.com/features/check-in</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/features/dashboard</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/features/influencers</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/features/sponsorship</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/features/promo-codes</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://afritickets.com/features/payments</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://afritickets.com/features/africa</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+</urlset>
