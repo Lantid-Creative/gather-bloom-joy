@@ -12,6 +12,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import SponsorshipRequestForm from "@/components/SponsorshipRequestForm";
 import SEOHead from "@/components/SEOHead";
 import EventChatbot from "@/components/EventChatbot";
+import EventLineupDisplay from "@/components/EventLineupDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
@@ -209,6 +210,8 @@ const EventDetail = () => {
                 </div>
               </div>
             )}
+            {/* Artist Lineup */}
+            <EventLineupDisplay eventId={event.id} />
           </div>
 
           {/* Sidebar */}

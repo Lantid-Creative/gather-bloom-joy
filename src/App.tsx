@@ -45,6 +45,7 @@ import FeaturePromoCodes from "./pages/features/FeaturePromoCodes.tsx";
 import FeaturePayments from "./pages/features/FeaturePayments.tsx";
 import FeatureAfrica from "./pages/features/FeatureAfrica.tsx";
 import DpGenerator from "./pages/DpGenerator.tsx";
+import Lineups from "./pages/Lineups.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -97,6 +98,7 @@ const App = () => (
             <Route path="/features/promo-codes" element={<FeaturePromoCodes />} />
             <Route path="/features/payments" element={<FeaturePayments />} />
             <Route path="/features/africa" element={<FeatureAfrica />} />
+            <Route path="/lineups" element={<Lineups />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
