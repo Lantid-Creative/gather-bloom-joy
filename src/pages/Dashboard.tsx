@@ -281,6 +281,33 @@ const Dashboard = () => {
                         eventTags={event.tags || []}
                       />
                     </div>
+
+                    {/* Flash Sales */}
+                    <div className="border-t pt-4 mt-4">
+                      <FlashSaleManager
+                        eventId={event.id}
+                        ticketTypes={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ id: t.id, name: t.name, price: t.price }))}
+                      />
+                    </div>
+
+                    {/* Referral Program */}
+                    <div className="border-t pt-4 mt-4">
+                      <ReferralProgramManager eventId={event.id} eventTitle={event.title} />
+                    </div>
+
+                    {/* Social Media Scheduler */}
+                    <div className="border-t pt-4 mt-4">
+                      <SocialPostScheduler eventId={event.id} eventTitle={event.title} />
+                    </div>
+
+                    {/* Email Campaigns */}
+                    <div className="border-t pt-4 mt-4">
+                      <EmailCampaignManager
+                        eventId={event.id}
+                        eventTitle={event.title}
+                        attendees={eventOrders.map(o => ({ name: o.customer_name, email: o.customer_email }))}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
