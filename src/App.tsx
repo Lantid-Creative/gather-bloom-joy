@@ -34,6 +34,14 @@ import InfluencerProfile from "./pages/InfluencerProfile.tsx";
 import InfluencerDashboard from "./pages/InfluencerDashboard.tsx";
 import HireInfluencer from "./pages/HireInfluencer.tsx";
 import MyHires from "./pages/MyHires.tsx";
+import FeatureTicketing from "./pages/features/FeatureTicketing.tsx";
+import FeatureCheckIn from "./pages/features/FeatureCheckIn.tsx";
+import FeatureDashboard from "./pages/features/FeatureDashboard.tsx";
+import FeatureInfluencers from "./pages/features/FeatureInfluencers.tsx";
+import FeatureSponsorship from "./pages/features/FeatureSponsorship.tsx";
+import FeaturePromoCodes from "./pages/features/FeaturePromoCodes.tsx";
+import FeaturePayments from "./pages/features/FeaturePayments.tsx";
+import FeatureAfrica from "./pages/features/FeatureAfrica.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
