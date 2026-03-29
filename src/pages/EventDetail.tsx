@@ -137,6 +137,22 @@ const EventDetail = () => {
               {!event.is_online && (
                 <div className="h-48 rounded-xl overflow-hidden border"><GoogleMap location={event.location} /></div>
               )}
+              {event.is_online && (dbEvent as any)?.meeting_url && (
+                <div className="flex items-center gap-3 p-4 rounded-xl border border-primary/20 bg-primary/5">
+                  <Video className="h-5 w-5 text-primary shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">
+                      {platformLabel((dbEvent as any)?.meeting_platform)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Online event — join via the link below</p>
+                  </div>
+                  <Button size="sm" className="rounded-full gap-1.5" asChild>
+                    <a href={(dbEvent as any).meeting_url} target="_blank" rel="noopener noreferrer">
+                      Join <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                </div>
+              )}
             </div>
 
             <div className="space-y-3">
