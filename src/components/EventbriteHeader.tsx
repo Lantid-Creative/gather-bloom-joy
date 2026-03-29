@@ -127,6 +127,7 @@ const EventbriteHeader = () => {
         <div className="lg:hidden border-t bg-background p-4 space-y-1">
           <Link to="/" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Find Events</Link>
           <Link to="/create-event" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Create Events</Link>
+          <Link to="/partners" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Partners</Link>
           <Link to="/help" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Help Center</Link>
           <div className="border-t my-2" />
           {user ? (
