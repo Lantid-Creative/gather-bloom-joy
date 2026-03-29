@@ -195,7 +195,7 @@ const Index = () => {
               {cityOpen && (
                 <div className="absolute top-full left-0 mt-2 bg-card border rounded-xl shadow-lg z-50 py-2 min-w-[200px] max-h-[300px] overflow-y-auto">
                   <button
-                    onClick={() => { setCity(""); setCityOpen(false); }}
+                    onClick={() => { setCity(""); setCityOpen(false); setSearchParams(prev => { prev.delete("city"); return prev; }); }}
                     className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${!city ? "font-bold text-primary" : ""}`}
                   >
                     All Cities
@@ -203,7 +203,7 @@ const Index = () => {
                   {cities.map((c) => (
                     <button
                       key={c}
-                      onClick={() => { setCity(c); setCityOpen(false); }}
+                      onClick={() => { setCity(c); setCityOpen(false); setSearchParams(prev => { if (c) prev.set("city", c); else prev.delete("city"); return prev; }); }}
                       className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${city === c ? "font-bold text-primary" : ""}`}
                     >
                       {c}
@@ -215,7 +215,7 @@ const Index = () => {
           </div>
           {(category || searchQuery || city) && (
             <button
-              onClick={() => { setCategory(""); setCity(""); clearSearch(); }}
+              onClick={() => { setCategory(""); setCity(""); setSearchParams(new URLSearchParams()); clearSearch(); }}
               className="text-sm font-medium text-primary hover:underline"
             >
               Clear filter ✕
