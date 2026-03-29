@@ -48,6 +48,7 @@ import FeatureAI from "./pages/features/FeatureAI.tsx";
 import DpGenerator from "./pages/DpGenerator.tsx";
 import Lineups from "./pages/Lineups.tsx";
 import MarketingTools from "./pages/MarketingTools.tsx";
+import AppMarketplace from "./pages/AppMarketplace.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AdminRoute from "./components/AdminRoute.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
