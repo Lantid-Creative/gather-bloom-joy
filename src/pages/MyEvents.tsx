@@ -132,7 +132,7 @@ const MyEvents = () => {
           <div className="space-y-4">
             {events.map((event) => {
               const isPast = new Date(event.date) < new Date();
-              const status = (event as unknown as Record<string, unknown>).status as string ?? "published";
+              const status = event.status ?? "published";
               return (
                 <div key={event.id} className={`flex flex-col sm:flex-row gap-4 p-4 border rounded-xl transition-colors hover:bg-accent/30 ${isPast ? "opacity-60" : ""}`}>
                   <Link to={`/event/${event.id}`} className="shrink-0">
