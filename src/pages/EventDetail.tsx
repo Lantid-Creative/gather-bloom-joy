@@ -1,5 +1,5 @@
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { Calendar, MapPin, Users, Bookmark, Bell, Handshake, Video, ExternalLink } from "lucide-react";
+import { Calendar, MapPin, Users, Bookmark, Bell, Handshake, Video, ExternalLink, ImagePlus } from "lucide-react";
 import { format } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
@@ -264,7 +264,13 @@ const EventDetail = () => {
                 <span>{soldOut ? "This event is sold out" : `${spotsLeft} spots remaining out of ${event.capacity}`}</span>
               </div>
 
-              {/* Sponsorship section */}
+              {/* DP Generator Link */}
+              <Link to={`/event/${event.id}/dp`}>
+                <Button variant="outline" className="w-full gap-2">
+                  <ImagePlus className="h-4 w-4" /> Create Your Event DP
+                </Button>
+              </Link>
+
               {(event as any).seeking_sponsors && (
                 <SponsorshipRequestForm eventId={event.id} />
               )}

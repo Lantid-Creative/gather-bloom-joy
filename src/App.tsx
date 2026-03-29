@@ -44,6 +44,7 @@ import FeatureSponsorship from "./pages/features/FeatureSponsorship.tsx";
 import FeaturePromoCodes from "./pages/features/FeaturePromoCodes.tsx";
 import FeaturePayments from "./pages/features/FeaturePayments.tsx";
 import FeatureAfrica from "./pages/features/FeatureAfrica.tsx";
+import DpGenerator from "./pages/DpGenerator.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/event/:id" element={<EventDetail />} />
+            <Route path="/event/:eventId/dp" element={<DpGenerator />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/reset-password" element={<ResetPassword />} />
