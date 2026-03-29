@@ -12,8 +12,14 @@ const QantidHeader = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [searchText, setSearchText] = useState(searchParams.get("q") ?? "");
-  const [cityText, setCityText] = useState(searchParams.get("city") ?? "");
+  const qParam = searchParams.get("q") ?? "";
+  const cityParam = searchParams.get("city") ?? "";
+  const [searchText, setSearchText] = useState(qParam);
+  const [cityText, setCityText] = useState(cityParam);
+
+  // Keep inputs in sync with URL params (e.g. when city dropdown on Index changes)
+  React.useEffect(() => { setSearchText(qParam); }, [qParam]);
+  React.useEffect(() => { setCityText(cityParam); }, [cityParam]);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const handleSignOut = async () => {

@@ -215,7 +215,7 @@ const Index = () => {
           </div>
           {(category || searchQuery || city) && (
             <button
-              onClick={() => { setCategory(""); setCity(""); clearSearch(); }}
+              onClick={() => { setCategory(""); setCity(""); setSearchParams(new URLSearchParams()); clearSearch(); }}
               className="text-sm font-medium text-primary hover:underline"
             >
               Clear filter ✕
