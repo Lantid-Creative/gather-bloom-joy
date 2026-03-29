@@ -50,6 +50,8 @@ const CreateEvent = () => {
         organizer: data.organizer || user.user_metadata?.full_name || "Organizer",
         capacity: parseInt(data.capacity) || 100,
         is_online: data.isOnline,
+        meeting_platform: data.meetingPlatform || "",
+        meeting_url: data.meetingUrl || "",
         tags: data.tags.split(",").map((t) => t.trim()).filter(Boolean),
         status: data.status || "published",
         recurrence_type: data.recurrenceType || "none",
