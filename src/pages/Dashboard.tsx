@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy } from "lucide-react";
+import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy, Activity, CalendarDays, Percent } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { format, subDays, eachDayOfInterval, startOfDay, parseISO, differenceInDays } from "date-fns";
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PromoCodeManager from "@/components/PromoCodeManager";
 import TrackingLinkManager from "@/components/TrackingLinkManager";
 import SponsorshipTierManager from "@/components/SponsorshipTierManager";
