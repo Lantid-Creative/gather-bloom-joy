@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
         const { page = 1, perPage = 50, status } = params;
         let query = supabaseAdmin
           .from("events")
-          .select("*, profiles!inner(full_name)", { count: "exact" });
+          .select("*", { count: "exact" });
         if (status && status !== "all") query = query.eq("status", status);
         const from = (page - 1) * perPage;
         const { data, error, count } = await query
