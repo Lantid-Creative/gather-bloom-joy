@@ -161,6 +161,39 @@ const CheckIn = () => {
           <QrScanner onScan={handleQrScan} />
         </div>
 
+        {/* Scan History Log */}
+        {scanLog.length > 0 && (
+          <div className="mb-6 p-4 rounded-xl border border-border bg-muted/30">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold flex items-center gap-2">
+                <History className="h-4 w-4 text-primary" />
+                Scan History ({scanLog.length})
+              </h3>
+              <Button size="sm" variant="ghost" className="text-xs" onClick={() => setScanLog([])}>
+                Clear
+              </Button>
+            </div>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {scanLog.map((entry, i) => (
+                <div key={i} className={`flex items-center justify-between p-2.5 rounded-lg text-sm ${
+                  entry.status === "success" ? "bg-green-500/10 border border-green-500/20" :
+                  entry.status === "already" ? "bg-yellow-500/10 border border-yellow-500/20" :
+                  "bg-destructive/10 border border-destructive/20"
+                }`}>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium truncate">{entry.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{entry.ticket}{entry.message ? ` · ${entry.message}` : ""}</p>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap ml-3">
+                    <Clock className="h-3 w-3" />
+                    {format(entry.time, "HH:mm:ss")}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email..." className="pl-10" />
