@@ -28,6 +28,7 @@ const Index = () => {
   const [aiSearchResults, setAiSearchResults] = useState<string[] | null>(null);
   const [aiSearching, setAiSearching] = useState(false);
   const [aiInterpretation, setAiInterpretation] = useState("");
+  const { data: promotedAds } = usePromotedEvents("homepage");
 
   const allEvents = useMemo(() => {
     const db = dbEvents ?? [];
