@@ -47,6 +47,11 @@ const Dashboard = () => {
     queryFn: async () => { const { data, error } = await supabase.from("order_items").select("*").in("event_id", events!.map((e) => e.id)); if (error) throw error; return data as OrderItem[]; },
   });
 
+  const { data: ticketTypes } = useQuery({
+    queryKey: ["dashboard-ticket-types", user?.id], enabled: !!user && !!events && events.length > 0,
+    queryFn: async () => { const { data, error } = await supabase.from("ticket_types").select("*").in("event_id", events!.map((e) => e.id)); if (error) throw error; return data; },
+  });
+
   const { data: orders } = useQuery({
     queryKey: ["dashboard-orders", user?.id, orderItems], enabled: !!orderItems && orderItems.length > 0,
     queryFn: async () => { const orderIds = [...new Set(orderItems!.map((i) => i.order_id))]; const { data, error } = await supabase.from("orders").select("*").in("id", orderIds); if (error) throw error; return data as Order[]; },
