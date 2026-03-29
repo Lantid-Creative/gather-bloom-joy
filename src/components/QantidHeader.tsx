@@ -40,21 +40,21 @@ const QantidHeader = () => {
         </Link>
 
         {/* Search Bar - Desktop */}
-        <div className="hidden md:flex items-center flex-1 max-w-2xl">
+        <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="hidden md:flex items-center flex-1 max-w-2xl">
           <div className="flex items-center flex-1 rounded-full border bg-background overflow-hidden h-10">
             <div className="flex items-center flex-1 px-3 gap-2 border-r">
               <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-              <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleKeyDown} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+              <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
             </div>
             <div className="flex items-center flex-1 px-3 gap-2">
               <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-              <input type="text" placeholder="Your City" className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+              <input type="text" placeholder="Your City" value={cityText} onChange={(e) => setCityText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
             </div>
-            <button onClick={handleSearch} className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
+            <button type="submit" className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
               <Search className="h-4 w-4" />
             </button>
           </div>
-        </div>
+        </form>
 
         {/* Nav Links - Desktop */}
         <nav className="hidden lg:flex items-center gap-1 ml-auto">
