@@ -232,6 +232,17 @@ const Dashboard = () => {
                       </div>
                       {event.seeking_sponsors && <SponsorshipTierManager eventId={event.id} />}
                     </div>
+
+                    {/* AI Influencer Matching */}
+                    <div className="border-t pt-4 mt-4">
+                      <AiInfluencerMatcher
+                        eventId={event.id}
+                        eventTitle={event.title}
+                        eventCategory={event.category}
+                        eventLocation={event.location}
+                        eventTags={event.tags || []}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
