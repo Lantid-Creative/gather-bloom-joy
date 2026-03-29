@@ -28,10 +28,24 @@ const Index = () => {
     return [...db, ...uniqueMocks];
   }, [dbEvents]);
 
+  // Extract unique cities from events
+  const cities = useMemo(() => {
+    const citySet = new Set<string>();
+    allEvents.forEach((e) => {
+      // Extract city from location (typically "Venue, City, Country" or "City, Country")
+      const parts = e.location.split(",").map((p) => p.trim());
+      if (parts.length >= 2) {
+        citySet.add(parts[parts.length - 2]); // second-to-last is usually the city
+      }
+    });
+    return Array.from(citySet).sort();
+  }, [allEvents]);
+
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return allEvents.filter((e) => {
       if (category && e.category !== category) return false;
+      if (city && !e.location.toLowerCase().includes(city.toLowerCase())) return false;
       if (q) {
         const matchTitle = e.title.toLowerCase().includes(q);
         const matchLocation = e.location.toLowerCase().includes(q);
@@ -41,7 +55,7 @@ const Index = () => {
       }
       return true;
     });
-  }, [category, allEvents, searchQuery]);
+  }, [category, city, allEvents, searchQuery]);
 
   const clearSearch = () => {
     setSearchParams({});
