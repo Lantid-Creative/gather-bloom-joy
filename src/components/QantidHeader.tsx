@@ -112,17 +112,17 @@ const QantidHeader = () => {
       </div>
 
       {/* Mobile Search */}
-      <div className="md:hidden px-4 pb-3">
+      <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="md:hidden px-4 pb-3">
         <div className="flex items-center rounded-full border bg-background overflow-hidden h-10">
           <div className="flex items-center flex-1 px-3 gap-2">
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-            <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleKeyDown} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+            <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
           </div>
-          <button onClick={handleSearch} className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
+          <button type="submit" className="h-8 w-8 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-1">
             <Search className="h-3.5 w-3.5" />
           </button>
         </div>
-      </div>
+      </form>
 
       {/* Mobile Menu */}
       {mobileOpen && (
