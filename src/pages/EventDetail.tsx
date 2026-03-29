@@ -1,6 +1,6 @@
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { Calendar, MapPin, Users, Bookmark, Bell, Handshake, Video, ExternalLink, ImagePlus } from "lucide-react";
-import { format } from "date-fns";
+import { Calendar, MapPin, Users, Bookmark, Bell, Handshake, Video, ExternalLink, ImagePlus, Flame, Clock, Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { format, differenceInHours, differenceInDays } from "date-fns";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import EventbriteFooter from "@/components/EventbriteFooter";
 import TicketSelector from "@/components/TicketSelector";
