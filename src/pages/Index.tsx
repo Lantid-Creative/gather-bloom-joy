@@ -22,6 +22,9 @@ const Index = () => {
   const [cityOpen, setCityOpen] = useState(false);
   const [tab, setTab] = useState("All");
   const { data: dbEvents, isLoading } = useEvents();
+  const [aiSearchResults, setAiSearchResults] = useState<string[] | null>(null);
+  const [aiSearching, setAiSearching] = useState(false);
+  const [aiInterpretation, setAiInterpretation] = useState("");
 
   const allEvents = useMemo(() => {
     const db = dbEvents ?? [];
