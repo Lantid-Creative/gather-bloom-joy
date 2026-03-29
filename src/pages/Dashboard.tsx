@@ -25,6 +25,7 @@ import DpTemplateManager from "@/components/DpTemplateManager";
 import TimeSlotManager from "@/components/TimeSlotManager";
 import LineupManager from "@/components/LineupManager";
 import EventReportPanel from "@/components/EventReportPanel";
+import AdsManager from "@/components/AdsManager";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
@@ -316,6 +317,11 @@ const Dashboard = () => {
                       orderItems={(orderItems?.filter((i) => i.event_id === event.id) ?? []) as any}
                       orders={eventOrders as any}
                     />
+
+                    {/* Ads Manager */}
+                    <div className="border-t pt-4 mt-4">
+                      <AdsManager eventId={event.id} eventTitle={event.title} />
+                    </div>
 
                     {/* Timed Entry Slots */}
                     <div className="border-t pt-4 mt-4">

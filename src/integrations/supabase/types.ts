@@ -137,6 +137,74 @@ export type Database = {
           },
         ]
       }
+      event_ads: {
+        Row: {
+          clicks: number
+          conversions: number
+          cost_per_click: number
+          created_at: string
+          daily_budget: number
+          end_date: string | null
+          event_id: string
+          id: string
+          impressions: number
+          placements: string[]
+          spent: number
+          start_date: string
+          status: string
+          title: string
+          total_budget: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clicks?: number
+          conversions?: number
+          cost_per_click?: number
+          created_at?: string
+          daily_budget?: number
+          end_date?: string | null
+          event_id: string
+          id?: string
+          impressions?: number
+          placements?: string[]
+          spent?: number
+          start_date?: string
+          status?: string
+          title?: string
+          total_budget?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clicks?: number
+          conversions?: number
+          cost_per_click?: number
+          created_at?: string
+          daily_budget?: number
+          end_date?: string | null
+          event_id?: string
+          id?: string
+          impressions?: number
+          placements?: string[]
+          spent?: number
+          start_date?: string
+          status?: string
+          title?: string
+          total_budget?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_ads_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_collection_items: {
         Row: {
           collection_id: string
@@ -1558,6 +1626,8 @@ export type Database = {
         Args: { p_order_id: string }
         Returns: boolean
       }
+      record_ad_click: { Args: { p_ad_id: string }; Returns: undefined }
+      record_ad_impression: { Args: { p_ad_id: string }; Returns: undefined }
       track_link_click: {
         Args: { p_code: string; p_event_id: string }
         Returns: undefined

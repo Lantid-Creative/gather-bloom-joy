@@ -13,6 +13,8 @@ import FeaturesShowcase from "@/components/FeaturesShowcase";
 import SEOHead from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
 import SmartRecommendations from "@/components/SmartRecommendations";
+import PromotedEventCard from "@/components/PromotedEventCard";
+import { usePromotedEvents } from "@/hooks/usePromotedEvents";
 import heroAfro from "@/assets/hero-afro.jpg";
 
 const Index = () => {
@@ -26,6 +28,7 @@ const Index = () => {
   const [aiSearchResults, setAiSearchResults] = useState<string[] | null>(null);
   const [aiSearching, setAiSearching] = useState(false);
   const [aiInterpretation, setAiInterpretation] = useState("");
+  const { data: promotedAds } = usePromotedEvents("homepage");
 
   const allEvents = useMemo(() => {
     const db = dbEvents ?? [];
@@ -238,6 +241,20 @@ const Index = () => {
         )}
 
         <BrowsingTabs active={tab} onChange={setTab} />
+
+        {/* Promoted Events */}
+        {promotedAds && promotedAds.length > 0 && !searchQuery && (
+          <div className="mb-8">
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3">Promoted Events</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {promotedAds.map((ad) => {
+                const event = allEvents.find((e) => e.id === ad.event_id);
+                if (!event) return null;
+                return <PromotedEventCard key={ad.ad_id} event={event} adId={ad.ad_id} />;
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Event Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
