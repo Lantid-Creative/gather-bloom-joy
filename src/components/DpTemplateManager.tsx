@@ -424,6 +424,39 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
     setPhotoRect((prev) => ({ ...prev, x: (mx - dragOffset.x) / scale, y: (my - dragOffset.y) / scale }));
   };
 
+  // ─── Upload canvas touch handlers ───
+  const handleCanvasTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scale = Math.min(500 / (imgNaturalSize.w || 500), 400 / (imgNaturalSize.h || 400), 1);
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    const rx = photoRect.x * scale;
+    const ry = photoRect.y * scale;
+    const rw = photoRect.w * scale;
+    const rh = photoRect.h * scale;
+    if (mx >= rx && mx <= rx + rw && my >= ry && my <= ry + rh) {
+      setDragging(true);
+      setDragOffset({ x: mx - rx, y: my - ry });
+    }
+  };
+
+  const handleCanvasTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!dragging) return;
+    const touch = e.touches[0];
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    const scale = Math.min(500 / (imgNaturalSize.w || 500), 400 / (imgNaturalSize.h || 400), 1);
+    setPhotoRect((prev) => ({ ...prev, x: (mx - dragOffset.x) / scale, y: (my - dragOffset.y) / scale }));
+  };
+
   // ─── Preset drag handlers ───
   const handlePresetMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = presetCanvasRef.current;
