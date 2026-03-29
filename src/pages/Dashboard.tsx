@@ -225,6 +225,11 @@ const Dashboard = () => {
                       </>
                     )}
 
+                    {/* Timed Entry Slots */}
+                    <div className="border-t pt-4 mt-4">
+                      <TimeSlotManager eventId={event.id} />
+                    </div>
+
                     {/* Sponsorship Tiers */}
                     <div className="border-t pt-4 mt-4">
                       <div className="flex items-center gap-2 mb-3">

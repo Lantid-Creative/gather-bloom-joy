@@ -208,6 +208,9 @@ const CheckIn = () => {
                 <p className="font-semibold text-sm">{item.customer_name}</p>
                 <p className="text-xs text-muted-foreground">{item.customer_email}</p>
                 <p className="text-xs text-muted-foreground">{item.ticket_name} × {item.quantity}</p>
+                {item.time_slot_label && (
+                  <p className="text-xs text-primary font-medium">🕐 {item.time_slot_label}</p>
+                )}
               </div>
               {item.checked_in ? (
                 <div className="flex items-center gap-1 text-green-600 dark:text-green-400 text-sm font-medium">
