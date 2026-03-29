@@ -195,7 +195,7 @@ const Index = () => {
               {cityOpen && (
                 <div className="absolute top-full left-0 mt-2 bg-card border rounded-xl shadow-lg z-50 py-2 min-w-[200px] max-h-[300px] overflow-y-auto">
                   <button
-                    onClick={() => { setCity(""); setCityOpen(false); }}
+                    onClick={() => { setCity(""); setCityOpen(false); setSearchParams(prev => { prev.delete("city"); return prev; }); }}
                     className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${!city ? "font-bold text-primary" : ""}`}
                   >
                     All Cities
