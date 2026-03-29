@@ -242,6 +242,20 @@ const Index = () => {
 
         <BrowsingTabs active={tab} onChange={setTab} />
 
+        {/* Promoted Events */}
+        {promotedAds && promotedAds.length > 0 && !searchQuery && (
+          <div className="mb-8">
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3">Promoted Events</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {promotedAds.map((ad) => {
+                const event = allEvents.find((e) => e.id === ad.event_id);
+                if (!event) return null;
+                return <PromotedEventCard key={ad.ad_id} event={event} adId={ad.ad_id} />;
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Event Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
           {isLoading ? (
