@@ -853,7 +853,7 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
                   onMouseLeave={() => setDragging(false)}
                   onTouchStart={handleCanvasTouchStart}
                   onTouchMove={handleCanvasTouchMove}
-                  onTouchEnd={() => setDragging(false)}
+                  onTouchEnd={handleCanvasTouchEnd}
                 />
                 <div className="flex flex-wrap gap-2">
                   <div className="space-y-1">
