@@ -138,7 +138,7 @@ const MarketingTools = () => {
 
 /* ─── Dashboard Tab ─── */
 const DashboardTab = ({ events, totalRevenue, totalTickets, totalImpressions, totalClicks }: {
-  events: Tables<"events">[]; totalRevenue: number; totalTickets: number; totalImpressions: number; totalClicks: number;
+  events: DbTable<"events">[]; totalRevenue: number; totalTickets: number; totalImpressions: number; totalClicks: number;
 }) => (
   <div className="space-y-8">
     <div>
@@ -170,7 +170,7 @@ const DashboardTab = ({ events, totalRevenue, totalTickets, totalImpressions, to
 );
 
 /* ─── Email Tab ─── */
-const EmailTab = ({ events }: { events: Tables<"events">[] }) => {
+const EmailTab = ({ events }: { events: DbTable<"events">[] }) => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -250,7 +250,7 @@ const EmailTab = ({ events }: { events: Tables<"events">[] }) => {
 };
 
 /* ─── Social Media Tab ─── */
-const SocialTab = ({ events }: { events: Tables<"events">[] }) => {
+const SocialTab = ({ events }: { events: DbTable<"events">[] }) => {
   const [subTab, setSubTab] = useState<"share" | "facebook">("share");
 
   return (
@@ -345,7 +345,7 @@ const SocialTab = ({ events }: { events: Tables<"events">[] }) => {
 };
 
 /* ─── Paid Ads Tab ─── */
-const AdsTab = ({ events, totalImpressions, totalClicks }: { events: Tables<"events">[]; totalImpressions: number; totalClicks: number }) => (
+const AdsTab = ({ events, totalImpressions, totalClicks }: { events: DbTable<"events">[]; totalImpressions: number; totalClicks: number }) => (
   <div className="space-y-8">
     <div>
       <h2 className="text-2xl font-bold mb-2">Afritickets Ads</h2>
@@ -430,7 +430,7 @@ const GrowthTab = () => (
 );
 
 /* ─── Promotions Tab ─── */
-const PromotionsTab = ({ events }: { events: Tables<"events">[] }) => (
+const PromotionsTab = ({ events }: { events: DbTable<"events">[] }) => (
   <div className="space-y-10">
     <div>
       <h2 className="text-2xl font-bold mb-2">Promotions</h2>
