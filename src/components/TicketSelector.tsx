@@ -36,12 +36,12 @@ const TicketSelector = ({ ticket, eventId, eventTitle }: TicketSelectorProps) =>
     queryKey: ["time-slots-ticket", eventId],
     queryFn: async () => {
       const { data } = await supabase
-        .from("event_time_slots" as any)
+        .from("event_time_slots")
         .select("*")
         .eq("event_id", eventId)
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
-      return (data as any[] ?? []) as TimeSlot[];
+      return (data ?? []) as TimeSlot[];
     },
   });
 

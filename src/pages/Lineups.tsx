@@ -43,7 +43,7 @@ const Lineups = () => {
     queryKey: ["lineups-discovery"],
     queryFn: async () => {
       const { data: lineupArtists } = await supabase
-        .from("event_lineup_artists" as any)
+        .from("event_lineup_artists")
         .select("*")
         .order("headliner", { ascending: false });
 

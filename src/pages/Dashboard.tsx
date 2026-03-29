@@ -112,7 +112,7 @@ const Dashboard = () => {
         title: "Synced to Mailchimp! 📧",
         description: `${data.added} added, ${data.updated} updated to "${data.listName}"`,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Mailchimp sync failed", description: err.message, variant: "destructive" });
     } finally {
       setSyncingEvent(null);
@@ -250,7 +250,7 @@ const Dashboard = () => {
                             }
                             queryClient.invalidateQueries({ queryKey: ["dashboard-events"] });
                             toast({ title: "Event duplicated as draft! ✨" });
-                          } catch (err: any) {
+                          } catch (err: unknown) {
                             toast({ title: "Failed to duplicate", description: err.message, variant: "destructive" });
                           }
                         }}

@@ -26,11 +26,11 @@ const EventLineupDisplay = ({ eventId }: { eventId: string }) => {
     queryKey: ["lineup-display", eventId],
     queryFn: async () => {
       const { data } = await supabase
-        .from("event_lineup_artists" as any)
+        .from("event_lineup_artists")
         .select("*")
         .eq("event_id", eventId)
         .order("sort_order", { ascending: true });
-      return (data as any[] ?? []) as LineupArtist[];
+      return (data ?? []) as LineupArtist[];
     },
   });
 

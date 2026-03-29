@@ -51,7 +51,7 @@ const AiSponsorshipProposal = ({ eventTitle, eventCategory, eventDescription, ev
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Proposal generation failed", description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);

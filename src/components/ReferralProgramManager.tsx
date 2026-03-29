@@ -59,7 +59,7 @@ const ReferralProgramManager = ({ eventId, eventTitle }: Props) => {
       if (error) throw error;
       toast({ title: "Referral program created! 🎉" });
       queryClient.invalidateQueries({ queryKey: ["referral-program", eventId] });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Failed to create program", description: err.message, variant: "destructive" });
     } finally {
       setSaving(false);

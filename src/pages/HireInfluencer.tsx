@@ -75,7 +75,7 @@ const HireInfluencer = () => {
 
       toast({ title: "Hire request sent! 🎉", description: "The influencer will review your request. You'll pay once they accept." });
       navigate("/influencers");
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);

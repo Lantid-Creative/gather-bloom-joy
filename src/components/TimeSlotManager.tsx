@@ -33,12 +33,12 @@ const TimeSlotManager = ({ eventId }: { eventId: string }) => {
     queryKey: ["time-slots", eventId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("event_time_slots" as any)
+        .from("event_time_slots")
         .select("*")
         .eq("event_id", eventId)
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return (data as any[]) as TimeSlot[];
+      return (data ?? []) as TimeSlot[];
     },
   });
 
@@ -49,14 +49,14 @@ const TimeSlotManager = ({ eventId }: { eventId: string }) => {
     }
     setSaving(true);
     try {
-      const { error } = await supabase.from("event_time_slots" as any).insert({
+      const { error } = await supabase.from("event_time_slots").insert({
         event_id: eventId,
         label: label.trim() || `${startTime} - ${endTime}`,
         start_time: startTime,
         end_time: endTime,
         capacity,
         sort_order: (slots?.length ?? 0),
-      } as any);
+      });
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["time-slots", eventId] });
       setLabel("");
@@ -65,7 +65,7 @@ const TimeSlotManager = ({ eventId }: { eventId: string }) => {
       setCapacity(50);
       setAdding(false);
       toast({ title: "Time slot added!" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Failed", description: err.message, variant: "destructive" });
     } finally {
       setSaving(false);
@@ -73,12 +73,12 @@ const TimeSlotManager = ({ eventId }: { eventId: string }) => {
   };
 
   const handleToggle = async (id: string, active: boolean) => {
-    await supabase.from("event_time_slots" as any).update({ is_active: active } as any).eq("id", id);
+    await supabase.from("event_time_slots").update({ is_active: active }).eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["time-slots", eventId] });
   };
 
   const handleDelete = async (id: string) => {
-    await supabase.from("event_time_slots" as any).delete().eq("id", id);
+    await supabase.from("event_time_slots").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["time-slots", eventId] });
     toast({ title: "Time slot deleted" });
   };

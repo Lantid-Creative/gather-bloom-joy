@@ -29,7 +29,7 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["my-events"] });
       await queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: `"${eventTitle}" deleted` });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Error deleting event", description: err.message, variant: "destructive" });
     }
   };
@@ -41,7 +41,7 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["my-events"] });
       await queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: `Event ${newStatus}` });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Error updating status", description: err.message, variant: "destructive" });
     }
   };
@@ -83,7 +83,7 @@ const MyEvents = () => {
       await queryClient.invalidateQueries({ queryKey: ["my-events"] });
       toast({ title: "Event duplicated! Edit it below." });
       navigate(`/edit-event/${newEvent.id}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Error duplicating", description: err.message, variant: "destructive" });
     }
   };

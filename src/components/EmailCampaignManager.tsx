@@ -63,7 +63,7 @@ const EmailCampaignManager = ({ eventId, eventTitle, attendees }: Props) => {
         setSubject(`Don't miss ${eventTitle}!`);
         setSelectedTemplate("custom");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "AI generation failed", description: err.message, variant: "destructive" });
     } finally {
       setGenerating(false);
@@ -95,7 +95,7 @@ const EmailCampaignManager = ({ eventId, eventTitle, attendees }: Props) => {
         description: "Your default email client has been opened with the recipients.",
       });
       setShowCompose(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Failed to prepare email", description: err.message, variant: "destructive" });
     } finally {
       setSending(false);

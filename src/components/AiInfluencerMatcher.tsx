@@ -61,7 +61,7 @@ const AiInfluencerMatcher = ({ eventId, eventTitle, eventCategory, eventLocation
       if (data.matches?.length > 0) {
         toast({ title: `🎯 Found ${data.matches.length} influencer matches!` });
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast({ title: e.message || "Failed to match influencers", variant: "destructive" });
     } finally {
       setLoading(false);

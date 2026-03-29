@@ -34,7 +34,7 @@ const AiSalesInsights = ({ events, totalRevenue, totalTickets, totalOrders }: Pr
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setInsights(data.content);
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast({ title: e.message || "Failed to generate insights", variant: "destructive" });
     } finally {
       setLoadingInsights(false);
@@ -50,7 +50,7 @@ const AiSalesInsights = ({ events, totalRevenue, totalTickets, totalOrders }: Pr
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setForecast(data);
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast({ title: e.message || "Failed to generate forecast", variant: "destructive" });
     } finally {
       setLoadingForecast(false);

@@ -66,7 +66,7 @@ const FlashSaleManager = ({ eventId, ticketTypes }: Props) => {
       setShowForm(false);
       setForm({ name: "", discount_type: "percentage", discount_value: 10, starts_at: "", ends_at: "", max_uses: "", applies_to_ticket_ids: [] });
       queryClient.invalidateQueries({ queryKey: ["flash-sales", eventId] });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Failed to create sale", description: err.message, variant: "destructive" });
     } finally {
       setSaving(false);

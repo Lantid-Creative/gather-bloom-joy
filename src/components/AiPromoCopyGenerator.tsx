@@ -55,7 +55,7 @@ const AiPromoCopyGenerator = ({ events }: Props) => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast({ title: e.message || "Failed to generate copy", variant: "destructive" });
     } finally {
       setLoading(false);

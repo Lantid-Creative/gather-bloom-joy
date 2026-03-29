@@ -43,7 +43,7 @@ const Auth = () => {
         toast({ title: "Account created! Welcome to Afritickets 🎉" });
         navigate("/");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);

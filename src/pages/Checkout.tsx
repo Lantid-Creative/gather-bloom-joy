@@ -54,7 +54,7 @@ const Checkout = () => {
           } else {
             toast({ title: "Payment verification failed", description: data?.error, variant: "destructive" });
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("Verify error:", err);
           toast({ title: "Payment verification error", description: err.message, variant: "destructive" });
         } finally {
@@ -139,7 +139,7 @@ const Checkout = () => {
       } else {
         throw new Error("No checkout URL received");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Checkout error:", err);
       toast({ title: "Something went wrong", description: err.message, variant: "destructive" });
     } finally {

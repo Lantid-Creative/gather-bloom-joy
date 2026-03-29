@@ -71,7 +71,7 @@ const SocialPostScheduler = ({ eventId, eventTitle }: Props) => {
       setShowForm(false);
       setForm({ platform: "twitter", content: "", scheduled_at: "" });
       queryClient.invalidateQueries({ queryKey: ["scheduled-posts", eventId] });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Failed to schedule", description: err.message, variant: "destructive" });
     } finally {
       setSaving(false);
