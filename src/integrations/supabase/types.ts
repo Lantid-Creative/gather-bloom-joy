@@ -218,6 +218,8 @@ export type Database = {
           image_url: string
           is_online: boolean
           location: string
+          meeting_platform: string
+          meeting_url: string
           organizer: string
           parent_event_id: string | null
           recurrence_end_date: string | null
@@ -244,6 +246,8 @@ export type Database = {
           image_url?: string
           is_online?: boolean
           location?: string
+          meeting_platform?: string
+          meeting_url?: string
           organizer?: string
           parent_event_id?: string | null
           recurrence_end_date?: string | null
@@ -270,6 +274,8 @@ export type Database = {
           image_url?: string
           is_online?: boolean
           location?: string
+          meeting_platform?: string
+          meeting_url?: string
           organizer?: string
           parent_event_id?: string | null
           recurrence_end_date?: string | null
