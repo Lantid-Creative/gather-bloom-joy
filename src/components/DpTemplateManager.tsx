@@ -765,12 +765,15 @@ const DpTemplateManager = ({ eventId }: { eventId: string }) => {
                   </p>
                   <canvas
                     ref={presetCanvasRef}
-                    className="border rounded-lg cursor-move max-w-full"
+                    className="border rounded-lg cursor-move max-w-full touch-none"
                     style={{ maxHeight: 400 }}
                     onMouseDown={handlePresetMouseDown}
                     onMouseMove={handlePresetMouseMove}
                     onMouseUp={() => setPresetDragging(false)}
                     onMouseLeave={() => setPresetDragging(false)}
+                    onTouchStart={handlePresetTouchStart}
+                    onTouchMove={handlePresetTouchMove}
+                    onTouchEnd={() => setPresetDragging(false)}
                   />
                 </div>
 
