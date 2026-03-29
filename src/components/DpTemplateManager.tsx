@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { ImagePlus, Trash2, Move, Circle, Square, Palette, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { ImagePlus, Trash2, Move, Circle, Square, Palette, Sparkles, ChevronDown, ChevronUp, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
