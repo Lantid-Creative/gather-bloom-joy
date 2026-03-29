@@ -20,8 +20,9 @@ import heroAfro from "@/assets/hero-afro.jpg";
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") ?? "";
+  const cityQuery = searchParams.get("city") ?? "";
   const [category, setCategory] = useState("");
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(cityQuery);
   const [cityOpen, setCityOpen] = useState(false);
   const [tab, setTab] = useState("All");
   const { data: dbEvents, isLoading } = useEvents();
@@ -50,6 +51,11 @@ const Index = () => {
     });
     return Array.from(citySet).sort();
   }, [allEvents]);
+
+  // Sync city from URL param
+  useEffect(() => {
+    setCity(cityQuery);
+  }, [cityQuery]);
 
   // Detect if search is "smart" (natural language, 3+ words)
   const isSmartSearch = searchQuery.trim().split(/\s+/).length >= 3;
