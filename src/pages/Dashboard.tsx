@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake } from "lucide-react";
+import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy } from "lucide-react";
 import EventbriteHeader from "@/components/EventbriteHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -177,6 +177,49 @@ const Dashboard = () => {
                       <p className="font-semibold truncate">{event.title}</p>
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary text-xs font-medium px-2 py-0.5"><Users className="h-3 w-3" />{tickets}</span>
                       <Link to={`/check-in/${event.id}`} onClick={(e) => e.stopPropagation()} className="text-xs text-primary hover:underline flex items-center gap-1"><QrCode className="h-3 w-3" /> Check-in</Link>
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const { data: cloned, error } = await supabase.from("events").insert({
+                              user_id: user!.id,
+                              title: `${event.title} (Copy)`,
+                              description: event.description,
+                              date: event.date,
+                              end_date: event.end_date,
+                              time: event.time,
+                              location: event.location,
+                              image_url: event.image_url,
+                              extra_images: (event as any).extra_images || [],
+                              category: event.category,
+                              organizer: event.organizer,
+                              capacity: event.capacity,
+                              is_online: event.is_online,
+                              meeting_platform: event.meeting_platform,
+                              meeting_url: event.meeting_url,
+                              tags: event.tags,
+                              status: "draft",
+                              recurrence_type: event.recurrence_type,
+                              currency: event.currency,
+                            }).select().single();
+                            if (error) throw error;
+                            // Clone ticket types
+                            const { data: tickets } = await supabase.from("ticket_types").select("*").eq("event_id", event.id);
+                            if (tickets && tickets.length > 0) {
+                              await supabase.from("ticket_types").insert(
+                                tickets.map((t: any) => ({ event_id: cloned.id, name: t.name, price: t.price, description: t.description, available: t.available, max_per_order: t.max_per_order }))
+                              );
+                            }
+                            queryClient.invalidateQueries({ queryKey: ["dashboard-events"] });
+                            toast({ title: "Event duplicated as draft! ✨" });
+                          } catch (err: any) {
+                            toast({ title: "Failed to duplicate", description: err.message, variant: "destructive" });
+                          }
+                        }}
+                        className="text-xs text-primary hover:underline flex items-center gap-1"
+                      >
+                        <Copy className="h-3 w-3" /> Duplicate
+                      </button>
                     </div>
                     <p className="text-xs text-muted-foreground">{format(new Date(event.date), "MMM d, yyyy")} · {event.location}</p>
                   </div>

@@ -26,6 +26,7 @@ export interface EventFormData {
   time: string;
   location: string;
   imageUrl: string;
+  extraImages: string[];
   category: string;
   organizer: string;
   capacity: string;
@@ -67,6 +68,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [time, setTime] = useState(initial?.time ?? "");
   const [location, setLocation] = useState(initial?.location ?? "");
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "");
+  const [extraImages, setExtraImages] = useState<string[]>(initial?.extraImages ?? []);
   const [category, setCategory] = useState(initial?.category ?? "");
   const [organizer, setOrganizer] = useState(initial?.organizer ?? "");
   const [capacity, setCapacity] = useState(initial?.capacity ?? "100");
@@ -191,7 +193,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit({ title, description, date, endDate, time, location, imageUrl, category, organizer, capacity, isOnline, meetingPlatform, meetingUrl, tags, tickets, status, recurrenceType, recurrenceEndDate });
+      await onSubmit({ title, description, date, endDate, time, location, imageUrl, extraImages, category, organizer, capacity, isOnline, meetingPlatform, meetingUrl, tags, tickets, status, recurrenceType, recurrenceEndDate });
     } finally {
       setLoading(false);
     }
@@ -419,6 +421,54 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
               placeholder="https://example.com/image.jpg"
               className="h-7 text-xs flex-1"
             />
+          </div>
+
+          {/* Extra gallery images */}
+          <div className="space-y-2 pt-2">
+            <Label className="text-xs font-medium text-muted-foreground">Additional Gallery Images</Label>
+            <div className="flex flex-wrap gap-2">
+              {extraImages.map((img, i) => (
+                <div key={i} className="relative w-20 h-14 rounded-lg overflow-hidden border group">
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setExtraImages(extraImages.filter((_, idx) => idx !== i))}
+                    className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
+                    <X className="h-4 w-4 text-white" />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={async () => {
+                  const input = document.createElement("input");
+                  input.type = "file";
+                  input.accept = "image/*";
+                  input.multiple = true;
+                  input.onchange = async (e) => {
+                    const files = (e.target as HTMLInputElement).files;
+                    if (!files || !user) return;
+                    const urls: string[] = [];
+                    for (const file of Array.from(files).slice(0, 5)) {
+                      const ext = file.name.split(".").pop();
+                      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+                      const { error } = await supabase.storage.from("event-images").upload(path, file);
+                      if (!error) {
+                        const { data: urlData } = supabase.storage.from("event-images").getPublicUrl(path);
+                        urls.push(urlData.publicUrl);
+                      }
+                    }
+                    setExtraImages([...extraImages, ...urls]);
+                  };
+                  input.click();
+                }}
+                className="w-20 h-14 rounded-lg border-2 border-dashed border-border hover:border-primary flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Plus className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Add up to 5 extra images for the event gallery</p>
           </div>
         </div>
       </div>
