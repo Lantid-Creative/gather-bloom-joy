@@ -21,6 +21,12 @@ const EditEvent = lazy(() => import("./pages/EditEvent"));
 const MyTickets = lazy(() => import("./pages/MyTickets"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DashboardOverview = lazy(() => import("./pages/dashboard/DashboardOverview"));
+const DashboardEvents = lazy(() => import("./pages/dashboard/DashboardEvents"));
+const DashboardAiInsights = lazy(() => import("./pages/dashboard/DashboardAiInsights"));
+const DashboardPromoCopy = lazy(() => import("./pages/dashboard/DashboardPromoCopy"));
+const DashboardPromoCodes = lazy(() => import("./pages/dashboard/DashboardPromoCodes"));
+const DashboardTracking = lazy(() => import("./pages/dashboard/DashboardTracking"));
 const About = lazy(() => import("./pages/About"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const HelpCenter = lazy(() => import("./pages/HelpCenter"));
@@ -34,9 +40,15 @@ const CheckIn = lazy(() => import("./pages/CheckIn"));
 const SavedEvents = lazy(() => import("./pages/SavedEvents"));
 const Partners = lazy(() => import("./pages/Partners"));
 const PartnerDashboard = lazy(() => import("./pages/PartnerDashboard"));
+const PartnerProfile = lazy(() => import("./pages/partner/PartnerProfile"));
+const PartnerSponsorships = lazy(() => import("./pages/partner/PartnerSponsorships"));
+const PartnerBrowse = lazy(() => import("./pages/partner/PartnerBrowse"));
 const Influencers = lazy(() => import("./pages/Influencers"));
 const InfluencerProfile = lazy(() => import("./pages/InfluencerProfile"));
 const InfluencerDashboard = lazy(() => import("./pages/InfluencerDashboard"));
+const InfluencerDashProfile = lazy(() => import("./pages/influencer/InfluencerProfile"));
+const InfluencerServices = lazy(() => import("./pages/influencer/InfluencerServices"));
+const InfluencerOrders = lazy(() => import("./pages/influencer/InfluencerOrders"));
 const HireInfluencer = lazy(() => import("./pages/HireInfluencer"));
 const MyHires = lazy(() => import("./pages/MyHires"));
 const FeatureTicketing = lazy(() => import("./pages/features/FeatureTicketing"));
@@ -90,7 +102,15 @@ const App = () => (
               <Route path="/edit-event/:id" element={<ProtectedRoute><EditEvent /></ProtectedRoute>} />
               <Route path="/my-tickets" element={<ProtectedRoute><MyTickets /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              {/* Organizer Dashboard */}
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}>
+                <Route index element={<DashboardOverview />} />
+                <Route path="events" element={<DashboardEvents />} />
+                <Route path="ai-insights" element={<DashboardAiInsights />} />
+                <Route path="promo-copy" element={<DashboardPromoCopy />} />
+                <Route path="promo-codes" element={<DashboardPromoCodes />} />
+                <Route path="tracking" element={<DashboardTracking />} />
+              </Route>
               <Route path="/saved" element={<ProtectedRoute><SavedEvents /></ProtectedRoute>} />
               <Route path="/check-in/:eventId" element={<ProtectedRoute><CheckIn /></ProtectedRoute>} />
               <Route path="/organizer/:id" element={<OrganizerProfile />} />
@@ -103,10 +123,20 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/partners" element={<Partners />} />
-              <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
+              {/* Partner Dashboard */}
+              <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>}>
+                <Route index element={<PartnerProfile />} />
+                <Route path="sponsorships" element={<PartnerSponsorships />} />
+                <Route path="browse" element={<PartnerBrowse />} />
+              </Route>
               <Route path="/influencers" element={<Influencers />} />
               <Route path="/influencer/:id" element={<InfluencerProfile />} />
-              <Route path="/influencer-dashboard" element={<ProtectedRoute><InfluencerDashboard /></ProtectedRoute>} />
+              {/* Influencer Dashboard */}
+              <Route path="/influencer-dashboard" element={<ProtectedRoute><InfluencerDashboard /></ProtectedRoute>}>
+                <Route index element={<InfluencerDashProfile />} />
+                <Route path="services" element={<InfluencerServices />} />
+                <Route path="orders" element={<InfluencerOrders />} />
+              </Route>
               <Route path="/hire/:influencerId" element={<ProtectedRoute><HireInfluencer /></ProtectedRoute>} />
               <Route path="/my-hires" element={<ProtectedRoute><MyHires /></ProtectedRoute>} />
               <Route path="/features/ticketing" element={<FeatureTicketing />} />
