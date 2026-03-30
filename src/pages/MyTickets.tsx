@@ -110,19 +110,19 @@ const MyTickets = () => {
               const hasRefund = refundRequests?.some((r: { order_id: string }) => r.order_id === order.id);
               return (
                 <div key={order.id} className="border rounded-xl overflow-hidden">
-                  <div className="flex items-center justify-between px-5 py-3 bg-surface text-sm">
-                    <div className="flex items-center gap-3">
-                      <span className="font-semibold">Order #{order.id.slice(0, 8).toUpperCase()}</span>
-                      <span className="text-muted-foreground">{format(new Date(order.created_at), "MMM d, yyyy")}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-5 py-3 bg-surface text-sm gap-2">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                      <span className="font-semibold truncate">#{order.id.slice(0, 8).toUpperCase()}</span>
+                      <span className="text-muted-foreground text-xs sm:text-sm shrink-0">{format(new Date(order.created_at), "MMM d, yyyy")}</span>
+                      <span className="font-bold text-primary shrink-0">${order.total}</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold text-primary">${order.total}</span>
+                    <div className="flex items-center gap-1 sm:gap-3">
                       {hasRefund ? (
                         <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Refund requested</span>
                       ) : (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="text-xs h-7"><RotateCcw className="h-3 w-3 mr-1" /> Refund</Button>
+                            <Button variant="ghost" size="sm" className="text-xs h-8 px-2"><RotateCcw className="h-3 w-3 mr-1" /> Refund</Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader><DialogTitle>Request Refund</DialogTitle></DialogHeader>
@@ -134,7 +134,7 @@ const MyTickets = () => {
                           </DialogContent>
                         </Dialog>
                       )}
-                      <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleDownloadTickets(order.id)}>
+                      <Button variant="ghost" size="sm" className="text-xs h-8 px-2" onClick={() => handleDownloadTickets(order.id)}>
                         <Download className="h-3 w-3 mr-1" /> PDF
                       </Button>
                     </div>
