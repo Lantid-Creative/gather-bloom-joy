@@ -39,6 +39,7 @@ const OrganizerProfile = lazy(() => import("./pages/OrganizerProfile"));
 const CheckIn = lazy(() => import("./pages/CheckIn"));
 const SavedEvents = lazy(() => import("./pages/SavedEvents"));
 const Partners = lazy(() => import("./pages/Partners"));
+const FindPartners = lazy(() => import("./pages/FindPartners"));
 const PartnerDashboard = lazy(() => import("./pages/PartnerDashboard"));
 const PartnerProfile = lazy(() => import("./pages/partner/PartnerProfile"));
 const PartnerSponsorships = lazy(() => import("./pages/partner/PartnerSponsorships"));
