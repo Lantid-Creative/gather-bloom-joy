@@ -39,6 +39,7 @@ const OrganizerProfile = lazy(() => import("./pages/OrganizerProfile"));
 const CheckIn = lazy(() => import("./pages/CheckIn"));
 const SavedEvents = lazy(() => import("./pages/SavedEvents"));
 const Partners = lazy(() => import("./pages/Partners"));
+const FindPartners = lazy(() => import("./pages/FindPartners"));
 const PartnerDashboard = lazy(() => import("./pages/PartnerDashboard"));
 const PartnerProfile = lazy(() => import("./pages/partner/PartnerProfile"));
 const PartnerSponsorships = lazy(() => import("./pages/partner/PartnerSponsorships"));
@@ -123,6 +124,7 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/partners" element={<Partners />} />
+              <Route path="/find-partners" element={<ProtectedRoute><FindPartners /></ProtectedRoute>} />
               {/* Partner Dashboard */}
               <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>}>
                 <Route index element={<PartnerProfile />} />

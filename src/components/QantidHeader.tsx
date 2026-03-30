@@ -1,5 +1,5 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Search, MapPin, Menu, X, User, LogOut, ShoppingCart, Heart, ChevronDown, Ticket, CalendarDays, LayoutDashboard, Users, Megaphone, HelpCircle, Handshake, Home, PlusCircle } from "lucide-react";
+import { Search, MapPin, Menu, X, User, LogOut, ShoppingCart, Heart, ChevronDown, Ticket, CalendarDays, LayoutDashboard, Users, Megaphone, HelpCircle, Handshake, Home, PlusCircle, Building2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCartStore } from "@/lib/cart-store";
@@ -153,6 +153,7 @@ const QantidHeader = () => {
                 <DropdownItem to="/my-events" icon={CalendarDays}>My Events</DropdownItem>
                 <DropdownItem to="/my-tickets" icon={Ticket}>My Tickets</DropdownItem>
                 <DropdownItem to="/my-hires" icon={Users}>My Hires</DropdownItem>
+                <DropdownItem to="/find-partners" icon={Building2}>Find Partners</DropdownItem>
                 <DropdownItem to="/dashboard" icon={LayoutDashboard}>Dashboard</DropdownItem>
                 <div className="border-t my-1" />
                 <DropdownItem icon={LogOut} onClick={handleSignOut}>Sign out</DropdownItem>
@@ -236,6 +237,9 @@ const QantidHeader = () => {
                     </Link>
                     <Link to="/my-hires" className="flex items-center gap-3 text-sm font-medium py-3 px-4 rounded-lg hover:bg-accent active:bg-accent" onClick={() => setMobileOpen(false)}>
                       <Users className="h-5 w-5 text-muted-foreground" /> My Hires
+                    </Link>
+                    <Link to="/find-partners" className="flex items-center gap-3 text-sm font-medium py-3 px-4 rounded-lg hover:bg-accent active:bg-accent" onClick={() => setMobileOpen(false)}>
+                      <Building2 className="h-5 w-5 text-muted-foreground" /> Find Partners
                     </Link>
                     <Link to="/dashboard" className="flex items-center gap-3 text-sm font-medium py-3 px-4 rounded-lg hover:bg-accent active:bg-accent" onClick={() => setMobileOpen(false)}>
                       <LayoutDashboard className="h-5 w-5 text-muted-foreground" /> Dashboard
