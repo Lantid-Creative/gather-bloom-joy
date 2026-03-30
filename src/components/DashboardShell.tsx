@@ -1,13 +1,14 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import QantidHeader from "@/components/QantidHeader";
+import { useState } from "react";
 
 interface SidebarItem {
   id: string;
   label: string;
   icon: React.ElementType;
+  path: string;
   badge?: string;
 }
 
@@ -15,10 +16,8 @@ interface DashboardShellProps {
   title: string;
   subtitle?: string;
   items: SidebarItem[];
-  activeItem: string;
-  onItemClick: (id: string) => void;
+  basePath: string;
   headerActions?: React.ReactNode;
-  children: React.ReactNode;
   backTo?: string;
 }
 
@@ -26,13 +25,17 @@ const DashboardShell = ({
   title,
   subtitle,
   items,
-  activeItem,
-  onItemClick,
+  basePath,
   headerActions,
-  children,
   backTo = "/",
 }: DashboardShellProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === basePath) return location.pathname === basePath;
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,20 +70,20 @@ const DashboardShell = ({
           {/* Nav Items */}
           <nav className="flex-1 overflow-y-auto py-2 px-2 space-y-0.5">
             {items.map((item) => {
-              const isActive = activeItem === item.id;
+              const active = isActive(item.path);
               return (
-                <button
+                <Link
                   key={item.id}
-                  onClick={() => onItemClick(item.id)}
+                  to={item.path}
                   className={cn(
                     "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
-                    isActive
+                    active
                       ? "bg-primary/10 text-primary shadow-sm"
                       : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                   )}
                   title={collapsed ? item.label : undefined}
                 >
-                  <item.icon className={cn("h-4 w-4 shrink-0", isActive && "text-primary")} />
+                  <item.icon className={cn("h-4 w-4 shrink-0", active && "text-primary")} />
                   {!collapsed && (
                     <>
                       <span className="truncate">{item.label}</span>
@@ -91,7 +94,7 @@ const DashboardShell = ({
                       )}
                     </>
                   )}
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -110,14 +113,15 @@ const DashboardShell = ({
 
         {/* Main Content */}
         <main className="flex-1 min-w-0 overflow-auto">
-          {/* Content Header */}
           {headerActions && (
             <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b px-6 py-3 flex items-center justify-between">
               <h1 className="text-lg font-bold">{title}</h1>
               <div className="flex items-center gap-2">{headerActions}</div>
             </div>
           )}
-          <div className="p-6">{children}</div>
+          <div className="p-6">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
