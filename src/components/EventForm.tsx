@@ -477,7 +477,6 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       </div>
 
       <div className="space-y-4">
-      <div className="space-y-4">
         <h2 className="text-xl font-bold">Currency & Tickets</h2>
         <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
           <div className="flex items-start gap-3">
