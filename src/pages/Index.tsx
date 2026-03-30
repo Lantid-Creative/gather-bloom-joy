@@ -154,7 +154,10 @@ const Index = () => {
               <span className="bg-primary/80 px-2 py-0.5 inline-block">TO AMAPIANO</span>
             </h1>
             <div className="mt-6">
-              <button className="bg-background text-foreground font-bold text-sm px-6 py-3 rounded-full hover:bg-background/90 transition-colors">
+              <button
+                onClick={() => { setCategory("Music"); window.scrollTo({ top: document.getElementById("events-section")?.offsetTop ?? 600, behavior: "smooth" }); }}
+                className="bg-background text-foreground font-bold text-sm px-6 py-3 rounded-full hover:bg-background/90 transition-colors"
+              >
                 Get Into Live Music
               </button>
             </div>
@@ -163,7 +166,7 @@ const Index = () => {
       </section>
 
       {/* Category Icons */}
-      <div className="container">
+      <div id="events-section" className="container">
         <CategoryIcons
           onSelect={(cat) => setCategory(cat === category ? "" : cat)}
           active={category}
