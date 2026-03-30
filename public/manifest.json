@@ -1,0 +1,19 @@
+{
+  "name": "Qantid — Discover & Book Events Across Africa",
+  "short_name": "Qantid",
+  "description": "Africa's #1 event ticketing platform. Discover concerts, festivals, conferences and cultural events.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#E86833",
+  "orientation": "portrait-primary",
+  "categories": ["entertainment", "events", "tickets"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
