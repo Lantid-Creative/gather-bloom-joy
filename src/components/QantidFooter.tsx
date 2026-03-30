@@ -8,7 +8,7 @@ const popularCities = [
 
 const QantidFooter = () => {
   return (
-    <footer className="border-t bg-background pb-16 lg:pb-0">
+    <footer className="border-t bg-background">
       {/* Popular cities section */}
       <div className="container py-10">
         <h3 className="text-lg font-bold mb-4">Popular cities in Africa</h3>
