@@ -1,11 +1,46 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Search, MapPin, Menu, X, User, LogOut, ShoppingCart, Heart } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Search, MapPin, Menu, X, User, LogOut, ShoppingCart, Heart, ChevronDown, Ticket, CalendarDays, LayoutDashboard, Users, Megaphone, HelpCircle, Handshake } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCartStore } from "@/lib/cart-store";
-import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
+
+const DropdownMenu = ({ label, children }: { label: string; children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1"
+      >
+        {label}
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute top-full right-0 mt-1 w-48 rounded-lg border bg-popover shadow-lg py-1 z-50" onClick={() => setOpen(false)}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DropdownItem = ({ to, icon: Icon, children, onClick }: { to?: string; icon: React.ElementType; children: React.ReactNode; onClick?: () => void }) => {
+  const cls = "flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors w-full text-left";
+  if (to) return <Link to={to} className={cls}><Icon className="h-4 w-4 text-muted-foreground" />{children}</Link>;
+  return <button onClick={onClick} className={cls}><Icon className="h-4 w-4 text-muted-foreground" />{children}</button>;
+};
 
 const QantidHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -17,7 +52,6 @@ const QantidHeader = () => {
   const [searchText, setSearchText] = useState(qParam);
   const [cityText, setCityText] = useState(cityParam);
 
-  // Keep inputs in sync with URL params (e.g. when city dropdown on Index changes)
   useEffect(() => { setSearchText(qParam); }, [qParam]);
   useEffect(() => { setCityText(cityParam); }, [cityParam]);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
@@ -34,7 +68,6 @@ const QantidHeader = () => {
     const qs = params.toString();
     navigate(qs ? `/?${qs}` : "/");
   };
-
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b">
@@ -64,9 +97,12 @@ const QantidHeader = () => {
         <nav className="hidden lg:flex items-center gap-1 ml-auto">
           <Link to="/" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Find Events</Link>
           <Link to="/create-event" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Create Events</Link>
-          <Link to="/partners" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Partners</Link>
-          <Link to="/influencers" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Influencers</Link>
-          <Link to="/help" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Help Center</Link>
+
+          <DropdownMenu label="Explore">
+            <DropdownItem to="/partners" icon={Handshake}>Partners</DropdownItem>
+            <DropdownItem to="/influencers" icon={Megaphone}>Influencers</DropdownItem>
+            <DropdownItem to="/help" icon={HelpCircle}>Help Center</DropdownItem>
+          </DropdownMenu>
 
           <ThemeToggle />
 
@@ -81,19 +117,16 @@ const QantidHeader = () => {
 
           <div className="w-px h-6 bg-border mx-1" />
           {user ? (
-            <div className="flex items-center gap-1">
-              <Link to="/saved" className="p-2 rounded-md hover:bg-accent transition-colors"><Heart className="h-4 w-4" /></Link>
-              <Link to="/my-events" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Events</Link>
-              <Link to="/my-tickets" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Tickets</Link>
-              <Link to="/my-hires" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">My Hires</Link>
-              <Link to="/dashboard" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Dashboard</Link>
-              <Link to="/profile" className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all">
-                <User className="h-4 w-4 text-primary" />
-              </Link>
-              <button onClick={handleSignOut} className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors flex items-center gap-1">
-                <LogOut className="h-3.5 w-3.5" /> Sign out
-              </button>
-            </div>
+            <DropdownMenu label="Account">
+              <DropdownItem to="/profile" icon={User}>Profile</DropdownItem>
+              <DropdownItem to="/saved" icon={Heart}>Saved Events</DropdownItem>
+              <DropdownItem to="/my-events" icon={CalendarDays}>My Events</DropdownItem>
+              <DropdownItem to="/my-tickets" icon={Ticket}>My Tickets</DropdownItem>
+              <DropdownItem to="/my-hires" icon={Users}>My Hires</DropdownItem>
+              <DropdownItem to="/dashboard" icon={LayoutDashboard}>Dashboard</DropdownItem>
+              <div className="border-t my-1" />
+              <DropdownItem icon={LogOut} onClick={handleSignOut}>Sign out</DropdownItem>
+            </DropdownMenu>
           ) : (
             <Link to="/auth" className="text-sm font-medium px-3 py-2 rounded-md hover:bg-accent transition-colors">Sign in</Link>
           )}
@@ -143,7 +176,6 @@ const QantidHeader = () => {
               <Link to="/my-events" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Events</Link>
               <Link to="/my-tickets" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Tickets</Link>
               <Link to="/my-hires" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Hires</Link>
-              <Link to="/influencer-dashboard" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Influencer Dashboard</Link>
               <Link to="/dashboard" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>Dashboard</Link>
               <Link to="/profile" className="block text-sm font-medium py-2 px-3 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>My Profile</Link>
               <button onClick={() => { handleSignOut(); setMobileOpen(false); }} className="block w-full text-left text-sm font-medium py-2 px-3 rounded-md hover:bg-accent">Sign out</button>
