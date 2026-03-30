@@ -103,13 +103,6 @@
   }
 }
 
-/* Add bottom padding on mobile to prevent content from being hidden behind the fixed bottom nav */
-@media (max-width: 1023px) {
-  .min-h-screen > :last-child {
-    padding-bottom: 4rem;
-  }
-}
-
 /* Smooth animations for mobile menu */
 @keyframes slide-in-from-right {
   from { transform: translateX(100%); }
