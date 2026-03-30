@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import LocationAutocomplete from "@/components/LocationAutocomplete";
+import { SUPPORTED_CURRENCIES } from "@/lib/currencies";
 
 export interface TicketDraft {
   id?: string;
