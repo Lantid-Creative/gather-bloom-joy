@@ -407,7 +407,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
                   <span className="text-sm font-medium">
                     {dragging ? "Drop image here" : "Drag & drop or click to upload"}
                   </span>
-                  <span className="text-xs">JPG, PNG, WebP · Max 5MB</span>
+                  <span className="text-xs">JPG, PNG, WebP · Max 5MB · Recommended: 1920×1080px (16:9)</span>
                 </>
               )}
             </button>
