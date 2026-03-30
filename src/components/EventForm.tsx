@@ -82,6 +82,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [status, setStatus] = useState(initial?.status ?? "published");
   const [recurrenceType, setRecurrenceType] = useState(initial?.recurrenceType ?? "none");
   const [recurrenceEndDate, setRecurrenceEndDate] = useState(initial?.recurrenceEndDate ?? "");
+  const [currency, setCurrency] = useState(initial?.currency ?? "USD");
 
   const uploadFile = async (file: File) => {
     if (!user) return;
