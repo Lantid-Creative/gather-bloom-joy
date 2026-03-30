@@ -141,14 +141,14 @@ const MyTickets = () => {
                   </div>
                   <div className="divide-y">
                     {items.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between px-5 py-4 hover:bg-muted/50 transition-colors">
-                        <Link to={`/event/${item.event_id}`} className="space-y-1 flex-1">
-                          <p className="font-semibold">{item.event_title}</p>
-                          <p className="text-sm text-muted-foreground">{item.ticket_name} × {item.quantity}</p>
+                      <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-5 py-3 sm:py-4 hover:bg-muted/50 transition-colors gap-2">
+                        <Link to={`/event/${item.event_id}`} className="space-y-0.5 flex-1 min-w-0">
+                          <p className="font-semibold text-sm sm:text-base truncate">{item.event_title}</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">{item.ticket_name} × {item.quantity}</p>
                         </Link>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                           <span className="text-sm font-medium">${item.ticket_price * item.quantity}</span>
-                          <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleSetReminder(item.event_id, item.event_title, item.created_at)}>
+                          <Button variant="ghost" size="sm" className="text-xs h-8 px-2" onClick={() => handleSetReminder(item.event_id, item.event_title, item.created_at)}>
                             <Bell className="h-3 w-3 mr-1" /> Remind
                           </Button>
                         </div>
