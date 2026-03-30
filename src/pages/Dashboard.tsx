@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import type { DbTable } from "@/lib/db-types";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy, Activity, CalendarDays, Percent } from "lucide-react";
-import QantidHeader from "@/components/QantidHeader";
+import { DollarSign, Ticket, Users, TrendingUp, ChevronDown, ChevronUp, Download, QrCode, Mail, Loader2, Handshake, Copy, Activity, CalendarDays, Percent, LayoutDashboard, Tag, LinkIcon, Sparkles, BarChart3, Calendar, Megaphone, Zap, Share2, Image, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format, subDays, eachDayOfInterval, startOfDay, parseISO, differenceInDays } from "date-fns";
+import { format, subDays, eachDayOfInterval, startOfDay, parseISO } from "date-fns";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PromoCodeManager from "@/components/PromoCodeManager";
 import TrackingLinkManager from "@/components/TrackingLinkManager";
@@ -27,6 +26,7 @@ import TimeSlotManager from "@/components/TimeSlotManager";
 import LineupManager from "@/components/LineupManager";
 import EventReportPanel from "@/components/EventReportPanel";
 import AdsManager from "@/components/AdsManager";
+import DashboardShell from "@/components/DashboardShell";
 
 interface OrderItem { id: string; order_id: string; event_id: string; event_title: string; ticket_name: string; ticket_price: number; quantity: number; created_at: string; }
 interface Order { id: string; customer_name: string; customer_email: string; total: number; created_at: string; }
@@ -39,13 +39,30 @@ const StatCard = ({ icon: Icon, label, value, sub }: { icon: React.ElementType; 
   </div>
 );
 
+const sidebarItems = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "events", label: "Events", icon: Calendar },
+  { id: "ai-insights", label: "AI Insights", icon: Sparkles },
+  { id: "promo-copy", label: "AI Promo Copy", icon: Megaphone },
+  { id: "promo-codes", label: "Promo Codes", icon: Tag },
+  { id: "tracking", label: "Tracking Links", icon: LinkIcon },
+];
+
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
   const [syncingEvent, setSyncingEvent] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState("overview");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const scrollToSection = useCallback((id: string) => {
+    setActiveSection(id);
+    sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   const { data: events } = useQuery({
     queryKey: ["dashboard-events", user?.id], enabled: !!user,
@@ -67,7 +84,14 @@ const Dashboard = () => {
     queryFn: async () => { const orderIds = [...new Set(orderItems!.map((i) => i.order_id))]; const { data, error } = await supabase.from("orders").select("*").in("id", orderIds); if (error) throw error; return data as Order[]; },
   });
 
-  if (!user) return <div className="min-h-screen bg-background"><QantidHeader /><div className="container max-w-lg py-20 text-center space-y-4"><h1 className="text-2xl font-bold">Sign in to view your dashboard</h1><Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button></div></div>;
+  if (!user) return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center space-y-4">
+        <h1 className="text-2xl font-bold">Sign in to view your dashboard</h1>
+        <Button variant="hero" className="rounded-full" onClick={() => navigate("/auth")}>Sign in</Button>
+      </div>
+    </div>
+  );
 
   const totalRevenue = orderItems?.reduce((sum, i) => sum + i.ticket_price * i.quantity, 0) ?? 0;
   const totalTickets = orderItems?.reduce((sum, i) => sum + i.quantity, 0) ?? 0;
@@ -120,17 +144,28 @@ const Dashboard = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-background">
-      <QantidHeader />
-      <div className="container max-w-5xl py-10">
-        <Button variant="ghost" size="sm" className="-ml-2 mb-6" onClick={() => navigate(-1)}><ArrowLeft className="h-4 w-4 mr-1" /> Back</Button>
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-bold">Organizer Dashboard</h1>
-          <Button variant="outline" size="sm" className="rounded-full" onClick={exportCSV}><Download className="h-3.5 w-3.5 mr-1" /> Export CSV</Button>
-        </div>
-        <p className="text-muted-foreground mb-8">Track sales, revenue, and attendees across all your events.</p>
+  const dynamicItems = sidebarItems.map((item) => {
+    if (item.id === "events") return { ...item, badge: String(events?.length ?? 0) };
+    return item;
+  });
 
+  return (
+    <DashboardShell
+      title="Organizer Dashboard"
+      subtitle="Track sales & manage events"
+      items={dynamicItems}
+      activeItem={activeSection}
+      onItemClick={scrollToSection}
+      backTo="/"
+      headerActions={
+        <Button variant="outline" size="sm" className="rounded-full" onClick={exportCSV}>
+          <Download className="h-3.5 w-3.5 mr-1" /> Export CSV
+        </Button>
+      }
+    >
+      {/* Overview */}
+      <div ref={(el) => { sectionRefs.current["overview"] = el; }} className="scroll-mt-16">
+        <h2 className="text-xl font-bold mb-4">Overview</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} />
           <StatCard icon={Ticket} label="Tickets Sold" value={totalTickets.toString()} />
@@ -144,10 +179,10 @@ const Dashboard = () => {
           <StatCard icon={TrendingUp} label="Revenue/Event" value={events && events.length > 0 ? `$${Math.round(totalRevenue / events.length)}` : "$0"} />
         </div>
 
-        {/* Sales Trend + Revenue by Event */}
+        {/* Sales Trend */}
         {orderItems && orderItems.length > 0 && (
           <div className="mb-10">
-            <h2 className="text-xl font-bold mb-4">Sales Trend (Last 30 Days)</h2>
+            <h3 className="text-lg font-semibold mb-3">Sales Trend (Last 30 Days)</h3>
             <div className="rounded-xl border bg-card p-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={(() => {
@@ -176,7 +211,7 @@ const Dashboard = () => {
 
         {chartData.length > 0 && (
           <div className="mb-10">
-            <h2 className="text-xl font-bold mb-4">Revenue by Event</h2>
+            <h3 className="text-lg font-semibold mb-3">Revenue by Event</h3>
             <div className="rounded-xl border bg-card p-4 h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
@@ -190,19 +225,22 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+      </div>
 
-        {/* AI Sales Insights & Forecasting */}
+      {/* AI Sales Insights */}
+      <div ref={(el) => { sectionRefs.current["ai-insights"] = el; }} className="scroll-mt-16 pt-6">
         {eventStats.length > 0 && (
-          <div className="mb-10">
-            <AiSalesInsights
-              events={eventStats.map((s) => ({ title: s.event.title, revenue: s.revenue, tickets: s.tickets, date: s.event.date }))}
-              totalRevenue={totalRevenue}
-              totalTickets={totalTickets}
-              totalOrders={totalOrders}
-            />
-          </div>
+          <AiSalesInsights
+            events={eventStats.map((s) => ({ title: s.event.title, revenue: s.revenue, tickets: s.tickets, date: s.event.date }))}
+            totalRevenue={totalRevenue}
+            totalTickets={totalTickets}
+            totalOrders={totalOrders}
+          />
         )}
+      </div>
 
+      {/* Event Breakdown */}
+      <div ref={(el) => { sectionRefs.current["events"] = el; }} className="scroll-mt-16 pt-6">
         <h2 className="text-xl font-bold mb-4">Event Breakdown</h2>
         {eventStats.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground"><p>No events yet.</p><Button variant="hero" size="sm" className="rounded-full mt-4" asChild><Link to="/create-event">Create Your First Event</Link></Button></div>
@@ -212,7 +250,7 @@ const Dashboard = () => {
               <div key={event.id} className="border rounded-xl overflow-hidden">
                 <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-muted/50 transition-colors text-left" onClick={() => setExpandedEvent(expandedEvent === event.id ? null : event.id)}>
                   <div className="space-y-1 min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-semibold truncate">{event.title}</p>
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary text-xs font-medium px-2 py-0.5"><Users className="h-3 w-3" />{tickets}</span>
                       <Link to={`/check-in/${event.id}`} onClick={(e) => e.stopPropagation()} className="text-xs text-primary hover:underline flex items-center gap-1"><QrCode className="h-3 w-3" /> Check-in</Link>
@@ -221,33 +259,14 @@ const Dashboard = () => {
                           e.stopPropagation();
                           try {
                             const { data: cloned, error } = await supabase.from("events").insert({
-                              user_id: user!.id,
-                              title: `${event.title} (Copy)`,
-                              description: event.description,
-                              date: event.date,
-                              end_date: event.end_date,
-                              time: event.time,
-                              location: event.location,
-                              image_url: event.image_url,
-                              extra_images: ((event as unknown as Record<string, unknown>).extra_images as string[]) || [] || [],
-                              category: event.category,
-                              organizer: event.organizer,
-                              capacity: event.capacity,
-                              is_online: event.is_online,
-                              meeting_platform: event.meeting_platform,
-                              meeting_url: event.meeting_url,
-                              tags: event.tags,
-                              status: "draft",
-                              recurrence_type: event.recurrence_type,
-                              currency: event.currency,
+                              user_id: user!.id, title: `${event.title} (Copy)`, description: event.description, date: event.date, end_date: event.end_date, time: event.time, location: event.location, image_url: event.image_url,
+                              extra_images: ((event as unknown as Record<string, unknown>).extra_images as string[]) || [],
+                              category: event.category, organizer: event.organizer, capacity: event.capacity, is_online: event.is_online, meeting_platform: event.meeting_platform, meeting_url: event.meeting_url, tags: event.tags, status: "draft", recurrence_type: event.recurrence_type, currency: event.currency,
                             }).select().single();
                             if (error) throw error;
-                            // Clone ticket types
-                            const { data: tickets } = await supabase.from("ticket_types").select("*").eq("event_id", event.id);
-                            if (tickets && tickets.length > 0) {
-                              await supabase.from("ticket_types").insert(
-                                tickets.map((t: DbTable<"ticket_types">) => ({ event_id: cloned.id, name: t.name, price: t.price, description: t.description, available: t.available, max_per_order: t.max_per_order }))
-                              );
+                            const { data: tix } = await supabase.from("ticket_types").select("*").eq("event_id", event.id);
+                            if (tix && tix.length > 0) {
+                              await supabase.from("ticket_types").insert(tix.map((t: DbTable<"ticket_types">) => ({ event_id: cloned.id, name: t.name, price: t.price, description: t.description, available: t.available, max_per_order: t.max_per_order })));
                             }
                             queryClient.invalidateQueries({ queryKey: ["dashboard-events"] });
                             toast({ title: "Event duplicated as draft! ✨" });
@@ -284,18 +303,8 @@ const Dashboard = () => {
                             }}>
                               <Mail className="h-3 w-3 mr-1" /> Export Emails
                             </Button>
-                            <Button
-                              variant="hero"
-                              size="sm"
-                              className="rounded-full text-xs"
-                              disabled={syncingEvent === event.id}
-                              onClick={() => handleMailchimpSync(event.id, event.title)}
-                            >
-                              {syncingEvent === event.id ? (
-                                <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Syncing...</>
-                              ) : (
-                                <><Mail className="h-3 w-3 mr-1" /> Sync to Mailchimp</>
-                              )}
+                            <Button variant="hero" size="sm" className="rounded-full text-xs" disabled={syncingEvent === event.id} onClick={() => handleMailchimpSync(event.id, event.title)}>
+                              {syncingEvent === event.id ? (<><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Syncing...</>) : (<><Mail className="h-3 w-3 mr-1" /> Sync to Mailchimp</>)}
                             </Button>
                           </div>
                         </div>
@@ -307,146 +316,51 @@ const Dashboard = () => {
                         </div>
                       </>
                     )}
-
-                    {/* Event Report Panel */}
-                    <EventReportPanel
-                      eventId={event.id}
-                      eventTitle={event.title}
-                      eventDate={event.date}
-                      capacity={event.capacity}
-                      ticketsSold={event.tickets_sold}
-                      orderItems={orderItems?.filter((i) => i.event_id === event.id) ?? []}
-                      orders={eventOrders ?? []}
-                    />
-
-                    {/* Ads Manager */}
-                    <div className="border-t pt-4 mt-4">
-                      <AdsManager eventId={event.id} eventTitle={event.title} />
-                    </div>
-
-                    {/* Timed Entry Slots */}
-                    <div className="border-t pt-4 mt-4">
-                      <TimeSlotManager eventId={event.id} />
-                    </div>
-
-                    {/* Artist Lineup */}
-                    <div className="border-t pt-4 mt-4">
-                      <LineupManager eventId={event.id} />
-                    </div>
-
-                    {/* Sponsorship Tiers */}
+                    <EventReportPanel eventId={event.id} eventTitle={event.title} eventDate={event.date} capacity={event.capacity} ticketsSold={event.tickets_sold} orderItems={orderItems?.filter((i) => i.event_id === event.id) ?? []} orders={eventOrders ?? []} />
+                    <div className="border-t pt-4 mt-4"><AdsManager eventId={event.id} eventTitle={event.title} /></div>
+                    <div className="border-t pt-4 mt-4"><TimeSlotManager eventId={event.id} /></div>
+                    <div className="border-t pt-4 mt-4"><LineupManager eventId={event.id} /></div>
                     <div className="border-t pt-4 mt-4">
                       <div className="flex items-center gap-2 mb-3">
                         <Handshake className="h-4 w-4 text-primary" />
                         <h3 className="text-sm font-semibold">Sponsorship</h3>
-                        <Button
-                          variant={event.seeking_sponsors ? "hero" : "outline"}
-                          size="sm"
-                          className="rounded-full text-xs ml-auto h-7"
-                          onClick={async () => {
-                            await supabase.from("events").update({ seeking_sponsors: !event.seeking_sponsors }).eq("id", event.id);
-                            queryClient.invalidateQueries({ queryKey: ["dashboard-events"] });
-                            toast({ title: event.seeking_sponsors ? "Sponsorship disabled" : "Now seeking sponsors!" });
-                          }}
-                        >
+                        <Button variant={event.seeking_sponsors ? "hero" : "outline"} size="sm" className="rounded-full text-xs ml-auto h-7" onClick={async () => { await supabase.from("events").update({ seeking_sponsors: !event.seeking_sponsors }).eq("id", event.id); queryClient.invalidateQueries({ queryKey: ["dashboard-events"] }); toast({ title: event.seeking_sponsors ? "Sponsorship disabled" : "Now seeking sponsors!" }); }}>
                           {event.seeking_sponsors ? "Seeking Sponsors ✓" : "Enable Sponsorship"}
                         </Button>
                       </div>
                       {event.seeking_sponsors && <SponsorshipTierManager eventId={event.id} />}
-                      {event.seeking_sponsors && (
-                        <div className="mt-3">
-                          <AiSponsorshipProposal
-                            eventTitle={event.title}
-                            eventCategory={event.category}
-                            eventDescription={event.description}
-                            eventLocation={event.location}
-                            eventDate={event.date}
-                            capacity={event.capacity}
-                            ticketsSold={event.tickets_sold}
-                            seekingSponsors={event.seeking_sponsors}
-                          />
-                        </div>
-                      )}
+                      {event.seeking_sponsors && (<div className="mt-3"><AiSponsorshipProposal eventTitle={event.title} eventCategory={event.category} eventDescription={event.description} eventLocation={event.location} eventDate={event.date} capacity={event.capacity} ticketsSold={event.tickets_sold} seekingSponsors={event.seeking_sponsors} /></div>)}
                     </div>
-
-                    {/* AI Smart Pricing */}
-                    <div className="border-t pt-4 mt-4">
-                      <AiSmartPricing
-                        eventTitle={event.title}
-                        eventCategory={event.category}
-                        eventLocation={event.location}
-                        capacity={event.capacity}
-                        ticketsSold={event.tickets_sold}
-                        isOnline={event.is_online}
-                        currentTickets={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ name: t.name, price: t.price, available: t.available }))}
-                      />
-                    </div>
-
-                    {/* AI Influencer Matching */}
-                    <div className="border-t pt-4 mt-4">
-                      <AiInfluencerMatcher
-                        eventId={event.id}
-                        eventTitle={event.title}
-                        eventCategory={event.category}
-                        eventLocation={event.location}
-                        eventTags={event.tags || []}
-                      />
-                    </div>
-
-                    {/* Flash Sales */}
-                    <div className="border-t pt-4 mt-4">
-                      <FlashSaleManager
-                        eventId={event.id}
-                        ticketTypes={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ id: t.id, name: t.name, price: t.price }))}
-                      />
-                    </div>
-
-                    {/* Referral Program */}
-                    <div className="border-t pt-4 mt-4">
-                      <ReferralProgramManager eventId={event.id} eventTitle={event.title} />
-                    </div>
-
-                    {/* Social Media Scheduler */}
-                    <div className="border-t pt-4 mt-4">
-                      <SocialPostScheduler eventId={event.id} eventTitle={event.title} />
-                    </div>
-
-                    {/* DP & Flyer Generator */}
-                    <div className="border-t pt-4 mt-4">
-                      <DpTemplateManager eventId={event.id} />
-                    </div>
-
-                    {/* Email Campaigns */}
-                    <div className="border-t pt-4 mt-4">
-                      <EmailCampaignManager
-                        eventId={event.id}
-                        eventTitle={event.title}
-                        attendees={eventOrders.map(o => ({ name: o.customer_name, email: o.customer_email }))}
-                      />
-                    </div>
+                    <div className="border-t pt-4 mt-4"><AiSmartPricing eventTitle={event.title} eventCategory={event.category} eventLocation={event.location} capacity={event.capacity} ticketsSold={event.tickets_sold} isOnline={event.is_online} currentTickets={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ name: t.name, price: t.price, available: t.available }))} /></div>
+                    <div className="border-t pt-4 mt-4"><AiInfluencerMatcher eventId={event.id} eventTitle={event.title} eventCategory={event.category} eventLocation={event.location} eventTags={event.tags || []} /></div>
+                    <div className="border-t pt-4 mt-4"><FlashSaleManager eventId={event.id} ticketTypes={(ticketTypes?.filter(t => t.event_id === event.id) ?? []).map(t => ({ id: t.id, name: t.name, price: t.price }))} /></div>
+                    <div className="border-t pt-4 mt-4"><ReferralProgramManager eventId={event.id} eventTitle={event.title} /></div>
+                    <div className="border-t pt-4 mt-4"><SocialPostScheduler eventId={event.id} eventTitle={event.title} /></div>
+                    <div className="border-t pt-4 mt-4"><DpTemplateManager eventId={event.id} /></div>
+                    <div className="border-t pt-4 mt-4"><EmailCampaignManager eventId={event.id} eventTitle={event.title} attendees={eventOrders.map(o => ({ name: o.customer_name, email: o.customer_email }))} /></div>
                   </div>
                 )}
               </div>
             ))}
           </div>
         )}
-
-        {/* AI Promo Copy Generator */}
-        <div className="mt-10">
-          <AiPromoCopyGenerator events={events?.map((e) => ({ id: e.id, title: e.title, description: e.description, date: e.date, location: e.location })) ?? []} />
-        </div>
-
-        {/* Promo Codes */}
-        <div className="mt-10">
-          <PromoCodeManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
-        </div>
-
-        {/* Tracking Links */}
-        <div className="mt-10">
-          <TrackingLinkManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
-        </div>
       </div>
-    </div>
+
+      {/* AI Promo Copy Generator */}
+      <div ref={(el) => { sectionRefs.current["promo-copy"] = el; }} className="scroll-mt-16 pt-10">
+        <AiPromoCopyGenerator events={events?.map((e) => ({ id: e.id, title: e.title, description: e.description, date: e.date, location: e.location })) ?? []} />
+      </div>
+
+      {/* Promo Codes */}
+      <div ref={(el) => { sectionRefs.current["promo-codes"] = el; }} className="scroll-mt-16 pt-10">
+        <PromoCodeManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
+      </div>
+
+      {/* Tracking Links */}
+      <div ref={(el) => { sectionRefs.current["tracking"] = el; }} className="scroll-mt-16 pt-10">
+        <TrackingLinkManager events={events?.map((e) => ({ id: e.id, title: e.title })) ?? []} />
+      </div>
+    </DashboardShell>
   );
 };
 
