@@ -542,38 +542,6 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
             </div>
           </div>
         ))}
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold">Ticket {i + 1}</span>
-              {tickets.length > 1 && (
-                <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeTicket(i)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <Label>Name</Label>
-                <Input value={ticket.name} onChange={(e) => updateTicket(i, "name", e.target.value)} placeholder="e.g. General Admission" />
-              </div>
-              <div className="space-y-1">
-                <Label>Price ($)</Label>
-                <Input type="number" step="0.01" value={ticket.price} onChange={(e) => updateTicket(i, "price", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label>Available</Label>
-                <Input type="number" value={ticket.available} onChange={(e) => updateTicket(i, "available", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label>Max per order</Label>
-                <Input type="number" value={ticket.max_per_order} onChange={(e) => updateTicket(i, "max_per_order", e.target.value)} />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <Label>Description</Label>
-              <Input value={ticket.description} onChange={(e) => updateTicket(i, "description", e.target.value)} placeholder="What's included with this ticket?" />
-            </div>
-          </div>
-        ))}
       </div>
 
       <Button variant="hero" size="lg" type="submit" className="w-full rounded-full" disabled={loading}>
