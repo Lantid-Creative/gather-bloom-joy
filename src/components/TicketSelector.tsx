@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { getCurrencySymbol } from "@/lib/currencies";
 
 interface TimeSlot {
   id: string;
@@ -23,9 +24,10 @@ interface TicketSelectorProps {
   ticket: TicketType;
   eventId: string;
   eventTitle: string;
+  currency?: string;
 }
 
-const TicketSelector = ({ ticket, eventId, eventTitle }: TicketSelectorProps) => {
+const TicketSelector = ({ ticket, eventId, eventTitle, currency = "USD" }: TicketSelectorProps) => {
   const [qty, setQty] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const addItem = useCartStore((s) => s.addItem);
@@ -86,7 +88,7 @@ const TicketSelector = ({ ticket, eventId, eventTitle }: TicketSelectorProps) =>
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="font-semibold">{ticket.name}</h4>
-            <span className="text-lg font-bold text-primary">${ticket.price}</span>
+            <span className="text-lg font-bold text-primary">{getCurrencySymbol(currency)}{ticket.price}</span>
             {soldOut && <Badge variant="destructive" className="text-xs">Sold Out</Badge>}
           </div>
           <p className="text-sm text-muted-foreground">{ticket.description}</p>

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import LocationAutocomplete from "@/components/LocationAutocomplete";
+import { SUPPORTED_CURRENCIES } from "@/lib/currencies";
 
 export interface TicketDraft {
   id?: string;
@@ -38,6 +39,7 @@ export interface EventFormData {
   status: string;
   recurrenceType: string;
   recurrenceEndDate: string;
+  currency: string;
 }
 
 const emptyTicket: TicketDraft = { name: "", price: "0", description: "", available: "100", max_per_order: "10" };
@@ -80,6 +82,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
   const [status, setStatus] = useState(initial?.status ?? "published");
   const [recurrenceType, setRecurrenceType] = useState(initial?.recurrenceType ?? "none");
   const [recurrenceEndDate, setRecurrenceEndDate] = useState(initial?.recurrenceEndDate ?? "");
+  const [currency, setCurrency] = useState(initial?.currency ?? "USD");
 
   const uploadFile = async (file: File) => {
     if (!user) return;
@@ -193,7 +196,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit({ title, description, date, endDate, time, location, imageUrl, extraImages, category, organizer, capacity, isOnline, meetingPlatform, meetingUrl, tags, tickets, status, recurrenceType, recurrenceEndDate });
+      await onSubmit({ title, description, date, endDate, time, location, imageUrl, extraImages, category, organizer, capacity, isOnline, meetingPlatform, meetingUrl, tags, tickets, status, recurrenceType, recurrenceEndDate, currency });
     } finally {
       setLoading(false);
     }
@@ -474,8 +477,32 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       </div>
 
       <div className="space-y-4">
+        <h2 className="text-xl font-bold">Currency & Tickets</h2>
+        <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <span className="text-lg font-bold text-primary">{SUPPORTED_CURRENCIES.find(c => c.code === currency)?.symbol ?? "$"}</span>
+            </div>
+            <div className="flex-1 space-y-1">
+              <Label htmlFor="currency" className="font-semibold">Event Currency</Label>
+              <p className="text-xs text-muted-foreground">Choose the currency for all ticket prices. We support major African currencies — pick the one that works best for your audience.</p>
+            </div>
+          </div>
+          <select
+            id="currency"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-medium"
+          >
+            {SUPPORTED_CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.symbol} — {c.name} ({c.code})
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">Tickets</h2>
+          <span className="text-sm text-muted-foreground">All ticket prices below are in <strong>{currency}</strong></span>
           <Button type="button" variant="outline" size="sm" onClick={addTicket} className="rounded-full">
             <Plus className="h-4 w-4 mr-1" /> Add Ticket
           </Button>
@@ -496,7 +523,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
                 <Input value={ticket.name} onChange={(e) => updateTicket(i, "name", e.target.value)} placeholder="e.g. General Admission" />
               </div>
               <div className="space-y-1">
-                <Label>Price ($)</Label>
+                <Label>Price ({SUPPORTED_CURRENCIES.find(c => c.code === currency)?.symbol ?? currency})</Label>
                 <Input type="number" step="0.01" value={ticket.price} onChange={(e) => updateTicket(i, "price", e.target.value)} />
               </div>
               <div className="space-y-1">

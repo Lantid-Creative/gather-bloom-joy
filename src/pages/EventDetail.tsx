@@ -325,7 +325,7 @@ const EventDetail = () => {
                 <div className="border rounded-xl p-5 space-y-4">
                   <h3 className="font-bold">Select tickets</h3>
                   {event.ticket_types.map((ticket) => (
-                    <TicketSelector key={ticket.id} ticket={ticket} eventId={event.id} eventTitle={event.title} />
+                    <TicketSelector key={ticket.id} ticket={ticket} eventId={event.id} eventTitle={event.title} currency={event.currency} />
                   ))}
                 </div>
               ) : (
