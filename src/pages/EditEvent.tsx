@@ -118,6 +118,7 @@ const EditEvent = () => {
         meeting_url: data.meetingUrl || "",
         tags: data.tags.split(",").map((t) => t.trim()).filter(Boolean),
         status: data.status || "published",
+        currency: data.currency || "USD",
         recurrence_type: data.recurrenceType || "none",
         recurrence_end_date: data.recurrenceType !== "none" && data.recurrenceEndDate ? new Date(data.recurrenceEndDate).toISOString() : null,
       })

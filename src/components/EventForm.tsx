@@ -477,14 +477,71 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
       </div>
 
       <div className="space-y-4">
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold">Currency & Tickets</h2>
+        <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <span className="text-lg font-bold text-primary">{SUPPORTED_CURRENCIES.find(c => c.code === currency)?.symbol ?? "$"}</span>
+            </div>
+            <div className="flex-1 space-y-1">
+              <Label htmlFor="currency" className="font-semibold">Event Currency</Label>
+              <p className="text-xs text-muted-foreground">Choose the currency for all ticket prices. We support major African currencies — pick the one that works best for your audience.</p>
+            </div>
+          </div>
+          <select
+            id="currency"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-medium"
+          >
+            {SUPPORTED_CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.symbol} — {c.name} ({c.code})
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">Tickets</h2>
+          <span className="text-sm text-muted-foreground">All ticket prices below are in <strong>{currency}</strong></span>
           <Button type="button" variant="outline" size="sm" onClick={addTicket} className="rounded-full">
             <Plus className="h-4 w-4 mr-1" /> Add Ticket
           </Button>
         </div>
         {tickets.map((ticket, i) => (
           <div key={i} className="border rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold">Ticket {i + 1}</span>
+              {tickets.length > 1 && (
+                <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeTicket(i)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label>Name</Label>
+                <Input value={ticket.name} onChange={(e) => updateTicket(i, "name", e.target.value)} placeholder="e.g. General Admission" />
+              </div>
+              <div className="space-y-1">
+                <Label>Price ({SUPPORTED_CURRENCIES.find(c => c.code === currency)?.symbol ?? currency})</Label>
+                <Input type="number" step="0.01" value={ticket.price} onChange={(e) => updateTicket(i, "price", e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <Label>Available</Label>
+                <Input type="number" value={ticket.available} onChange={(e) => updateTicket(i, "available", e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <Label>Max per order</Label>
+                <Input type="number" value={ticket.max_per_order} onChange={(e) => updateTicket(i, "max_per_order", e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label>Description</Label>
+              <Input value={ticket.description} onChange={(e) => updateTicket(i, "description", e.target.value)} placeholder="What's included with this ticket?" />
+            </div>
+          </div>
+        ))}
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold">Ticket {i + 1}</span>
               {tickets.length > 1 && (
