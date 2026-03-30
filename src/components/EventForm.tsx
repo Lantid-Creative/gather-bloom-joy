@@ -365,6 +365,7 @@ const EventForm = ({ initial, onSubmit, submitLabel, loadingLabel }: EventFormPr
         </div>
         <div className="space-y-2">
           <Label>Event Cover Image</Label>
+          <p className="text-xs text-muted-foreground">Use a high-quality landscape image. Recommended size: <strong>1920 × 1080px</strong> (16:9 ratio). Min 800px wide.</p>
           <input
             ref={fileInputRef}
             type="file"
