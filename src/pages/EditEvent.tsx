@@ -79,6 +79,7 @@ const EditEvent = () => {
     status: event.status ?? "published",
     recurrenceType: event.recurrence_type ?? "none",
     recurrenceEndDate: event.recurrence_end_date ? format(new Date(event.recurrence_end_date), "yyyy-MM-dd") : "",
+    currency: event.currency ?? "USD",
     tickets: event.ticket_types.length > 0
       ? event.ticket_types.map((t) => ({
           id: t.id,
