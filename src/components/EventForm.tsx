@@ -39,6 +39,7 @@ export interface EventFormData {
   status: string;
   recurrenceType: string;
   recurrenceEndDate: string;
+  currency: string;
 }
 
 const emptyTicket: TicketDraft = { name: "", price: "0", description: "", available: "100", max_per_order: "10" };
