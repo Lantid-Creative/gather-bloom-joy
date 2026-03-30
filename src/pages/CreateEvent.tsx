@@ -85,7 +85,7 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <QantidHeader />
       <div className="container max-w-2xl py-10">
         <Button variant="ghost" size="sm" className="-ml-2 mb-6" onClick={() => navigate(-1)}>
