@@ -88,7 +88,7 @@ const TicketSelector = ({ ticket, eventId, eventTitle, currency = "USD" }: Ticke
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="font-semibold">{ticket.name}</h4>
-            <span className="text-lg font-bold text-primary">${ticket.price}</span>
+            <span className="text-lg font-bold text-primary">{getCurrencySymbol(currency)}{ticket.price}</span>
             {soldOut && <Badge variant="destructive" className="text-xs">Sold Out</Badge>}
           </div>
           <p className="text-sm text-muted-foreground">{ticket.description}</p>
