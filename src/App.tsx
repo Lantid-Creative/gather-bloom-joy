@@ -124,6 +124,7 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/partners" element={<Partners />} />
+              <Route path="/find-partners" element={<ProtectedRoute><FindPartners /></ProtectedRoute>} />
               {/* Partner Dashboard */}
               <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>}>
                 <Route index element={<PartnerProfile />} />

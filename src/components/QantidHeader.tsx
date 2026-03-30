@@ -238,6 +238,9 @@ const QantidHeader = () => {
                     <Link to="/my-hires" className="flex items-center gap-3 text-sm font-medium py-3 px-4 rounded-lg hover:bg-accent active:bg-accent" onClick={() => setMobileOpen(false)}>
                       <Users className="h-5 w-5 text-muted-foreground" /> My Hires
                     </Link>
+                    <Link to="/find-partners" className="flex items-center gap-3 text-sm font-medium py-3 px-4 rounded-lg hover:bg-accent active:bg-accent" onClick={() => setMobileOpen(false)}>
+                      <Building2 className="h-5 w-5 text-muted-foreground" /> Find Partners
+                    </Link>
                     <Link to="/dashboard" className="flex items-center gap-3 text-sm font-medium py-3 px-4 rounded-lg hover:bg-accent active:bg-accent" onClick={() => setMobileOpen(false)}>
                       <LayoutDashboard className="h-5 w-5 text-muted-foreground" /> Dashboard
                     </Link>
