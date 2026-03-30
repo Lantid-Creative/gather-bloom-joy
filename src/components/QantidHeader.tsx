@@ -281,8 +281,6 @@ const QantidHeader = () => {
         </div>
       </nav>
 
-      {/* Bottom nav spacer - prevents content from being hidden behind the fixed bottom nav */}
-      <div className="lg:hidden h-14" />
     </>
   );
 };
