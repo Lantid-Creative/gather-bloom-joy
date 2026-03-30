@@ -153,6 +153,7 @@ const QantidHeader = () => {
                 <DropdownItem to="/my-events" icon={CalendarDays}>My Events</DropdownItem>
                 <DropdownItem to="/my-tickets" icon={Ticket}>My Tickets</DropdownItem>
                 <DropdownItem to="/my-hires" icon={Users}>My Hires</DropdownItem>
+                <DropdownItem to="/find-partners" icon={Building2}>Find Partners</DropdownItem>
                 <DropdownItem to="/dashboard" icon={LayoutDashboard}>Dashboard</DropdownItem>
                 <div className="border-t my-1" />
                 <DropdownItem icon={LogOut} onClick={handleSignOut}>Sign out</DropdownItem>
