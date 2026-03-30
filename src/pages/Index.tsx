@@ -166,7 +166,7 @@ const Index = () => {
       </section>
 
       {/* Category Icons */}
-      <div className="container">
+      <div id="events-section" className="container">
         <CategoryIcons
           onSelect={(cat) => setCategory(cat === category ? "" : cat)}
           active={category}
