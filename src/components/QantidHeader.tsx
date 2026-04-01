@@ -170,7 +170,7 @@ const QantidHeader = () => {
                 <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                 <input
                   type="text"
-                  placeholder="Your City"
+                  placeholder={detectingLocation ? "Detecting location…" : "Your City"}
                   value={cityText}
                   onChange={(e) => setCityText(e.target.value)}
                   onFocus={() => setCityFocused(true)}
