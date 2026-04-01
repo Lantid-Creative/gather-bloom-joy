@@ -8,6 +8,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTopButton from "@/components/BackToTopButton";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import CookieConsent from "@/components/CookieConsent";
 
 // Lazy-loaded page components
 const Index = lazy(() => import("./pages/Index"));
