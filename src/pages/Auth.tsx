@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Lock, User, ArrowRight, Ticket, MapPin, Music, Star } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Auth = () => {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
@@ -16,6 +17,7 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const [agreedTerms, setAgreedTerms] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -23,6 +25,12 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    if (mode === "signup" && !agreedTerms) {
+      toast({ title: "Please agree to the Terms of Service", variant: "destructive" });
+      setLoading(false);
+      return;
+    }
 
     try {
       if (mode === "forgot") {
@@ -40,8 +48,11 @@ const Auth = () => {
       } else {
         const { error } = await signUp(email, password, fullName);
         if (error) throw error;
-        toast({ title: "Account created! Welcome to Qantid 🎉" });
-        navigate("/");
+        toast({
+          title: "Check your email ✉️",
+          description: "We've sent a confirmation link. Please verify your email before signing in.",
+        });
+        setMode("login");
       }
     } catch (err: unknown) {
       toast({ title: "Error", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
@@ -215,6 +226,23 @@ const Auth = () => {
                       className="pl-10 h-12 rounded-xl border-border/50 bg-secondary/30 focus:bg-background transition-colors"
                     />
                   </div>
+                </div>
+              )}
+
+              {mode === "signup" && (
+                <div className="flex items-start gap-2 mt-2">
+                  <Checkbox
+                    id="terms"
+                    checked={agreedTerms}
+                    onCheckedChange={(v) => setAgreedTerms(v === true)}
+                    className="mt-0.5"
+                  />
+                  <label htmlFor="terms" className="text-xs text-muted-foreground leading-snug cursor-pointer">
+                    I agree to the{" "}
+                    <a href="/terms" target="_blank" className="text-primary underline">Terms of Service</a>{" "}
+                    and{" "}
+                    <a href="/privacy" target="_blank" className="text-primary underline">Privacy Policy</a>
+                  </label>
                 </div>
               )}
 

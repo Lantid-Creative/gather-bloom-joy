@@ -8,7 +8,7 @@ import BrowsingTabs from "@/components/BrowsingTabs";
 import QantidCard from "@/components/QantidCard";
 import DestinationCards from "@/components/DestinationCards";
 import { useEvents } from "@/hooks/useEvents";
-import { mockEvents } from "@/lib/mock-data";
+
 import FeaturesShowcase from "@/components/FeaturesShowcase";
 import SEOHead from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,13 +31,7 @@ const Index = () => {
   const [aiInterpretation, setAiInterpretation] = useState("");
   const { data: promotedAds } = usePromotedEvents("homepage");
 
-  const allEvents = useMemo(() => {
-    const db = dbEvents ?? [];
-    // Merge DB events with mock events, DB takes priority (no duplicates by title)
-    const dbTitles = new Set(db.map((e) => e.title.toLowerCase()));
-    const uniqueMocks = mockEvents.filter((m) => !dbTitles.has(m.title.toLowerCase()));
-    return [...db, ...uniqueMocks];
-  }, [dbEvents]);
+  const allEvents = useMemo(() => dbEvents ?? [], [dbEvents]);
 
   // Extract unique cities from events
   const cities = useMemo(() => {
