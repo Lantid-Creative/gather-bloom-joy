@@ -40,8 +40,11 @@ const Auth = () => {
       } else {
         const { error } = await signUp(email, password, fullName);
         if (error) throw error;
-        toast({ title: "Account created! Welcome to Qantid 🎉" });
-        navigate("/");
+        toast({
+          title: "Check your email ✉️",
+          description: "We've sent a confirmation link. Please verify your email before signing in.",
+        });
+        setMode("login");
       }
     } catch (err: unknown) {
       toast({ title: "Error", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
