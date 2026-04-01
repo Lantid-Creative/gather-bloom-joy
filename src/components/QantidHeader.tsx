@@ -1,12 +1,11 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Search, MapPin, Menu, X, User, LogOut, ShoppingCart, Heart, ChevronDown, Ticket, CalendarDays, LayoutDashboard, Users, Megaphone, HelpCircle, Handshake, Home, PlusCircle, Building2 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCartStore } from "@/lib/cart-store";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
-import { useLocation } from "react-router-dom";
-
+import { useEvents } from "@/hooks/useEvents";
 const DropdownMenu = ({ label, children }: { label: string; children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -53,6 +52,23 @@ const QantidHeader = () => {
   const cityParam = searchParams.get("city") ?? "";
   const [searchText, setSearchText] = useState(qParam);
   const [cityText, setCityText] = useState(cityParam);
+  const [cityFocused, setCityFocused] = useState(false);
+  const { data: dbEvents } = useEvents();
+  const cityRef = useRef<HTMLDivElement>(null);
+
+  const cities = useMemo(() => {
+    const citySet = new Set<string>();
+    (dbEvents ?? []).forEach((e) => {
+      const parts = e.location.split(",").map((p) => p.trim());
+      if (parts.length >= 2) citySet.add(parts[parts.length - 2]);
+    });
+    return Array.from(citySet).sort();
+  }, [dbEvents]);
+
+  const filteredCities = useMemo(() => {
+    if (!cityText.trim()) return cities;
+    return cities.filter((c) => c.toLowerCase().includes(cityText.toLowerCase()));
+  }, [cities, cityText]);
 
   useEffect(() => { setSearchText(qParam); }, [qParam]);
   useEffect(() => { setCityText(cityParam); }, [cityParam]);
@@ -113,9 +129,32 @@ const QantidHeader = () => {
                 <Search className="h-4 w-4 text-muted-foreground shrink-0" />
                 <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
               </div>
-              <div className="flex items-center flex-1 px-3 gap-2">
+              <div ref={cityRef} className="relative flex items-center flex-1 px-3 gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-                <input type="text" placeholder="Your City" value={cityText} onChange={(e) => setCityText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Your City"
+                  value={cityText}
+                  onChange={(e) => setCityText(e.target.value)}
+                  onFocus={() => setCityFocused(true)}
+                  onBlur={() => setTimeout(() => setCityFocused(false), 150)}
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                />
+                {cityFocused && filteredCities.length > 0 && (
+                  <div className="absolute top-full left-0 mt-2 w-full bg-card border rounded-xl shadow-lg z-50 py-1 max-h-[250px] overflow-y-auto">
+                    {filteredCities.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { setCityText(c); setCityFocused(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${cityText === c ? "font-bold text-primary" : ""}`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <button type="submit" className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
                 <Search className="h-4 w-4" />
