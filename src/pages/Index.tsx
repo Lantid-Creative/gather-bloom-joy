@@ -8,7 +8,7 @@ import BrowsingTabs from "@/components/BrowsingTabs";
 import QantidCard from "@/components/QantidCard";
 import DestinationCards from "@/components/DestinationCards";
 import { useEvents } from "@/hooks/useEvents";
-import { mockEvents } from "@/lib/mock-data";
+
 import FeaturesShowcase from "@/components/FeaturesShowcase";
 import SEOHead from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
