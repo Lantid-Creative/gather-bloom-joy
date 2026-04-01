@@ -52,6 +52,23 @@ const QantidHeader = () => {
   const cityParam = searchParams.get("city") ?? "";
   const [searchText, setSearchText] = useState(qParam);
   const [cityText, setCityText] = useState(cityParam);
+  const [cityFocused, setCityFocused] = useState(false);
+  const { data: dbEvents } = useEvents();
+  const cityRef = useRef<HTMLDivElement>(null);
+
+  const cities = useMemo(() => {
+    const citySet = new Set<string>();
+    (dbEvents ?? []).forEach((e) => {
+      const parts = e.location.split(",").map((p) => p.trim());
+      if (parts.length >= 2) citySet.add(parts[parts.length - 2]);
+    });
+    return Array.from(citySet).sort();
+  }, [dbEvents]);
+
+  const filteredCities = useMemo(() => {
+    if (!cityText.trim()) return cities;
+    return cities.filter((c) => c.toLowerCase().includes(cityText.toLowerCase()));
+  }, [cities, cityText]);
 
   useEffect(() => { setSearchText(qParam); }, [qParam]);
   useEffect(() => { setCityText(cityParam); }, [cityParam]);
