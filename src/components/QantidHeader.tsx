@@ -1,18 +1,11 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Search, MapPin, Menu, X, User, LogOut, ShoppingCart, Heart, ChevronDown, Ticket, CalendarDays, LayoutDashboard, Users, Megaphone, HelpCircle, Handshake, Home, PlusCircle, Building2 } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCartStore } from "@/lib/cart-store";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
-import { useLocation } from "react-router-dom";
 import { useEvents } from "@/hooks/useEvents";
-import { useAuth } from "@/hooks/useAuth";
-import { useCartStore } from "@/lib/cart-store";
-import ThemeToggle from "@/components/ThemeToggle";
-import NotificationBell from "@/components/NotificationBell";
-import { useLocation } from "react-router-dom";
-
 const DropdownMenu = ({ label, children }: { label: string; children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
