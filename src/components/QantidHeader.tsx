@@ -129,9 +129,32 @@ const QantidHeader = () => {
                 <Search className="h-4 w-4 text-muted-foreground shrink-0" />
                 <input type="text" placeholder="Search events" value={searchText} onChange={(e) => setSearchText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
               </div>
-              <div className="flex items-center flex-1 px-3 gap-2">
+              <div ref={cityRef} className="relative flex items-center flex-1 px-3 gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-                <input type="text" placeholder="Your City" value={cityText} onChange={(e) => setCityText(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Your City"
+                  value={cityText}
+                  onChange={(e) => setCityText(e.target.value)}
+                  onFocus={() => setCityFocused(true)}
+                  onBlur={() => setTimeout(() => setCityFocused(false), 150)}
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                />
+                {cityFocused && filteredCities.length > 0 && (
+                  <div className="absolute top-full left-0 mt-2 w-full bg-card border rounded-xl shadow-lg z-50 py-1 max-h-[250px] overflow-y-auto">
+                    {filteredCities.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { setCityText(c); setCityFocused(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${cityText === c ? "font-bold text-primary" : ""}`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <button type="submit" className="h-10 w-10 flex items-center justify-center bg-primary text-primary-foreground rounded-full shrink-0 mr-0.5 hover:bg-primary/90 transition-colors">
                 <Search className="h-4 w-4" />
