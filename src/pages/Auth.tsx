@@ -229,6 +229,23 @@ const Auth = () => {
                 </div>
               )}
 
+              {mode === "signup" && (
+                <div className="flex items-start gap-2 mt-2">
+                  <Checkbox
+                    id="terms"
+                    checked={agreedTerms}
+                    onCheckedChange={(v) => setAgreedTerms(v === true)}
+                    className="mt-0.5"
+                  />
+                  <label htmlFor="terms" className="text-xs text-muted-foreground leading-snug cursor-pointer">
+                    I agree to the{" "}
+                    <a href="/terms" target="_blank" className="text-primary underline">Terms of Service</a>{" "}
+                    and{" "}
+                    <a href="/privacy" target="_blank" className="text-primary underline">Privacy Policy</a>
+                  </label>
+                </div>
+              )}
+
               <Button
                 variant="hero"
                 size="lg"
