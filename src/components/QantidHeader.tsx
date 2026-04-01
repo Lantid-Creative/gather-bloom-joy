@@ -53,8 +53,45 @@ const QantidHeader = () => {
   const [searchText, setSearchText] = useState(qParam);
   const [cityText, setCityText] = useState(cityParam);
   const [cityFocused, setCityFocused] = useState(false);
+  const [detectingLocation, setDetectingLocation] = useState(false);
   const { data: dbEvents } = useEvents();
   const cityRef = useRef<HTMLDivElement>(null);
+
+  // Auto-detect user location on mount
+  useEffect(() => {
+    if (cityParam) return; // don't override if already set via URL
+    if (!navigator.geolocation) return;
+
+    setDetectingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { loadGoogleMaps } = await import("@/components/GoogleMap");
+          await loadGoogleMaps();
+          if (!window.google?.maps) return;
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode(
+            { location: { lat: pos.coords.latitude, lng: pos.coords.longitude } },
+            (results, status) => {
+              if (status === "OK" && results?.[0]) {
+                const cityComponent = results[0].address_components.find((c) =>
+                  c.types.includes("locality") || c.types.includes("administrative_area_level_1")
+                );
+                if (cityComponent) {
+                  setCityText(cityComponent.long_name);
+                }
+              }
+              setDetectingLocation(false);
+            }
+          );
+        } catch {
+          setDetectingLocation(false);
+        }
+      },
+      () => setDetectingLocation(false),
+      { timeout: 5000 }
+    );
+  }, []);
 
   const cities = useMemo(() => {
     const citySet = new Set<string>();
@@ -133,7 +170,7 @@ const QantidHeader = () => {
                 <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                 <input
                   type="text"
-                  placeholder="Your City"
+                  placeholder={detectingLocation ? "Detecting location…" : "Your City"}
                   value={cityText}
                   onChange={(e) => setCityText(e.target.value)}
                   onFocus={() => setCityFocused(true)}
