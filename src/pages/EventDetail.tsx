@@ -42,7 +42,7 @@ const EventDetail = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [galleryIndex, setGalleryIndex] = useState(0);
-  const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
+  const event = dbEvent ?? null;
 
   // Track referral link click
   useEffect(() => {
