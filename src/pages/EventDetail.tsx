@@ -16,7 +16,7 @@ import EventLineupDisplay from "@/components/EventLineupDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEvent } from "@/hooks/useEvents";
-import { mockEvents } from "@/lib/mock-data";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,7 +42,7 @@ const EventDetail = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [galleryIndex, setGalleryIndex] = useState(0);
-  const event = dbEvent ?? mockEvents.find((e) => e.id === id) ?? null;
+  const event = dbEvent ?? null;
 
   // Track referral link click
   useEffect(() => {
