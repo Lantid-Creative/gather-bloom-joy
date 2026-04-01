@@ -26,6 +26,12 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
+    if (mode === "signup" && !agreedTerms) {
+      toast({ title: "Please agree to the Terms of Service", variant: "destructive" });
+      setLoading(false);
+      return;
+    }
+
     try {
       if (mode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
