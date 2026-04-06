@@ -9,6 +9,15 @@ const corsHeaders = {
 
 const PAYSTACK_BASE = "https://api.paystack.co";
 
+// Map currency codes to Paystack recipient types and minor-unit multipliers
+const CURRENCY_CONFIG: Record<string, { type: string; multiplier: number }> = {
+  NGN: { type: "nuban", multiplier: 100 },       // kobo
+  GHS: { type: "ghipss", multiplier: 100 },      // pesewas
+  ZAR: { type: "basa", multiplier: 100 },         // cents
+  USD: { type: "nuban", multiplier: 100 },        // cents (Paystack USD payouts limited)
+  KES: { type: "mobile_money", multiplier: 100 }, // cents
+};
+
 async function paystackRequest(path: string, method: string, body?: any) {
   const key = Deno.env.get("PAYSTACK_SECRET_KEY");
   if (!key) throw new Error("PAYSTACK_SECRET_KEY is not configured");
@@ -28,27 +37,36 @@ async function paystackRequest(path: string, method: string, body?: any) {
   return data;
 }
 
-async function createTransferRecipient(bankCode: string, accountNumber: string, accountName: string) {
+async function createTransferRecipient(bankCode: string, accountNumber: string, accountName: string, currency: string) {
+  const config = CURRENCY_CONFIG[currency] || CURRENCY_CONFIG.NGN;
   const data = await paystackRequest("/transferrecipient", "POST", {
-    type: "nuban",
+    type: config.type,
     name: accountName,
     account_number: accountNumber,
     bank_code: bankCode,
-    currency: "NGN",
+    currency,
   });
   return data.data.recipient_code;
 }
 
-async function initiateTransfer(recipientCode: string, amountInKobo: number, reason: string, reference: string) {
+async function initiateTransfer(recipientCode: string, amountMinor: number, reason: string, reference: string) {
   const data = await paystackRequest("/transfer", "POST", {
     source: "balance",
-    amount: amountInKobo,
+    amount: amountMinor,
     recipient: recipientCode,
     reason,
     reference,
   });
   return data.data;
 }
+
+// Currency symbol lookup (server-side)
+const SYMBOLS: Record<string, string> = {
+  NGN: "₦", GHS: "GH₵", ZAR: "R", USD: "$", KES: "KSh",
+  EGP: "E£", TZS: "TSh", UGX: "USh", ETB: "Br", GBP: "£", EUR: "€",
+  XOF: "CFA", XAF: "FCFA", MAD: "MAD", RWF: "FRw",
+};
+function sym(code: string) { return SYMBOLS[code] || code; }
 
 async function sendWithdrawalEmail(
   supabase: any,
@@ -108,6 +126,8 @@ serve(async (req) => {
         throw new Error("Please add your bank details before requesting a withdrawal");
       }
 
+      const walletCurrency = wallet.currency || "NGN";
+
       const { data: withdrawal, error: wErr } = await supabaseAdmin
         .from("withdrawal_requests")
         .insert({
@@ -118,6 +138,7 @@ serve(async (req) => {
           account_number: wallet.account_number,
           account_name: wallet.account_name,
           bank_code: wallet.bank_code,
+          currency: walletCurrency,
         })
         .select()
         .single();
@@ -135,7 +156,7 @@ serve(async (req) => {
       await supabaseAdmin.from("notifications").insert({
         user_id: authData.user.id,
         title: "Withdrawal requested 💸",
-        message: `Your withdrawal of ₦${amount.toLocaleString()} is being reviewed.`,
+        message: `Your withdrawal of ${sym(walletCurrency)}${amount.toLocaleString()} is being reviewed.`,
         type: "wallet",
         link: "/dashboard/wallet",
       });
@@ -166,19 +187,23 @@ serve(async (req) => {
       if (!withdrawal) throw new Error("Withdrawal not found");
       if (withdrawal.status !== "pending") throw new Error("Withdrawal already processed");
 
+      const wdCurrency = withdrawal.currency || "NGN";
+      const config = CURRENCY_CONFIG[wdCurrency] || CURRENCY_CONFIG.NGN;
+
       // Create Paystack transfer recipient and initiate transfer
       const recipientCode = await createTransferRecipient(
         withdrawal.bank_code,
         withdrawal.account_number,
-        withdrawal.account_name
+        withdrawal.account_name,
+        wdCurrency
       );
 
-      const amountInKobo = Math.round(withdrawal.amount * 100);
+      const amountMinor = Math.round(withdrawal.amount * config.multiplier);
       const reference = `wd-${withdrawalId.slice(0, 8)}-${Date.now()}`;
 
       const transfer = await initiateTransfer(
         recipientCode,
-        amountInKobo,
+        amountMinor,
         `Qantid payout #${withdrawalId.slice(0, 8)}`,
         reference
       );
@@ -215,7 +240,7 @@ serve(async (req) => {
       await supabaseAdmin.from("notifications").insert({
         user_id: withdrawal.user_id,
         title: "Withdrawal sent! 🎉",
-        message: `₦${withdrawal.amount.toLocaleString()} has been sent to your bank account (${withdrawal.bank_name}).`,
+        message: `${sym(wdCurrency)}${withdrawal.amount.toLocaleString()} has been sent to your bank account (${withdrawal.bank_name}).`,
         type: "wallet",
         link: "/dashboard/wallet",
       });
@@ -230,7 +255,7 @@ serve(async (req) => {
           organizerEmail,
           `withdrawal-processed-${withdrawalId}`,
           {
-            amount: `₦${withdrawal.amount.toLocaleString()}`,
+            amount: `${sym(wdCurrency)}${withdrawal.amount.toLocaleString()}`,
             bankName: withdrawal.bank_name,
             accountName: withdrawal.account_name,
           }
@@ -263,6 +288,8 @@ serve(async (req) => {
       if (!withdrawal) throw new Error("Withdrawal not found");
       if (withdrawal.status !== "pending") throw new Error("Withdrawal already processed");
 
+      const wdCurrency = withdrawal.currency || "NGN";
+
       await supabaseAdmin
         .from("withdrawal_requests")
         .update({
@@ -293,7 +320,7 @@ serve(async (req) => {
       await supabaseAdmin.from("notifications").insert({
         user_id: withdrawal.user_id,
         title: "Withdrawal rejected ❌",
-        message: `Your withdrawal of ₦${withdrawal.amount.toLocaleString()} was rejected. ${adminNote || "Contact support for details."}`,
+        message: `Your withdrawal of ${sym(wdCurrency)}${withdrawal.amount.toLocaleString()} was rejected. ${adminNote || "Contact support for details."}`,
         type: "wallet",
         link: "/dashboard/wallet",
       });
@@ -307,7 +334,7 @@ serve(async (req) => {
           organizerEmail,
           `withdrawal-rejected-${withdrawalId}`,
           {
-            amount: `₦${withdrawal.amount.toLocaleString()}`,
+            amount: `${sym(wdCurrency)}${withdrawal.amount.toLocaleString()}`,
             adminNote: adminNote || undefined,
           }
         );

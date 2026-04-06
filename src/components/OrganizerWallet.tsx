@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Wallet, ArrowDownToLine, Clock, CheckCircle2, AlertCircle, Banknote } from "lucide-react";
 import { format } from "date-fns";
+import { getCurrencySymbol } from "@/lib/currencies";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -56,6 +57,9 @@ const OrganizerWallet = () => {
   };
 
   useEffect(() => { fetchData(); }, [user]);
+
+  const currency = wallet?.currency || "NGN";
+  const sym = getCurrencySymbol(currency);
 
   const handleUpdateBank = async () => {
     if (!wallet) return;
@@ -105,25 +109,25 @@ const OrganizerWallet = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold flex items-center gap-2"><Wallet className="h-5 w-5" /> Wallet</h2>
+      <h2 className="text-xl font-bold flex items-center gap-2"><Wallet className="h-5 w-5" /> Wallet <Badge variant="outline" className="text-xs font-normal">{currency}</Badge></h2>
 
       {/* Balance cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4 space-y-1">
           <p className="text-sm text-muted-foreground flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> Available</p>
-          <p className="text-2xl font-bold text-green-600">₦{wallet.available_balance.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-green-600">{sym}{wallet.available_balance.toLocaleString()}</p>
         </Card>
         <Card className="p-4 space-y-1">
           <p className="text-sm text-muted-foreground flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Pending (7-day hold)</p>
-          <p className="text-2xl font-bold text-yellow-600">₦{wallet.pending_balance.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-yellow-600">{sym}{wallet.pending_balance.toLocaleString()}</p>
         </Card>
         <Card className="p-4 space-y-1">
           <p className="text-sm text-muted-foreground">Total Earned</p>
-          <p className="text-2xl font-bold">₦{wallet.total_earned.toLocaleString()}</p>
+          <p className="text-2xl font-bold">{sym}{wallet.total_earned.toLocaleString()}</p>
         </Card>
         <Card className="p-4 space-y-1">
           <p className="text-sm text-muted-foreground">Total Withdrawn</p>
-          <p className="text-2xl font-bold">₦{wallet.total_withdrawn.toLocaleString()}</p>
+          <p className="text-2xl font-bold">{sym}{wallet.total_withdrawn.toLocaleString()}</p>
         </Card>
       </div>
 
@@ -140,9 +144,9 @@ const OrganizerWallet = () => {
         <Card className="p-5 space-y-4">
           <h3 className="font-semibold flex items-center gap-2"><ArrowDownToLine className="h-4 w-4" /> Request Withdrawal</h3>
           <div className="space-y-2">
-            <Label>Amount (₦)</Label>
+            <Label>Amount ({sym})</Label>
             <Input type="number" min="1" step="0.01" max={wallet.available_balance} value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="0.00" />
-            <p className="text-xs text-muted-foreground">Max: ₦{wallet.available_balance.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">Max: {sym}{wallet.available_balance.toLocaleString()}</p>
           </div>
           <Button onClick={handleWithdraw} disabled={submitting || !withdrawAmount} className="w-full">
             {submitting ? "Submitting…" : "Request Withdrawal"}
@@ -184,16 +188,19 @@ const OrganizerWallet = () => {
         <Card className="p-5 space-y-3">
           <h3 className="font-semibold">Withdrawal History</h3>
           <div className="space-y-2">
-            {withdrawals.map((w) => (
-              <div key={w.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                <div>
-                  <p className="font-medium">₦{w.amount.toLocaleString()}</p>
-                  <p className="text-xs text-muted-foreground">{format(new Date(w.created_at), "MMM d, yyyy 'at' h:mm a")}</p>
-                  {w.admin_note && <p className="text-xs text-muted-foreground mt-1">Note: {w.admin_note}</p>}
+            {withdrawals.map((w) => {
+              const wSym = getCurrencySymbol(w.currency || currency);
+              return (
+                <div key={w.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                  <div>
+                    <p className="font-medium">{wSym}{w.amount.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground">{format(new Date(w.created_at), "MMM d, yyyy 'at' h:mm a")}</p>
+                    {w.admin_note && <p className="text-xs text-muted-foreground mt-1">Note: {w.admin_note}</p>}
+                  </div>
+                  <Badge className={statusColors[w.status] || ""}>{w.status}</Badge>
                 </div>
-                <Badge className={statusColors[w.status] || ""}>{w.status}</Badge>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Card>
       )}
@@ -205,20 +212,23 @@ const OrganizerWallet = () => {
           <p className="text-sm text-muted-foreground">No transactions yet.</p>
         ) : (
           <div className="space-y-2">
-            {transactions.map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                <div>
-                  <p className="text-sm font-medium">{tx.description}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {format(new Date(tx.created_at), "MMM d, yyyy")} · Fee: ₦{tx.fee_amount.toLocaleString()}
-                  </p>
+            {transactions.map((tx) => {
+              const txSym = getCurrencySymbol(tx.currency || currency);
+              return (
+                <div key={tx.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                  <div>
+                    <p className="text-sm font-medium">{tx.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {format(new Date(tx.created_at), "MMM d, yyyy")} · Fee: {txSym}{tx.fee_amount.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium text-green-600">+{txSym}{tx.net_amount.toLocaleString()}</p>
+                    <Badge className={statusColors[tx.status] || ""} variant="outline">{tx.status}</Badge>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium text-green-600">+₦{tx.net_amount.toLocaleString()}</p>
-                  <Badge className={statusColors[tx.status] || ""} variant="outline">{tx.status}</Badge>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </Card>
