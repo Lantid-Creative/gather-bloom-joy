@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Calendar, ShoppingCart, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Users, Calendar, ShoppingCart, ArrowLeft, Wallet } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, Link } from "react-router-dom";
 import {
@@ -18,6 +18,7 @@ const items = [
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Events", url: "/admin/events", icon: Calendar },
   { title: "Orders", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Withdrawals", url: "/admin/withdrawals", icon: Wallet },
 ];
 
 export function AdminSidebar() {

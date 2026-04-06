@@ -8,6 +8,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const PLATFORM_FEE_PERCENT = 10; // 10% inclusive fee
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -95,6 +97,94 @@ serve(async (req) => {
       );
 
     if (itemsError) throw itemsError;
+
+    // === CREDIT ORGANIZER WALLETS ===
+    // Group items by event to credit each organizer
+    const eventIds = [...new Set(items.map((i: any) => i.eventId))];
+    
+    for (const eventId of eventIds) {
+      // Get event owner
+      const { data: event } = await supabaseAdmin
+        .from("events")
+        .select("user_id")
+        .eq("id", eventId)
+        .single();
+
+      if (!event) continue;
+
+      const organizerId = event.user_id;
+
+      // Calculate revenue for this event from this order
+      const eventItems = items.filter((i: any) => i.eventId === eventId);
+      const eventRevenue = eventItems.reduce(
+        (sum: number, i: any) => sum + i.price * i.quantity,
+        0
+      );
+
+      // Fee calculation:
+      // Total ticket price = eventRevenue
+      // Platform fee (10% inclusive) = eventRevenue * 0.10
+      // Organizer gets 90%
+      const platformFee = eventRevenue * (PLATFORM_FEE_PERCENT / 100);
+      const organizerNet = eventRevenue - platformFee;
+
+      // Ensure organizer wallet exists
+      const { data: existingWallet } = await supabaseAdmin
+        .from("organizer_wallets")
+        .select("id")
+        .eq("user_id", organizerId)
+        .single();
+
+      let walletId: string;
+
+      if (existingWallet) {
+        walletId = existingWallet.id;
+      } else {
+        const { data: newWallet, error: walletError } = await supabaseAdmin
+          .from("organizer_wallets")
+          .insert({ user_id: organizerId })
+          .select("id")
+          .single();
+        if (walletError) {
+          console.error("Failed to create wallet:", walletError);
+          continue;
+        }
+        walletId = newWallet.id;
+      }
+
+      // 7 days from now
+      const availableAt = new Date();
+      availableAt.setDate(availableAt.getDate() + 7);
+
+      // Create wallet transaction (pending for 7 days)
+      await supabaseAdmin.from("wallet_transactions").insert({
+        wallet_id: walletId,
+        user_id: organizerId,
+        type: "credit",
+        amount: eventRevenue,
+        fee_amount: platformFee,
+        net_amount: organizerNet,
+        description: `Sale: ${eventItems.map((i: any) => `${i.quantity}x ${i.ticketName}`).join(", ")}`,
+        order_id: order.id,
+        available_at: availableAt.toISOString(),
+        status: "pending",
+      });
+
+      // Update wallet pending balance and total earned
+      await supabaseAdmin
+        .from("organizer_wallets")
+        .update({
+          pending_balance: (existingWallet as any)?.pending_balance
+            ? undefined
+            : undefined, // Let the DB function handle recalc
+          total_earned: undefined,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", walletId);
+
+      // Recalculate balances via raw update
+      await supabaseAdmin.rpc("release_pending_funds");
+    }
 
     // Create notification
     await supabaseAdmin.from("notifications").insert({
