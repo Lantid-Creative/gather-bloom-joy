@@ -45,6 +45,35 @@ const DashboardOverview = () => {
         <StatCard icon={TrendingUp} label="Total Orders" value={totalOrders.toString()} />
         <StatCard icon={Users} label="Unique Attendees" value={uniqueAttendees.toString()} />
       </div>
+
+      {wallet && (
+        <Link to="/dashboard/wallet" className="block mb-6">
+          <div className="rounded-xl border bg-gradient-to-r from-primary/10 to-primary/5 p-5 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Available Balance</p>
+                  <p className="text-2xl font-bold">${wallet.available_balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6">
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs text-muted-foreground">Pending</p>
+                  <p className="text-sm font-semibold">${wallet.pending_balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                </div>
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs text-muted-foreground">Total Earned</p>
+                  <p className="text-sm font-semibold">${wallet.total_earned.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground" />
+              </div>
+            </div>
+          </div>
+        </Link>
+      )
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <StatCard icon={Activity} label="Avg Order Value" value={totalOrders > 0 ? `$${(totalRevenue / totalOrders).toFixed(2)}` : "$0"} />
         <StatCard icon={CalendarDays} label="Active Events" value={String(events?.filter(e => new Date(e.date) >= new Date()).length ?? 0)} sub={`${events?.filter(e => new Date(e.date) < new Date()).length ?? 0} past`} />
