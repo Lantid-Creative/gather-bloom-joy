@@ -1,15 +1,16 @@
 ---
 name: Organizer wallet & payout system
-description: 10% inclusive platform fee, 7-day hold, Stripe Connect auto-payout on admin approval
+description: 10% inclusive platform fee, 7-day hold, Paystack auto-payout on admin approval — no organizer signup needed
 type: feature
 ---
-- Platform fee: 10% inclusive (covers Stripe 2.9%+30¢ + Qantid margin ~6.8%)
+- Platform fee: 10% inclusive (covers payment processing + Qantid margin)
 - Organizer receives 90% of ticket price
 - Funds held 7 days after purchase before becoming available
-- **Stripe Connect**: organizers onboard as Express connected accounts
-- Organizer requests withdrawal → admin approves → Stripe Transfer auto-sends funds
-- No manual bank transfers needed; Stripe handles disbursement
-- Tables: organizer_wallets (has stripe_account_id, stripe_onboarding_complete), wallet_transactions, withdrawal_requests
-- Edge functions: process-withdrawal, stripe-connect (onboard/check-status/dashboard)
+- **Paystack Transfers**: organizers just add Nigerian bank details (bank name, account number, bank code)
+- Admin approves withdrawal → Paystack creates transfer recipient + initiates transfer automatically
+- No organizer signup or onboarding needed — just bank details
+- Tables: organizer_wallets, wallet_transactions, withdrawal_requests
+- Edge function: process-withdrawal (handles request/approve/reject with Paystack auto-payout)
 - verify-payment credits organizer wallet automatically on confirmed orders
 - Dashboard route: /dashboard/wallet
+- Currency: NGN (₦)

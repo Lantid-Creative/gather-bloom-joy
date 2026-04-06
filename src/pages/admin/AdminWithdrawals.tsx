@@ -44,7 +44,7 @@ const AdminWithdrawals = () => {
       return;
     }
     toast.success(action === "approve"
-      ? "Withdrawal approved & payout sent via Stripe!"
+      ? "Withdrawal approved — funds sent via Paystack!"
       : "Withdrawal rejected"
     );
     fetchData();
@@ -56,7 +56,7 @@ const AdminWithdrawals = () => {
     <div className="space-y-4">
       <div>
         <h2 className="text-xl font-bold">Withdrawal Requests</h2>
-        <p className="text-sm text-muted-foreground">Approving a request automatically sends funds to the organizer via Stripe Connect.</p>
+        <p className="text-sm text-muted-foreground">Approving a request automatically sends funds to the organizer's bank account via Paystack.</p>
       </div>
       {withdrawals.length === 0 ? (
         <Card className="p-6 text-center text-muted-foreground">No withdrawal requests yet.</Card>
@@ -66,14 +66,15 @@ const AdminWithdrawals = () => {
             <Card key={w.id} className="p-4 space-y-3">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-bold text-lg">${w.amount.toFixed(2)}</p>
+                  <p className="font-bold text-lg">₦{w.amount.toLocaleString()}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(w.created_at), "MMM d, yyyy 'at' h:mm a")}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">User: {w.user_id.slice(0, 8)}</p>
-                  {w.account_number && w.account_number.startsWith("acct_") && (
-                    <p className="text-xs text-muted-foreground">Stripe: {w.account_number}</p>
-                  )}
+                  <p className="text-sm mt-1">
+                    <span className="text-muted-foreground">Bank:</span> {w.bank_name} · {w.account_name} · ****{w.account_number?.slice(-4)}
+                  </p>
+                  {w.bank_code && <p className="text-xs text-muted-foreground">Bank Code: {w.bank_code}</p>}
+                  <p className="text-xs text-muted-foreground">User: {w.user_id.slice(0, 8)}</p>
                 </div>
                 <Badge className={statusColors[w.status] || ""}>{w.status}</Badge>
               </div>
