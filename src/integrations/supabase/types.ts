@@ -1109,6 +1109,48 @@ export type Database = {
         }
         Relationships: []
       }
+      organizer_wallets: {
+        Row: {
+          account_name: string
+          account_number: string
+          available_balance: number
+          bank_code: string
+          bank_name: string
+          id: string
+          pending_balance: number
+          total_earned: number
+          total_withdrawn: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_name?: string
+          account_number?: string
+          available_balance?: number
+          bank_code?: string
+          bank_name?: string
+          id?: string
+          pending_balance?: number
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          available_balance?: number
+          bank_code?: string
+          bank_name?: string
+          id?: string
+          pending_balance?: number
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       partner_profiles: {
         Row: {
           company_logo_url: string | null
@@ -1738,6 +1780,122 @@ export type Database = {
           },
         ]
       }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          available_at: string
+          created_at: string
+          description: string
+          fee_amount: number
+          id: string
+          net_amount: number
+          order_id: string | null
+          status: string
+          type: string
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          amount?: number
+          available_at?: string
+          created_at?: string
+          description?: string
+          fee_amount?: number
+          id?: string
+          net_amount?: number
+          order_id?: string | null
+          status?: string
+          type?: string
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          available_at?: string
+          created_at?: string
+          description?: string
+          fee_amount?: number
+          id?: string
+          net_amount?: number
+          order_id?: string | null
+          status?: string
+          type?: string
+          user_id?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "organizer_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      withdrawal_requests: {
+        Row: {
+          account_name: string
+          account_number: string
+          admin_note: string
+          amount: number
+          bank_code: string
+          bank_name: string
+          created_at: string
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          account_name?: string
+          account_number?: string
+          admin_note?: string
+          amount: number
+          bank_code?: string
+          bank_name?: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          admin_note?: string
+          amount?: number
+          bank_code?: string
+          bank_name?: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          user_id?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "withdrawal_requests_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "organizer_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1790,6 +1948,7 @@ export type Database = {
       }
       record_ad_click: { Args: { p_ad_id: string }; Returns: undefined }
       record_ad_impression: { Args: { p_ad_id: string }; Returns: undefined }
+      release_pending_funds: { Args: never; Returns: undefined }
       track_link_click: {
         Args: { p_code: string; p_event_id: string }
         Returns: undefined
