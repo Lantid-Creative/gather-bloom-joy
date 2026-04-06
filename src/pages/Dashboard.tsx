@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, Calendar, Sparkles, Megaphone, Tag, LinkIcon, Download } from "lucide-react";
+import { LayoutDashboard, Calendar, Sparkles, Megaphone, Tag, LinkIcon, Download, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -13,6 +13,7 @@ const sidebarItems = [
   { id: "promo-copy", label: "AI Promo Copy", icon: Megaphone, path: "/dashboard/promo-copy" },
   { id: "promo-codes", label: "Promo Codes", icon: Tag, path: "/dashboard/promo-codes" },
   { id: "tracking", label: "Tracking Links", icon: LinkIcon, path: "/dashboard/tracking" },
+  { id: "wallet", label: "Wallet", icon: Wallet, path: "/dashboard/wallet" },
 ];
 
 const Dashboard = () => {
