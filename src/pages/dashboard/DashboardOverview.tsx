@@ -1,7 +1,11 @@
-import { DollarSign, Ticket, Users, TrendingUp, Activity, CalendarDays, Percent } from "lucide-react";
+import { DollarSign, Ticket, Users, TrendingUp, Activity, CalendarDays, Percent, Wallet, ArrowRight } from "lucide-react";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { format, subDays, eachDayOfInterval, startOfDay, parseISO } from "date-fns";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Link } from "react-router-dom";
 
 const StatCard = ({ icon: Icon, label, value, sub }: { icon: React.ElementType; label: string; value: string; sub?: string }) => (
   <div className="rounded-xl border bg-card p-5 space-y-1">
@@ -13,6 +17,20 @@ const StatCard = ({ icon: Icon, label, value, sub }: { icon: React.ElementType; 
 
 const DashboardOverview = () => {
   const { events, orderItems, totalRevenue, totalTickets, totalOrders, uniqueAttendees, eventStats } = useDashboardData();
+  const { user } = useAuth();
+
+  const { data: wallet } = useQuery({
+    queryKey: ["wallet-summary", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("organizer_wallets")
+        .select("available_balance, pending_balance, total_earned, total_withdrawn")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
 
   const chartData = eventStats.filter((s) => s.revenue > 0 || s.tickets > 0).slice(0, 8).map((s) => ({
     name: s.event.title.length > 20 ? s.event.title.slice(0, 18) + "…" : s.event.title, revenue: s.revenue, tickets: s.tickets,
