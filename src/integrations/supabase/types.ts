@@ -1118,6 +1118,8 @@ export type Database = {
           bank_name: string
           id: string
           pending_balance: number
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean | null
           total_earned: number
           total_withdrawn: number
           updated_at: string
@@ -1131,6 +1133,8 @@ export type Database = {
           bank_name?: string
           id?: string
           pending_balance?: number
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           total_earned?: number
           total_withdrawn?: number
           updated_at?: string
@@ -1144,6 +1148,8 @@ export type Database = {
           bank_name?: string
           id?: string
           pending_balance?: number
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           total_earned?: number
           total_withdrawn?: number
           updated_at?: string
