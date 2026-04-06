@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -7,6 +6,49 @@ const corsHeaders = {
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+const PAYSTACK_BASE = "https://api.paystack.co";
+
+async function paystackRequest(path: string, method: string, body?: any) {
+  const key = Deno.env.get("PAYSTACK_SECRET_KEY");
+  if (!key) throw new Error("PAYSTACK_SECRET_KEY is not configured");
+
+  const res = await fetch(`${PAYSTACK_BASE}${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.status) {
+    throw new Error(data.message || `Paystack error: ${res.status}`);
+  }
+  return data;
+}
+
+async function createTransferRecipient(bankCode: string, accountNumber: string, accountName: string) {
+  const data = await paystackRequest("/transferrecipient", "POST", {
+    type: "nuban",
+    name: accountName,
+    account_number: accountNumber,
+    bank_code: bankCode,
+    currency: "NGN",
+  });
+  return data.data.recipient_code;
+}
+
+async function initiateTransfer(recipientCode: string, amountInKobo: number, reason: string, reference: string) {
+  const data = await paystackRequest("/transfer", "POST", {
+    source: "balance",
+    amount: amountInKobo,
+    recipient: recipientCode,
+    reason,
+    reference,
+  });
+  return data.data;
+}
 
 async function sendWithdrawalEmail(
   supabase: any,
@@ -62,8 +104,8 @@ serve(async (req) => {
 
       if (walletErr || !wallet) throw new Error("Wallet not found");
       if (wallet.available_balance < amount) throw new Error("Insufficient available balance");
-      if (!wallet.stripe_account_id || !wallet.stripe_onboarding_complete) {
-        throw new Error("Please complete Stripe Connect onboarding before requesting withdrawals");
+      if (!wallet.bank_name || !wallet.account_number || !wallet.bank_code) {
+        throw new Error("Please add your bank details before requesting a withdrawal");
       }
 
       const { data: withdrawal, error: wErr } = await supabaseAdmin
@@ -72,10 +114,10 @@ serve(async (req) => {
           user_id: authData.user.id,
           wallet_id: wallet.id,
           amount,
-          bank_name: wallet.bank_name || "Stripe Connect",
-          account_number: wallet.stripe_account_id || "",
-          account_name: wallet.account_name || "",
-          bank_code: "",
+          bank_name: wallet.bank_name,
+          account_number: wallet.account_number,
+          account_name: wallet.account_name,
+          bank_code: wallet.bank_code,
         })
         .select()
         .single();
@@ -93,7 +135,7 @@ serve(async (req) => {
       await supabaseAdmin.from("notifications").insert({
         user_id: authData.user.id,
         title: "Withdrawal requested 💸",
-        message: `Your withdrawal of $${amount.toFixed(2)} is being reviewed.`,
+        message: `Your withdrawal of ₦${amount.toLocaleString()} is being reviewed.`,
         type: "wallet",
         link: "/dashboard/wallet",
       });
@@ -104,7 +146,7 @@ serve(async (req) => {
       });
     }
 
-    // === ADMIN: Approve withdrawal (auto-payout via Stripe) ===
+    // === ADMIN: Approve withdrawal (auto-payout via Paystack) ===
     if (action === "approve") {
       const { data: isAdmin } = await supabaseAdmin.rpc("has_role", {
         _user_id: authData.user.id,
@@ -124,60 +166,56 @@ serve(async (req) => {
       if (!withdrawal) throw new Error("Withdrawal not found");
       if (withdrawal.status !== "pending") throw new Error("Withdrawal already processed");
 
-      // Get wallet to find Stripe Connect account
-      const { data: wallet } = await supabaseAdmin
-        .from("organizer_wallets")
-        .select("*")
-        .eq("id", withdrawal.wallet_id)
-        .single();
+      // Create Paystack transfer recipient and initiate transfer
+      const recipientCode = await createTransferRecipient(
+        withdrawal.bank_code,
+        withdrawal.account_number,
+        withdrawal.account_name
+      );
 
-      if (!wallet?.stripe_account_id) {
-        throw new Error("Organizer has no Stripe Connect account. Cannot auto-payout.");
-      }
+      const amountInKobo = Math.round(withdrawal.amount * 100);
+      const reference = `wd-${withdrawalId.slice(0, 8)}-${Date.now()}`;
 
-      // Create Stripe Transfer to the connected account
-      const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-        apiVersion: "2025-08-27.basil",
-      });
+      const transfer = await initiateTransfer(
+        recipientCode,
+        amountInKobo,
+        `Qantid payout #${withdrawalId.slice(0, 8)}`,
+        reference
+      );
 
-      const amountInCents = Math.round(withdrawal.amount * 100);
-
-      const transfer = await stripe.transfers.create({
-        amount: amountInCents,
-        currency: "usd",
-        destination: wallet.stripe_account_id,
-        description: `Qantid withdrawal #${withdrawalId.slice(0, 8)}`,
-        metadata: {
-          withdrawal_id: withdrawalId,
-          user_id: withdrawal.user_id,
-        },
-      });
-
-      // Mark as processed (approved + paid in one step)
+      // Mark as processed
       await supabaseAdmin
         .from("withdrawal_requests")
         .update({
           status: "processed",
-          admin_note: adminNote || "",
+          admin_note: adminNote || `Paystack ref: ${transfer.transfer_code || reference}`,
           processed_at: new Date().toISOString(),
           processed_by: authData.user.id,
         })
         .eq("id", withdrawalId);
 
       // Update wallet totals
-      await supabaseAdmin
+      const { data: wallet } = await supabaseAdmin
         .from("organizer_wallets")
-        .update({
-          total_withdrawn: wallet.total_withdrawn + withdrawal.amount,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", wallet.id);
+        .select("*")
+        .eq("id", withdrawal.wallet_id)
+        .single();
+
+      if (wallet) {
+        await supabaseAdmin
+          .from("organizer_wallets")
+          .update({
+            total_withdrawn: wallet.total_withdrawn + withdrawal.amount,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", wallet.id);
+      }
 
       // Notify organizer
       await supabaseAdmin.from("notifications").insert({
         user_id: withdrawal.user_id,
         title: "Withdrawal sent! 🎉",
-        message: `$${withdrawal.amount.toFixed(2)} has been sent to your Stripe account and will arrive in your bank shortly.`,
+        message: `₦${withdrawal.amount.toLocaleString()} has been sent to your bank account (${withdrawal.bank_name}).`,
         type: "wallet",
         link: "/dashboard/wallet",
       });
@@ -192,15 +230,14 @@ serve(async (req) => {
           organizerEmail,
           `withdrawal-processed-${withdrawalId}`,
           {
-            amount: `$${withdrawal.amount.toFixed(2)}`,
-            bankName: "Stripe Connect",
-            accountName: wallet.account_name || "Your account",
-            transferId: transfer.id,
+            amount: `₦${withdrawal.amount.toLocaleString()}`,
+            bankName: withdrawal.bank_name,
+            accountName: withdrawal.account_name,
           }
         );
       }
 
-      return new Response(JSON.stringify({ success: true, transferId: transfer.id }), {
+      return new Response(JSON.stringify({ success: true, transferCode: transfer.transfer_code }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -256,7 +293,7 @@ serve(async (req) => {
       await supabaseAdmin.from("notifications").insert({
         user_id: withdrawal.user_id,
         title: "Withdrawal rejected ❌",
-        message: `Your withdrawal of $${withdrawal.amount.toFixed(2)} was rejected. ${adminNote || "Contact support for details."}`,
+        message: `Your withdrawal of ₦${withdrawal.amount.toLocaleString()} was rejected. ${adminNote || "Contact support for details."}`,
         type: "wallet",
         link: "/dashboard/wallet",
       });
@@ -270,7 +307,7 @@ serve(async (req) => {
           organizerEmail,
           `withdrawal-rejected-${withdrawalId}`,
           {
-            amount: `$${withdrawal.amount.toFixed(2)}`,
+            amount: `₦${withdrawal.amount.toLocaleString()}`,
             adminNote: adminNote || undefined,
           }
         );
