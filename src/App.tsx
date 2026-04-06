@@ -68,6 +68,7 @@ const DpGenerator = lazy(() => import("./pages/DpGenerator"));
 const Lineups = lazy(() => import("./pages/Lineups"));
 const MarketingTools = lazy(() => import("./pages/MarketingTools"));
 const AppMarketplace = lazy(() => import("./pages/AppMarketplace"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminRoute = lazy(() => import("./components/AdminRoute"));
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -160,6 +161,7 @@ const App = () => (
                 <Route path="/lineups" element={<Lineups />} />
                 <Route path="/marketing-tools" element={<MarketingTools />} />
                 <Route path="/apps" element={<AppMarketplace />} />
+                <Route path="/unsubscribe" element={<Unsubscribe />} />
                 <Route path="/admin" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminLayout /></AdminRoute></Suspense>}>
                   <Route index element={<AdminOverview />} />
                   <Route path="users" element={<AdminUsers />} />
