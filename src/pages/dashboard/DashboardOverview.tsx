@@ -1,7 +1,11 @@
-import { DollarSign, Ticket, Users, TrendingUp, Activity, CalendarDays, Percent } from "lucide-react";
+import { DollarSign, Ticket, Users, TrendingUp, Activity, CalendarDays, Percent, Wallet, ArrowRight } from "lucide-react";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { format, subDays, eachDayOfInterval, startOfDay, parseISO } from "date-fns";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Link } from "react-router-dom";
 
 const StatCard = ({ icon: Icon, label, value, sub }: { icon: React.ElementType; label: string; value: string; sub?: string }) => (
   <div className="rounded-xl border bg-card p-5 space-y-1">
@@ -13,6 +17,20 @@ const StatCard = ({ icon: Icon, label, value, sub }: { icon: React.ElementType; 
 
 const DashboardOverview = () => {
   const { events, orderItems, totalRevenue, totalTickets, totalOrders, uniqueAttendees, eventStats } = useDashboardData();
+  const { user } = useAuth();
+
+  const { data: wallet } = useQuery({
+    queryKey: ["wallet-summary", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("organizer_wallets")
+        .select("available_balance, pending_balance, total_earned, total_withdrawn")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
 
   const chartData = eventStats.filter((s) => s.revenue > 0 || s.tickets > 0).slice(0, 8).map((s) => ({
     name: s.event.title.length > 20 ? s.event.title.slice(0, 18) + "…" : s.event.title, revenue: s.revenue, tickets: s.tickets,
@@ -27,6 +45,35 @@ const DashboardOverview = () => {
         <StatCard icon={TrendingUp} label="Total Orders" value={totalOrders.toString()} />
         <StatCard icon={Users} label="Unique Attendees" value={uniqueAttendees.toString()} />
       </div>
+
+      {wallet && (
+        <Link to="/dashboard/wallet" className="block mb-6">
+          <div className="rounded-xl border bg-gradient-to-r from-primary/10 to-primary/5 p-5 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Available Balance</p>
+                  <p className="text-2xl font-bold">${wallet.available_balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6">
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs text-muted-foreground">Pending</p>
+                  <p className="text-sm font-semibold">${wallet.pending_balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                </div>
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs text-muted-foreground">Total Earned</p>
+                  <p className="text-sm font-semibold">${wallet.total_earned.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground" />
+              </div>
+            </div>
+          </div>
+        </Link>
+      )}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <StatCard icon={Activity} label="Avg Order Value" value={totalOrders > 0 ? `$${(totalRevenue / totalOrders).toFixed(2)}` : "$0"} />
         <StatCard icon={CalendarDays} label="Active Events" value={String(events?.filter(e => new Date(e.date) >= new Date()).length ?? 0)} sub={`${events?.filter(e => new Date(e.date) < new Date()).length ?? 0} past`} />
