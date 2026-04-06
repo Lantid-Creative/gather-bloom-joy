@@ -29,6 +29,7 @@ const DashboardAiInsights = lazy(() => import("./pages/dashboard/DashboardAiInsi
 const DashboardPromoCopy = lazy(() => import("./pages/dashboard/DashboardPromoCopy"));
 const DashboardPromoCodes = lazy(() => import("./pages/dashboard/DashboardPromoCodes"));
 const DashboardTracking = lazy(() => import("./pages/dashboard/DashboardTracking"));
+const DashboardWallet = lazy(() => import("./pages/dashboard/DashboardWallet"));
 const About = lazy(() => import("./pages/About"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const HelpCenter = lazy(() => import("./pages/HelpCenter"));
@@ -74,6 +75,7 @@ const AdminOverview = lazy(() => import("./pages/admin/AdminOverview"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminEvents = lazy(() => import("./pages/admin/AdminEvents"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
+const AdminWithdrawals = lazy(() => import("./pages/admin/AdminWithdrawals"));
 
 const queryClient = new QueryClient();
 
@@ -115,6 +117,7 @@ const App = () => (
                   <Route path="promo-copy" element={<DashboardPromoCopy />} />
                   <Route path="promo-codes" element={<DashboardPromoCodes />} />
                   <Route path="tracking" element={<DashboardTracking />} />
+                  <Route path="wallet" element={<DashboardWallet />} />
                 </Route>
                 <Route path="/saved" element={<ProtectedRoute><SavedEvents /></ProtectedRoute>} />
                 <Route path="/check-in/:eventId" element={<ProtectedRoute><CheckIn /></ProtectedRoute>} />
@@ -162,6 +165,7 @@ const App = () => (
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="events" element={<AdminEvents />} />
                   <Route path="orders" element={<AdminOrders />} />
+                  <Route path="withdrawals" element={<AdminWithdrawals />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
