@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { getCurrencySymbol } from "@/lib/currencies";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -66,7 +67,7 @@ const AdminWithdrawals = () => {
             <Card key={w.id} className="p-4 space-y-3">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-bold text-lg">₦{w.amount.toLocaleString()}</p>
+                  <p className="font-bold text-lg">{getCurrencySymbol(w.currency || "NGN")}{w.amount.toLocaleString()}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(w.created_at), "MMM d, yyyy 'at' h:mm a")}
                   </p>

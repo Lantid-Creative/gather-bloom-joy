@@ -103,16 +103,17 @@ serve(async (req) => {
     const eventIds = [...new Set(items.map((i: any) => i.eventId))];
     
     for (const eventId of eventIds) {
-      // Get event owner
+      // Get event owner and currency
       const { data: event } = await supabaseAdmin
         .from("events")
-        .select("user_id")
+        .select("user_id, currency")
         .eq("id", eventId)
         .single();
 
       if (!event) continue;
 
       const organizerId = event.user_id;
+      const eventCurrency = event.currency || "NGN";
 
       // Calculate revenue for this event from this order
       const eventItems = items.filter((i: any) => i.eventId === eventId);
@@ -128,7 +129,7 @@ serve(async (req) => {
       const platformFee = eventRevenue * (PLATFORM_FEE_PERCENT / 100);
       const organizerNet = eventRevenue - platformFee;
 
-      // Ensure organizer wallet exists
+      // Ensure organizer wallet exists (use event currency)
       const { data: existingWallet } = await supabaseAdmin
         .from("organizer_wallets")
         .select("id")
@@ -142,7 +143,7 @@ serve(async (req) => {
       } else {
         const { data: newWallet, error: walletError } = await supabaseAdmin
           .from("organizer_wallets")
-          .insert({ user_id: organizerId })
+          .insert({ user_id: organizerId, currency: eventCurrency })
           .select("id")
           .single();
         if (walletError) {
@@ -156,7 +157,7 @@ serve(async (req) => {
       const availableAt = new Date();
       availableAt.setDate(availableAt.getDate() + 7);
 
-      // Create wallet transaction (pending for 7 days)
+      // Create wallet transaction (pending for 7 days) with event currency
       await supabaseAdmin.from("wallet_transactions").insert({
         wallet_id: walletId,
         user_id: organizerId,
@@ -168,6 +169,7 @@ serve(async (req) => {
         order_id: order.id,
         available_at: availableAt.toISOString(),
         status: "pending",
+        currency: eventCurrency,
       });
 
       // Update wallet pending balance and total earned
