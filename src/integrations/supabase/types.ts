@@ -1116,6 +1116,7 @@ export type Database = {
           available_balance: number
           bank_code: string
           bank_name: string
+          currency: string
           id: string
           pending_balance: number
           stripe_account_id: string | null
@@ -1131,6 +1132,7 @@ export type Database = {
           available_balance?: number
           bank_code?: string
           bank_name?: string
+          currency?: string
           id?: string
           pending_balance?: number
           stripe_account_id?: string | null
@@ -1146,6 +1148,7 @@ export type Database = {
           available_balance?: number
           bank_code?: string
           bank_name?: string
+          currency?: string
           id?: string
           pending_balance?: number
           stripe_account_id?: string | null
@@ -1791,6 +1794,7 @@ export type Database = {
           amount: number
           available_at: string
           created_at: string
+          currency: string
           description: string
           fee_amount: number
           id: string
@@ -1805,6 +1809,7 @@ export type Database = {
           amount?: number
           available_at?: string
           created_at?: string
+          currency?: string
           description?: string
           fee_amount?: number
           id?: string
@@ -1819,6 +1824,7 @@ export type Database = {
           amount?: number
           available_at?: string
           created_at?: string
+          currency?: string
           description?: string
           fee_amount?: number
           id?: string
@@ -1855,6 +1861,7 @@ export type Database = {
           bank_code: string
           bank_name: string
           created_at: string
+          currency: string
           id: string
           processed_at: string | null
           processed_by: string | null
@@ -1870,6 +1877,7 @@ export type Database = {
           bank_code?: string
           bank_name?: string
           created_at?: string
+          currency?: string
           id?: string
           processed_at?: string | null
           processed_by?: string | null
@@ -1885,6 +1893,7 @@ export type Database = {
           bank_code?: string
           bank_name?: string
           created_at?: string
+          currency?: string
           id?: string
           processed_at?: string | null
           processed_by?: string | null
