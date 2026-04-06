@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Wallet, ArrowDownToLine, Clock, CheckCircle2, XCircle, Banknote, AlertCircle } from "lucide-react";
+import { Wallet, ArrowDownToLine, Clock, CheckCircle2, AlertCircle, ExternalLink, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { useSearchParams } from "react-router-dom";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -21,20 +21,20 @@ const statusColors: Record<string, string> = {
 
 const OrganizerWallet = () => {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [wallet, setWallet] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [bankForm, setBankForm] = useState({ bank_name: "", account_number: "", account_name: "", bank_code: "" });
-  const [editingBank, setEditingBank] = useState(false);
+  const [stripeStatus, setStripeStatus] = useState<{ connected: boolean; onboarding_complete: boolean } | null>(null);
+  const [connectingStripe, setConnectingStripe] = useState(false);
 
   const fetchData = async () => {
     if (!user) return;
     setLoading(true);
 
-    // Release pending funds
     await supabase.rpc("release_pending_funds" as any);
 
     const [walletRes, txRes, wdRes] = await Promise.all([
@@ -43,40 +43,63 @@ const OrganizerWallet = () => {
       supabase.from("withdrawal_requests").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
     ]);
 
-    if (walletRes.data) {
-      setWallet(walletRes.data);
-      setBankForm({
-        bank_name: walletRes.data.bank_name || "",
-        account_number: walletRes.data.account_number || "",
-        account_name: walletRes.data.account_name || "",
-        bank_code: walletRes.data.bank_code || "",
-      });
-    }
+    if (walletRes.data) setWallet(walletRes.data);
     setTransactions(txRes.data || []);
     setWithdrawals(wdRes.data || []);
     setLoading(false);
   };
 
-  useEffect(() => { fetchData(); }, [user]);
+  const checkStripeStatus = async () => {
+    const { data, error } = await supabase.functions.invoke("stripe-connect", {
+      body: { action: "check-status" },
+    });
+    if (!error && data) {
+      setStripeStatus(data);
+    }
+  };
 
-  const handleUpdateBank = async () => {
-    if (!wallet) return;
-    const { error } = await supabase
-      .from("organizer_wallets")
-      .update(bankForm)
-      .eq("id", wallet.id);
-    if (error) { toast.error("Failed to update bank details"); return; }
-    toast.success("Bank details updated");
-    setEditingBank(false);
+  useEffect(() => {
     fetchData();
+    checkStripeStatus();
+  }, [user]);
+
+  // Handle return from Stripe onboarding
+  useEffect(() => {
+    if (searchParams.get("onboarding") === "complete") {
+      checkStripeStatus();
+      toast.success("Stripe Connect setup complete! Checking status...");
+    }
+  }, [searchParams]);
+
+  const handleConnectStripe = async () => {
+    setConnectingStripe(true);
+    const { data, error } = await supabase.functions.invoke("stripe-connect", {
+      body: { action: "onboard" },
+    });
+    setConnectingStripe(false);
+    if (error || !data?.url) {
+      toast.error("Failed to start Stripe Connect setup");
+      return;
+    }
+    window.location.href = data.url;
+  };
+
+  const handleStripeDashboard = async () => {
+    const { data, error } = await supabase.functions.invoke("stripe-connect", {
+      body: { action: "dashboard" },
+    });
+    if (error || !data?.url) {
+      toast.error("Failed to open Stripe dashboard");
+      return;
+    }
+    window.open(data.url, "_blank");
   };
 
   const handleWithdraw = async () => {
     const amount = parseFloat(withdrawAmount);
     if (!amount || amount <= 0) { toast.error("Enter a valid amount"); return; }
-    if (!wallet?.bank_name || !wallet?.account_number) {
-      toast.error("Please add your bank details first");
-      setEditingBank(true);
+    if (!stripeStatus?.onboarding_complete) {
+      toast.error("Please complete Stripe Connect setup first");
       return;
     }
     if (amount > (wallet?.available_balance || 0)) { toast.error("Insufficient balance"); return; }
@@ -102,12 +125,50 @@ const OrganizerWallet = () => {
     <Card className="p-6 text-center space-y-3">
       <Wallet className="h-10 w-10 text-muted-foreground mx-auto" />
       <p className="text-muted-foreground">No wallet yet. Your wallet will be created automatically when you receive your first sale.</p>
+      <p className="text-sm text-muted-foreground">Or connect your Stripe account now to get ready:</p>
+      <Button onClick={handleConnectStripe} disabled={connectingStripe}>
+        {connectingStripe ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ExternalLink className="h-4 w-4 mr-2" />}
+        Connect with Stripe
+      </Button>
     </Card>
   );
 
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-bold flex items-center gap-2"><Wallet className="h-5 w-5" /> Wallet</h2>
+
+      {/* Stripe Connect status */}
+      <Card className={`p-4 border-2 ${stripeStatus?.onboarding_complete ? "border-green-500/30 bg-green-50/50 dark:bg-green-950/20" : "border-orange-500/30 bg-orange-50/50 dark:bg-orange-950/20"}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {stripeStatus?.onboarding_complete ? (
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
+            ) : (
+              <AlertCircle className="h-5 w-5 text-orange-600" />
+            )}
+            <div>
+              <p className="font-medium">
+                {stripeStatus?.onboarding_complete ? "Stripe Connected ✓" : "Stripe Connect Required"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {stripeStatus?.onboarding_complete
+                  ? "Your account is set up to receive automatic payouts."
+                  : "Connect your Stripe account to receive automatic payouts when withdrawals are approved."}
+              </p>
+            </div>
+          </div>
+          {stripeStatus?.onboarding_complete ? (
+            <Button variant="outline" size="sm" onClick={handleStripeDashboard}>
+              <ExternalLink className="h-3.5 w-3.5 mr-1" /> Stripe Dashboard
+            </Button>
+          ) : (
+            <Button onClick={handleConnectStripe} disabled={connectingStripe} size="sm">
+              {connectingStripe ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <ExternalLink className="h-3.5 w-3.5 mr-1" />}
+              {stripeStatus?.connected ? "Complete Setup" : "Connect Stripe"}
+            </Button>
+          )}
+        </div>
+      </Card>
 
       {/* Balance cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -132,53 +193,29 @@ const OrganizerWallet = () => {
       {/* Fee info */}
       <Card className="p-4 bg-muted/50 border-dashed">
         <p className="text-sm text-muted-foreground flex items-center gap-2">
-          <AlertCircle className="h-4 w-4" />
-          <span>A 10% platform fee is deducted from each sale (covers payment processing + platform commission). Funds become available 7 days after purchase.</span>
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          <span>A 10% platform fee is deducted from each sale. Funds become available 7 days after purchase. When your withdrawal is approved, Stripe sends money directly to your connected account.</span>
         </p>
       </Card>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Withdraw */}
-        <Card className="p-5 space-y-4">
-          <h3 className="font-semibold flex items-center gap-2"><ArrowDownToLine className="h-4 w-4" /> Request Withdrawal</h3>
-          <div className="space-y-2">
-            <Label>Amount ($)</Label>
-            <Input type="number" min="1" step="0.01" max={wallet.available_balance} value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="0.00" />
-            <p className="text-xs text-muted-foreground">Max: ${wallet.available_balance.toFixed(2)}</p>
-          </div>
-          <Button onClick={handleWithdraw} disabled={submitting || !withdrawAmount} className="w-full">
-            {submitting ? "Submitting…" : "Request Withdrawal"}
-          </Button>
-        </Card>
-
-        {/* Bank details */}
-        <Card className="p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold flex items-center gap-2"><Banknote className="h-4 w-4" /> Bank Details</h3>
-            {!editingBank && <Button variant="outline" size="sm" onClick={() => setEditingBank(true)}>Edit</Button>}
-          </div>
-          {editingBank ? (
-            <div className="space-y-3">
-              <div><Label>Bank Name</Label><Input value={bankForm.bank_name} onChange={(e) => setBankForm({ ...bankForm, bank_name: e.target.value })} /></div>
-              <div><Label>Account Name</Label><Input value={bankForm.account_name} onChange={(e) => setBankForm({ ...bankForm, account_name: e.target.value })} /></div>
-              <div><Label>Account Number</Label><Input value={bankForm.account_number} onChange={(e) => setBankForm({ ...bankForm, account_number: e.target.value })} /></div>
-              <div><Label>Bank/Sort Code</Label><Input value={bankForm.bank_code} onChange={(e) => setBankForm({ ...bankForm, bank_code: e.target.value })} /></div>
-              <div className="flex gap-2">
-                <Button onClick={handleUpdateBank} className="flex-1">Save</Button>
-                <Button variant="outline" onClick={() => setEditingBank(false)}>Cancel</Button>
-              </div>
+      {/* Withdraw */}
+      <Card className="p-5 space-y-4">
+        <h3 className="font-semibold flex items-center gap-2"><ArrowDownToLine className="h-4 w-4" /> Request Withdrawal</h3>
+        {!stripeStatus?.onboarding_complete ? (
+          <p className="text-sm text-muted-foreground">Connect your Stripe account above to enable withdrawals.</p>
+        ) : (
+          <>
+            <div className="space-y-2">
+              <Label>Amount ($)</Label>
+              <Input type="number" min="1" step="0.01" max={wallet.available_balance} value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="0.00" />
+              <p className="text-xs text-muted-foreground">Max: ${wallet.available_balance.toFixed(2)}</p>
             </div>
-          ) : (
-            <div className="space-y-1 text-sm">
-              <p><span className="text-muted-foreground">Bank:</span> {wallet.bank_name || "—"}</p>
-              <p><span className="text-muted-foreground">Name:</span> {wallet.account_name || "—"}</p>
-              <p><span className="text-muted-foreground">Account:</span> {wallet.account_number ? `****${wallet.account_number.slice(-4)}` : "—"}</p>
-              <p><span className="text-muted-foreground">Code:</span> {wallet.bank_code || "—"}</p>
-              {!wallet.bank_name && <p className="text-orange-500 text-xs mt-2">⚠️ Add bank details before requesting withdrawals</p>}
-            </div>
-          )}
-        </Card>
-      </div>
+            <Button onClick={handleWithdraw} disabled={submitting || !withdrawAmount} className="w-full">
+              {submitting ? "Submitting…" : "Request Withdrawal"}
+            </Button>
+          </>
+        )}
+      </Card>
 
       {/* Withdrawal history */}
       {withdrawals.length > 0 && (

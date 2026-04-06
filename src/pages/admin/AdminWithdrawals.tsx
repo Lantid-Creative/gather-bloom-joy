@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { CheckCircle2, XCircle, Send } from "lucide-react";
+import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -21,7 +21,7 @@ const AdminWithdrawals = () => {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState<string | null>(null);
 
-  const fetch = async () => {
+  const fetchData = async () => {
     setLoading(true);
     const { data } = await supabase
       .from("withdrawal_requests")
@@ -31,9 +31,9 @@ const AdminWithdrawals = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
-  const handleAction = async (id: string, action: "approve" | "reject" | "mark-processed") => {
+  const handleAction = async (id: string, action: "approve" | "reject") => {
     setProcessing(id);
     const { data, error } = await supabase.functions.invoke("process-withdrawal", {
       body: { action, withdrawalId: id, adminNote: notes[id] || "" },
@@ -43,15 +43,21 @@ const AdminWithdrawals = () => {
       toast.error(data?.error || "Action failed");
       return;
     }
-    toast.success(`Withdrawal ${action === "mark-processed" ? "marked as processed" : action + "d"}`);
-    fetch();
+    toast.success(action === "approve"
+      ? "Withdrawal approved & payout sent via Stripe!"
+      : "Withdrawal rejected"
+    );
+    fetchData();
   };
 
   if (loading) return <div className="animate-pulse h-48 bg-muted rounded-xl" />;
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">Withdrawal Requests</h2>
+      <div>
+        <h2 className="text-xl font-bold">Withdrawal Requests</h2>
+        <p className="text-sm text-muted-foreground">Approving a request automatically sends funds to the organizer via Stripe Connect.</p>
+      </div>
       {withdrawals.length === 0 ? (
         <Card className="p-6 text-center text-muted-foreground">No withdrawal requests yet.</Card>
       ) : (
@@ -64,11 +70,10 @@ const AdminWithdrawals = () => {
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(w.created_at), "MMM d, yyyy 'at' h:mm a")}
                   </p>
-                  <p className="text-sm mt-1">
-                    <span className="text-muted-foreground">Bank:</span> {w.bank_name} · {w.account_name} · ****{w.account_number?.slice(-4)}
-                  </p>
-                  {w.bank_code && <p className="text-xs text-muted-foreground">Code: {w.bank_code}</p>}
-                  <p className="text-xs text-muted-foreground">User: {w.user_id.slice(0, 8)}</p>
+                  <p className="text-xs text-muted-foreground mt-1">User: {w.user_id.slice(0, 8)}</p>
+                  {w.account_number && w.account_number.startsWith("acct_") && (
+                    <p className="text-xs text-muted-foreground">Stripe: {w.account_number}</p>
+                  )}
                 </div>
                 <Badge className={statusColors[w.status] || ""}>{w.status}</Badge>
               </div>
@@ -86,7 +91,8 @@ const AdminWithdrawals = () => {
                     onClick={() => handleAction(w.id, "approve")}
                     disabled={processing === w.id}
                   >
-                    <CheckCircle2 className="h-4 w-4 mr-1" /> Approve
+                    {processing === w.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-1" />}
+                    Approve & Pay
                   </Button>
                   <Button
                     size="sm"
@@ -97,16 +103,6 @@ const AdminWithdrawals = () => {
                     <XCircle className="h-4 w-4 mr-1" /> Reject
                   </Button>
                 </div>
-              )}
-
-              {w.status === "approved" && (
-                <Button
-                  size="sm"
-                  onClick={() => handleAction(w.id, "mark-processed")}
-                  disabled={processing === w.id}
-                >
-                  <Send className="h-4 w-4 mr-1" /> Mark as Sent
-                </Button>
               )}
 
               {w.admin_note && <p className="text-sm text-muted-foreground">Note: {w.admin_note}</p>}
