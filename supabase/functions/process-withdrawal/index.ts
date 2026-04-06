@@ -7,6 +7,27 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+async function sendWithdrawalEmail(
+  supabase: any,
+  templateName: string,
+  recipientEmail: string,
+  idempotencyKey: string,
+  templateData: Record<string, any>
+) {
+  try {
+    await supabase.functions.invoke("send-transactional-email", {
+      body: {
+        templateName,
+        recipientEmail,
+        idempotencyKey,
+        templateData,
+      },
+    });
+  } catch (err) {
+    console.error("Failed to send withdrawal email", { templateName, err });
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -111,8 +132,11 @@ serve(async (req) => {
       if (!withdrawal) throw new Error("Withdrawal not found");
       if (withdrawal.status !== "pending") throw new Error("Withdrawal already processed");
 
+      // Get organizer email
+      const { data: userData } = await supabaseAdmin.auth.admin.getUserById(withdrawal.user_id);
+      const organizerEmail = userData?.user?.email;
+
       if (action === "approve") {
-        // Mark as approved (admin will manually disburse via Stripe dashboard / bank transfer)
         await supabaseAdmin
           .from("withdrawal_requests")
           .update({
@@ -123,7 +147,6 @@ serve(async (req) => {
           })
           .eq("id", withdrawalId);
 
-        // Update wallet total_withdrawn
         const { data: wallet } = await supabaseAdmin
           .from("organizer_wallets")
           .select("*")
@@ -140,7 +163,7 @@ serve(async (req) => {
             .eq("id", wallet.id);
         }
 
-        // Notify organizer
+        // Notify organizer (in-app)
         await supabaseAdmin.from("notifications").insert({
           user_id: withdrawal.user_id,
           title: "Withdrawal approved ✅",
@@ -148,8 +171,24 @@ serve(async (req) => {
           type: "wallet",
           link: "/dashboard",
         });
+
+        // Send email notification
+        if (organizerEmail) {
+          await sendWithdrawalEmail(
+            supabaseAdmin,
+            "withdrawal-approved",
+            organizerEmail,
+            `withdrawal-approved-${withdrawalId}`,
+            {
+              amount: `$${withdrawal.amount.toFixed(2)}`,
+              bankName: withdrawal.bank_name,
+              accountName: withdrawal.account_name,
+              adminNote: adminNote || undefined,
+            }
+          );
+        }
       } else {
-        // Reject: return funds to available balance
+        // Reject
         await supabaseAdmin
           .from("withdrawal_requests")
           .update({
@@ -160,7 +199,6 @@ serve(async (req) => {
           })
           .eq("id", withdrawalId);
 
-        // Return funds
         const { data: wallet } = await supabaseAdmin
           .from("organizer_wallets")
           .select("*")
@@ -177,7 +215,7 @@ serve(async (req) => {
             .eq("id", wallet.id);
         }
 
-        // Notify organizer
+        // Notify organizer (in-app)
         await supabaseAdmin.from("notifications").insert({
           user_id: withdrawal.user_id,
           title: "Withdrawal rejected ❌",
@@ -185,6 +223,20 @@ serve(async (req) => {
           type: "wallet",
           link: "/dashboard",
         });
+
+        // Send email notification
+        if (organizerEmail) {
+          await sendWithdrawalEmail(
+            supabaseAdmin,
+            "withdrawal-rejected",
+            organizerEmail,
+            `withdrawal-rejected-${withdrawalId}`,
+            {
+              amount: `$${withdrawal.amount.toFixed(2)}`,
+              adminNote: adminNote || undefined,
+            }
+          );
+        }
       }
 
       return new Response(JSON.stringify({ success: true }), {
@@ -222,6 +274,24 @@ serve(async (req) => {
           type: "wallet",
           link: "/dashboard",
         });
+
+        // Get organizer email and send notification
+        const { data: userData } = await supabaseAdmin.auth.admin.getUserById(withdrawal.user_id);
+        const organizerEmail = userData?.user?.email;
+
+        if (organizerEmail) {
+          await sendWithdrawalEmail(
+            supabaseAdmin,
+            "withdrawal-processed",
+            organizerEmail,
+            `withdrawal-processed-${withdrawalId}`,
+            {
+              amount: `$${withdrawal.amount.toFixed(2)}`,
+              bankName: withdrawal.bank_name,
+              accountName: withdrawal.account_name,
+            }
+          );
+        }
       }
 
       return new Response(JSON.stringify({ success: true }), {
