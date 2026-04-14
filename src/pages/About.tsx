@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, Users, Globe, Heart, Zap, Target, Award } from "lucide-react";
+import { Globe, Heart, Zap, Target } from "lucide-react";
 import QantidHeader from "@/components/QantidHeader";
 import QantidFooter from "@/components/QantidFooter";
 import { Button } from "@/components/ui/button";
@@ -9,20 +9,6 @@ const values = [
   { icon: Heart, title: "Community First", desc: "Every feature we build starts with the community — organizers, attendees, and creators across the continent." },
   { icon: Zap, title: "Seamless Experience", desc: "From discovery to check-in, we make every step of the event journey smooth and delightful." },
   { icon: Target, title: "Empowering Organizers", desc: "We provide tools that help organizers grow their audiences and run successful events at any scale." },
-];
-
-const stats = [
-  { value: "15+", label: "African Countries" },
-  { value: "50K+", label: "Events Hosted" },
-  { value: "2M+", label: "Tickets Sold" },
-  { value: "10K+", label: "Organizers" },
-];
-
-const team = [
-  { name: "Amara Okafor", role: "CEO & Co-Founder", icon: Users },
-  { name: "Kwame Mensah", role: "CTO & Co-Founder", icon: Zap },
-  { name: "Fatima El-Amin", role: "Head of Product", icon: Target },
-  { name: "David Kimani", role: "Head of Growth", icon: Award },
 ];
 
 const About = () => (
@@ -38,16 +24,6 @@ const About = () => (
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center p-6 rounded-2xl bg-primary/5 border border-primary/10">
-            <p className="text-3xl font-bold text-primary">{s.value}</p>
-            <p className="text-sm text-muted-foreground mt-1">{s.label}</p>
-          </div>
-        ))}
-      </div>
-
       {/* Mission */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div className="space-y-4">
@@ -59,9 +35,8 @@ const About = () => (
             and create memorable experiences.
           </p>
           <p className="text-muted-foreground leading-relaxed">
-            Founded in 2024, Qantid has grown from a small idea into the continent's most
-            trusted ticketing platform, serving organizers of all sizes from independent creators
-            to major entertainment brands.
+            Qantid is growing into the continent's most trusted ticketing platform, serving
+            organizers of all sizes from independent creators to major entertainment brands.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -75,28 +50,10 @@ const About = () => (
         </div>
       </div>
 
-      {/* Team */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Leadership Team</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {team.map((t) => (
-            <div key={t.name} className="text-center p-6 rounded-xl border space-y-3">
-              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <t.icon className="h-7 w-7 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">{t.name}</p>
-                <p className="text-xs text-muted-foreground">{t.role}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* CTA */}
       <div className="text-center p-10 rounded-2xl bg-primary/5 border border-primary/10 space-y-4">
         <h2 className="text-2xl font-bold">Ready to create your next event?</h2>
-        <p className="text-muted-foreground">Join thousands of organizers across Africa.</p>
+        <p className="text-muted-foreground">Join organizers across Africa building amazing experiences.</p>
         <Button variant="hero" size="lg" className="rounded-full" asChild>
           <Link to="/create-event">Get Started Free</Link>
         </Button>
